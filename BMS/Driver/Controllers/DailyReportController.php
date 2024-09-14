@@ -41,8 +41,16 @@ class DailyReportController {
         echo json_encode($this->serviceDR->endDuty($_POST['tripId']));
     }
 
+    private function getTripsDetails() {
+        echo json_encode($this->serviceDR->getTripsDetails());
+    }
+
     private function endDuty2() {
-        echo json_encode($this->serviceDR->endDuty2());
+        echo json_encode($this->serviceDR->endDuty2($_POST['fuel-usage'], $_POST['work-salary'], $_POST['work-commission'], $_POST['total-commission']));
+    }
+
+    private function getEndKm() {
+        echo json_encode($this->serviceDR->getEndKm($_POST['tripId']));
     }
 }
 

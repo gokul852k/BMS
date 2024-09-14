@@ -1,0 +1,25 @@
+.box-head .heading {
+    margin: 0;
+    font-size: 20px;
+}
+
+.d-chart-left {
+    padding: 0 5px 0 0;
+}
+
+.d-chart-right {
+    padding: 0 0 0 5px;
+}
+
+.tms-card-head {
+    font-size: 19px;
+}
+.num-card {
+    padding: 0 45px !important;
+}
+.no-underline {
+    text-decoration: none;
+}
+.no-underline:hover {
+    text-decoration: none;
+}

@@ -83,6 +83,10 @@ class DriverController {
     private function deleteDriver() {
         echo json_encode($this->service->deleteDriver($_POST['driverId']));
     }
+
+    private function getDriverField() {
+        echo json_encode($this->service->getDriverField());
+    }
 }
 
 new DriverController();

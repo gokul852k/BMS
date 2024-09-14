@@ -20,7 +20,7 @@ class SessionModel {
 
     public function getUserDetails($userId) {
         $isActive = true;
-        $stmt = $this->db->prepare("SELECT fullname, mail, mobile FROM bms_drivers WHERE user_id = :userId AND is_active = :isActive");
+        $stmt = $this->db->prepare("SELECT id, fullname, mail, mobile FROM bms_drivers WHERE user_id = :userId AND is_active = :isActive");
         $stmt->bindParam(":userId", $userId);
         $stmt->bindParam(":isActive", $isActive);
         $stmt->execute();

@@ -622,4 +622,20 @@ class DriverService
             ];
         }
     }
+
+    public function getDriverField(){
+        $response = $this->modelBMS->getDriverField($_SESSION['companyId']);
+
+        if (!$response) {
+            return [
+                'status' => 'error',
+                'message' => 'No data found'
+            ];
+        }
+
+        return [
+            'status' => 'success',
+            'data' => $response
+        ];
+    }
 }

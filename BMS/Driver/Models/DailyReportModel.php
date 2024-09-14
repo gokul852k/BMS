@@ -170,9 +170,25 @@ class DailyReportModel {
         return $result ? $result : null;
     }
 
-    public function getDisplayTrip($driverId) {
+    public function getShiftIdByUserId($driverId) {
         $status = true;
-        $stmt = $this->db->prepare("SELECT trip_driver_id, trip_id FROM `bms_trip_drivers` WHERE `driver_id` = :driverId AND `trip_driver_status` = :status ORDER BY trip_driver_id ASC LIMIT 1");
+        $stmt = $this->db->prepare("SELECT shift_id FROM `bms_shift_driver` WHERE `driver_id` = :driverId AND `work_status` = :status ORDER BY shift_driver_id ASC LIMIT 1");
+        $stmt->bindParam("driverId", $driverId);
+        $stmt->bindParam("status", $status);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function getDisplayTrip($driverId, $shiftId) {
+        $status = true;
+        $stmt = $this->db->prepare("SELECT td.trip_driver_id, td.trip_id FROM bms_trip_drivers td
+                                    INNER JOIN bms_trips t ON td.trip_id = t.trip_id
+                                    WHERE t.shift_id = :shiftId AND td.driver_id = :driverId AND td.trip_driver_status = :status
+                                    ORDER BY td.trip_driver_id ASC LIMIT 1");
+        
+        $stmt->bindParam("shiftId", $shiftId);
         $stmt->bindParam("driverId", $driverId);
         $stmt->bindParam("status", $status);
         $stmt->execute();
@@ -335,15 +351,16 @@ class DailyReportModel {
 
     public function checkTripStatus($tripId) {
         $status = true;
-        $isActive = true;
-        $passenger = 0;
-        $collectionAmount = 0;
-        $stmt = $this->db->prepare("SELECT trip_id FROM `bms_trips` WHERE `trip_id` = :tripId AND `trip_status` = :status AND (`passenger` = :passenger OR `collection_amount` = :collectionAmount) AND `is_active` = :isActive");
+        // $isActive = true;
+        // $passenger = 0;
+        // $collectionAmount = 0;
+        $stmt = $this->db->prepare("SELECT shift_id , trip_id, start_km, passenger, collection_amount FROM `bms_trips` WHERE `trip_id` = :tripId AND `trip_status` = :status");
+        // $stmt = $this->db->prepare("SELECT trip_id FROM `bms_trips` WHERE `trip_id` = :tripId AND `trip_status` = :status AND (`passenger` = :passenger OR `collection_amount` = :collectionAmount) AND `is_active` = :isActive");
         $stmt->bindParam("tripId", $tripId);
         $stmt->bindParam("status", $status);
-        $stmt->bindParam("passenger", $passenger);
-        $stmt->bindParam("collectionAmount", $collectionAmount);
-        $stmt->bindParam("isActive", $isActive);
+        // $stmt->bindParam("passenger", $passenger);
+        // $stmt->bindParam("collectionAmount", $collectionAmount);
+        // $stmt->bindParam("isActive", $isActive);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -368,11 +385,23 @@ class DailyReportModel {
         return $result ? $result : null;
     }
 
-    public function updateDriverShiftStatus($shiftId) {
+    public function updateDriverWorkDetails($shiftId, $salary, $commission, $fuelUsage) {
         $status = false;
-        $stmt = $this->db->prepare("UPDATE `bms_shift_driver` SET `work_status` = :status WHERE `shift_id` = :shiftId");
+        $stmt = $this->db->prepare("UPDATE `bms_shift_driver` SET `salary`= :salary, `commission`= :commission, `fuel_usage` = :fuelUsage, `work_status` = :status WHERE `shift_id` = :shiftId");
+        $stmt->bindParam(":salary", $salary);
+        $stmt->bindParam(":commission", $commission);
+        $stmt->bindParam(":fuelUsage", $fuelUsage);
         $stmt->bindParam(":shiftId", $shiftId);
         $stmt->bindParam(":status", $status);
+
+        return $stmt->execute() ? true : false;
+    }
+
+    public function updateShiftDetails($shiftId, $salary, $fuelUsage) {
+        $stmt = $this->db->prepare("UPDATE `bms_shifts` SET `salary` = `salary` + :salary, `fuel_usage` = `fuel_usage` + :fuelUsage WHERE `shift_id` = :shiftId");
+        $stmt->bindParam(":salary", $salary);
+        $stmt->bindParam(":fuelUsage", $fuelUsage);
+        $stmt->bindParam(":shiftId", $shiftId);
 
         return $stmt->execute() ? true : false;
     }
@@ -385,5 +414,239 @@ class DailyReportModel {
 
         return $stmt->execute() ? true : false;
 
+    }
+
+    public function getShiftDetails($shiftId) {
+        $stmt = $this->db->prepare("SELECT `report_id`, `salary`, `commission`, `expence`, `fuel_usage` FROM `bms_shifts` WHERE `shift_id` = :shiftId");
+        $stmt->bindParam(":shiftId", $shiftId);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function updateDailyReportSCEM($reportId, $salary, $commission, $expence, $fuelusage, $avgMilage) {
+        $stmt = $this->db->prepare("UPDATE `bms_daily_reports` SET `expenses` = `expenses` + :expence, `salary` = `salary` + :salary, `commission` = `commission` + :commission, `fuel_usage` = `fuel_usage` + :fuelusage, `avg_milage` = :avgMilage WHERE `report_id` = :reportId");
+        $stmt->bindParam(":salary", $salary);
+        $stmt->bindParam(":commission", $commission);
+        $stmt->bindParam(":expence", $expence);
+        $stmt->bindParam(":fuelusage", $fuelusage);
+        $stmt->bindParam(":avgMilage", $avgMilage);
+        $stmt->bindParam(":reportId", $reportId);
+
+        return $stmt->execute() ? true : false;
+    }
+
+    public function updateKmInShift($shiftId, $totalKm) {
+        $stmt = $this->db->prepare("UPDATE `bms_shifts` SET `total_km` = `total_km` + :totalKm WHERE `shift_id` = :shiftId");
+        $stmt->bindParam(":totalKm", $totalKm);
+        $stmt->bindParam(":shiftId", $shiftId);
+
+        return $stmt->execute() ? true : false;
+
+    }
+
+    public function getDailyReport($shiftId) {
+        $stmt = $this->db->prepare("SELECT `report_id` FROM `bms_shifts` WHERE `shift_id` = :shiftId");
+        $stmt->bindParam(":shiftId", $shiftId);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function getDailyReportDetails($reportId) {
+        $stmt = $this->db->prepare("SELECT `total_km`, `fuel_usage`, `avg_milage` FROM `bms_daily_reports` WHERE `report_id` = :reportId");
+        $stmt->bindParam(":reportId", $reportId);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function updateKmInDailyReport($reportId, $totalKm) {
+        $stmt = $this->db->prepare("UPDATE `bms_daily_reports` SET `total_km` = `total_km` + :totalKm WHERE `report_id` = :reportId");
+        $stmt->bindParam(":totalKm", $totalKm);
+        $stmt->bindParam(":reportId", $reportId);
+
+        return $stmt->execute() ? true : false;
+    }
+
+    public function getConductorByShifId($shiftId) {
+        $workStatus = true;
+        $stmt = $this->db->prepare("SELECT * FROM `bms_shift_conductor` WHERE `shift_id` = :shiftId AND `work_status` = :workStatus");
+        $stmt->bindParam("shiftId", $shiftId);
+        $stmt->bindParam("workStatus", $workStatus);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function createTripConductor($companyId, $tripId, $conductorId) {
+        $stmt = $this->db->prepare("INSERT INTO `bms_trip_conductors`(`company_id`, `trip_id`, `conductor_id`) VALUES (:companyId, :tripId, :conductorId)");
+
+        $stmt->bindParam("companyId", $companyId);
+        $stmt->bindParam("tripId", $tripId);
+        $stmt->bindParam("conductorId", $conductorId);
+
+        if ($stmt->execute()) {
+            if ($stmt->rowCount() > 0) {
+                return [
+                    'status' => 'success',
+                    'message' => 'Inserted successfully.'
+                ];
+            } else {
+                return [
+                    'status' => 'error',
+                    'message' => 'Insert failed.',
+                    'error' => 'No reason'
+                ];
+            }
+        } else {
+            return [
+                'status' => 'error',
+                'message' => 'Insert failed.',
+                'error' => $stmt->errorInfo()
+            ];
+        }
+    }
+
+    public function getDriverByShifId($shiftId, $driverId) {
+        $workStatus = true;
+        $stmt = $this->db->prepare("SELECT * FROM `bms_shift_driver` WHERE `shift_id` = :shiftId AND `work_status` = :workStatus AND `driver_id` != :driverId");
+        $stmt->bindParam("shiftId", $shiftId);
+        $stmt->bindParam("workStatus", $workStatus);
+        $stmt->bindParam("driverId", $driverId);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function checkConductorsStatus($shiftId) {
+        $workStatus = true;
+        $stmt = $this->db->prepare("SELECT * FROM `bms_shift_conductor` WHERE `shift_id` = :shiftId AND `work_status` = :workStatus");
+        $stmt->bindParam("shiftId", $shiftId);
+        $stmt->bindParam("workStatus", $workStatus);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function checkDriversStatus($shiftId) {
+        $workStatus = true;
+        $stmt = $this->db->prepare("SELECT * FROM `bms_shift_driver` WHERE `shift_id` = :shiftId AND `work_status` = :workStatus");
+        $stmt->bindParam("shiftId", $shiftId);
+        $stmt->bindParam("workStatus", $workStatus);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function getTripByShiftId($shiftId) {
+        $stmt = $this->db->prepare("SELECT `trip_id` FROM `bms_trips` WHERE `shift_id` = :shiftId");
+        $stmt->bindParam("shiftId", $shiftId);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function getTripsDetails($driverId, $languageCode) {
+        $workStatus = true;
+        $stmt = $this->db->prepare("SELECT 
+                                        t.start_route_id AS 'startRouteId', 
+                                        srt.route_name AS 'startRouteName', 
+                                        t.end_route_id AS 'endRouteId', 
+                                        ert.route_name AS 'endRouteName',
+                                        t.end_km - t.start_km AS 'km'
+                                    FROM 
+                                        bms_shift_driver sd
+                                    INNER JOIN 
+                                        bms_trips t ON sd.shift_id = t.shift_id
+                                    INNER JOIN 
+                                        bms_route_translations srt ON t.start_route_id = srt.route_id
+                                    INNER JOIN 
+                                        bms_route_translations ert ON t.end_route_id = ert.route_id
+                                    INNER JOIN 
+                                        bms_languages l ON srt.language_id = l.id AND ert.language_id = l.id
+                                    WHERE 
+                                        sd.driver_id = :driverId
+                                        AND sd.work_status = :workStatus 
+                                        AND l.code = :languageCode;
+                                  ");
+        $stmt->bindParam("driverId", $driverId);
+        $stmt->bindParam("workStatus", $workStatus);
+        $stmt->bindParam("languageCode", $languageCode);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function getTripsDetailsCardCount($driverId) {
+        $workStatus = true;
+        $stmt = $this->db->prepare("SELECT s.total_km AS 'km', s.total_passenger AS 'passengers', s.total_collection AS 'collections', (SELECT COUNT(*) FROM bms_trips WHERE shift_id = s.shift_id) AS 'trips' FROM bms_shift_driver sd
+                                    INNER JOIN bms_shifts s ON sd.shift_id = s.shift_id
+                                    WHERE sd.driver_id = :driverId AND sd.work_status = :workStatus
+                                    ");
+        $stmt->bindParam("driverId", $driverId);
+        $stmt->bindParam("workStatus", $workStatus);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function getSalary($driverId) {
+        $workStatus = true;
+        $stmt = $this->db->prepare("SELECT sd.shift_id, b.driver_salary, b.bus_number FROM bms_shift_driver sd
+                                    INNER JOIN bms_shifts s ON sd.shift_id = s.shift_id
+                                    INNER JOIN bms_daily_reports r ON s.report_id = r.report_id
+                                    INNER JOIN bms_bus b ON r.bus_id = b.id
+                                    WHERE sd.driver_id = :driverId AND sd.work_status = :workStatus
+                                    ");
+        $stmt->bindParam("driverId", $driverId);
+        $stmt->bindParam("workStatus", $workStatus);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function getCommissionDetails($collections, $companyId) {
+        $isActive = true;
+        $stmt = $this->db->prepare("SELECT `commission_id`, `amount_per_commission`, `commission_amount` 
+                                    FROM bms_commission
+                                    WHERE :collections BETWEEN collection_range_from AND collection_range_to AND company_id = :companyId AND is_active = :isActive ORDER BY `commission_id` DESC LIMIT 1;
+                                    ");
+        $stmt->bindParam("collections", $collections);
+        $stmt->bindParam("companyId", $companyId);
+        $stmt->bindParam("isActive", $isActive);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function getWorkersInShift($shiftId) {
+        $stmt = $this->db->prepare("SELECT (SELECT COUNT(*) FROM bms_shift_conductor WHERE shift_id = :shiftId) AS 'conductors', (SELECT COUNT(*) FROM bms_shift_driver WHERE shift_id = :shiftId) AS 'drivers'");
+        $stmt->bindParam("shiftId", $shiftId);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function getEndKm($tripId) {
+        $stmt = $this->db->prepare("SELECT `start_km` FROM `bms_trips` WHERE `trip_id` = :tripId");
+        $stmt->bindParam("tripId", $tripId);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
     }
 }

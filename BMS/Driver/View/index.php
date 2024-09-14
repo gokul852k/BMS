@@ -5,6 +5,7 @@ require_once './header.php';
 require_once './navbar.php';
 require_once '../../../Common/Common file/search_select_cdn.php';
 require_once '../Services/DailyReportService.php';
+
 //Get translations labels
 $serviceDR = new DailyReportService();
 
@@ -24,6 +25,8 @@ if (!$tlabels && empty($tlabels)) {
     <div class="duty-container">
         <div class="duty-row">
         <div class="duty-button active-duty-button" onclick="endDuty()">
+            <!-- Global Variable for End Duty (Driver can't able to end duty without end trip) -->
+            <input type="hidden" value="yes" id="now-end-duty"> 
             <div>
                 <span>END DUTY</span>
             </div>
@@ -105,10 +108,13 @@ if ($display['display'] == "SELECT BUS") {
         //select route
         $routes = $serviceDR->getRoutes();
         ?>
+            <script>
+                document.getElementById('now-end-duty').value = "yes";
+            </script>
             <div class="wrapper center-div">
                 <form id="start-trip" class="car centered p-10">
                     <div class="container box-container w3-animate-bottom">
-                        <h5 class="heading center"><?= $tlabels[5]['translation'] ?></h5>
+                        <h5 class="heading center"><?= $tlabels[5]['translation'] ?> - 1</h5>
 
                         <div class="row selectpicker-row">
                             <div class="col-sm-12">
@@ -171,10 +177,13 @@ if ($display['display'] == "SELECT BUS") {
         if ($displayStartTrip['status'] == 'success') {
             $tripDetails = $serviceDR->getTripDetails($displayTrip['tripId']);
             ?>
+                <script>
+                    document.getElementById('now-end-duty').value = "yes";
+                </script>
                     <div class="wrapper center-div">
                         <form id="start-trip-2" class="car centered p-10">
                             <div class="container box-container w3-animate-bottom">
-                                <h5 class="heading center"><?= $tlabels[5]['translation'] ?></h5>
+                                <h5 class="heading center"><?= $tlabels[5]['translation'] ?>-2</h5>
                                 <input type="hidden" name="trip-id-2" value="<?= $displayTrip['tripId'] ?>" />
                                 <div class="row selectpicker-row">
                                     <div class="col-sm-12">
@@ -221,14 +230,16 @@ if ($display['display'] == "SELECT BUS") {
                     </div>
             <?php
         } else {
-
             $tripDetails = $serviceDR->getTripDetails($displayTrip['tripId']);
             ?>
+            <script>
+                document.getElementById('now-end-duty').value = "no";
+            </script>
                     <div class="wrapper center-div">
                         <form id="end-trip" class="car centered p-10">
                             <div class="container box-container w3-animate-bottom">
-                                <h5 class="heading center"><?= $tlabels[10]['translation'] ?></h5>
-                                <input type="hidden" name="trip-id" value="<?= $displayTrip['tripId'] ?>" />
+                                <h5 class="heading center"><?= $tlabels[10]['translation'] ?>- 3</h5>
+                                <input type="hidden" name="trip-id" id="end-km-trip-id" value="<?= $displayTrip['tripId'] ?>" />
                                 <input type="hidden" name="trip-driver-id" value="<?= $displayTrip['tripDriverId'] ?>" />
                                 <div class="row selectpicker-row">
                                     <div class="col-sm-12">
@@ -280,7 +291,124 @@ if ($display['display'] == "SELECT BUS") {
 
 }
 ?>
-<script src="./js/daily_report_ajax.js"></script>
+
+<!--User Modal -->
+<div class="user-modal" id="user-model-1">
+    <div class="user-container">
+        <div class="user-modal-bg" onclick="popupClose('user-model-1')"></div>
+        <div class="user-modal-content">
+            <form id="end-duty">
+                <div class="user-modal-header">
+                    <h5 class="user-modal-title" id="ed-bus-no"></h5>
+                    <button type="button" class="user-modal-close" onclick="popupClose('user-model-1')">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="user-modal-body">
+                    <div class="counter-cards">
+                        <div class="counter-card">
+                            <div class="counter-card-top c-c-c-1">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <span>Total Trip</span>
+                            </div>
+                            <div class="counter-card-bottom c-c-bc-1">
+                                <span id="ed-trip">-</span>
+                            </div>
+                        </div>
+                        <div class="counter-card">
+                            <div class="counter-card-top c-c-c-2">
+                                <i class="fa-solid fa-user-group-simple"></i>
+                                <span>Passengers</span>
+                            </div>
+                            <div class="counter-card-bottom c-c-bc-2">
+                                <span id="ed-passengers">-</span>
+                            </div>
+                        </div>
+                        <div class="counter-card">
+                            <div class="counter-card-top c-c-c-3">
+                                <i class="fa-solid fa-coins"></i>
+                                <span>Collection</span>
+                            </div>
+                            <div class="counter-card-bottom c-c-bc-3">
+                                <span id="ed-collection">-</span>
+                            </div>
+                        </div>
+                        <div class="counter-card">
+                            <div class="counter-card-top c-c-c-4">
+                                <i class="fa-solid fa-bus"></i>
+                                <span>Total KM</span>
+                            </div>
+                            <div class="counter-card-bottom c-c-bc-4">
+                                <span id="ed-km">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="route-cards" id="route-cards">
+                        <!-- <div class="route-card r-line">
+                            <div class="route-location">
+                                <i class="fa-solid fa-location-pin"></i>
+                                <span class="route-count">1</span>
+                            </div>
+                            <div class="route-card-left">
+                                <div class="route-card-from">
+                                    <span class="r-c-h">Taramangalam</span>
+                                    <span class="r-c-p">From</span>
+                                </div>
+                                <div class="route-card-to">
+                                    <span class="r-c-h">Salem</span>
+                                    <span class="r-c-p">To</span>
+                                </div>
+                            </div>
+                            <div class="route-card-right">
+                                <div class="route-card-passanger">
+                                    <span class="r-c-h">2,343</span>
+                                    <span class="r-c-p">Passangers</span>
+                                </div>
+                                <div class="route-card-collection">
+                                    <span class="r-c-h">5,984</span>
+                                    <span class="r-c-p">Collection</span>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+
+                    <div class="user-model-input">
+                        <div class="">
+                        <label for="" class="input-label">Fuel Usage</label>
+                            <input type="number" class="input-field" name="fuel-usage" id="fuel-usage" required>
+                        </div>
+                        <input type="hidden" name="work-salary" id="work-salary" value="0"/>
+                        <input type="hidden" name="work-commission" id="work-commission" value="0"/>
+                        <input type="hidden" name="total-commission" id="total-commission" value="0"/>
+                    </div>
+
+                    <div class="salary-card">
+                        <div class="salary-card-left">
+                            <div class="salary-card-row"><span>Description</span></div>
+                            <div class="salary-card-row"><span>Salary</span></div>
+                            <div class="salary-card-row"><span>Commission</span></div>
+                            <div class="salary-card-row"><span>Total</span></div>
+                        </div>
+                        <div class="salary-card-right">
+                            <div class="salary-card-row"><span>Amount</span></div>
+                            <div class="salary-card-row"><span id="ed-salary">-</span></div>
+                            <div class="salary-card-row"><span id="ed-commission">-</span></div>
+                            <div class="salary-card-row"><span id="ed-total">-</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="user-modal-footer">
+                    <button type="submit" class="button-3" onclick="summaCall()">End Duty</button>
+                    <button type="reset" class="button-2" onclick="popupClose('user-model-1')">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="./Js/daily_report_ajax.js"></script>
+<script src="../../../Common/Common file/pop_up.js"></script>
 <?php
 require_once './footer.php';
 ?>

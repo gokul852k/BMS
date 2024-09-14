@@ -186,5 +186,16 @@ class DriverModel {
         $stmt->bindParam("driverId", $driverId);
         return $stmt->execute();
     }
+
+    public function getDriverField($companyId) {
+        $isActive = true;
+        $stmt = $this->db->prepare("SELECT `id`, `fullname` FROM `bms_drivers` WHERE `company_id` = :companyId AND `is_active` = :isActive");
+        $stmt->bindParam("companyId", $companyId);
+        $stmt->bindParam("isActive", $isActive);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
 }
 

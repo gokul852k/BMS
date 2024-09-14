@@ -11,7 +11,7 @@ require_once './navbar.php';
 <div class="register-driver">
     <div class="container box-container box-head w3-animate-top">
         <div class="row row-head">
-            <div class="">
+            <div class="row-head-div-1">
                 <h4 class="heading">Driver Details</h4>
             </div>
             <div class="row-head-div-2">
@@ -717,8 +717,8 @@ require_once './navbar.php';
     <script src="../../../Common/Common file/pop_up.js"></script>
     <script src="../../../Common/Common file/data_table.js"></script>
 <script src="../../../Common/Common file/main.js"></script>
-<script src="./js/driver.js"></script>
-<script src="./js/drivers_ajax.js"></script>
+<script src="./Js/driver.js"></script>
+<script src="./Js/drivers_ajax.js"></script>
 <?php
 require_once './footer.php';
 ?>

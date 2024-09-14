@@ -46,7 +46,17 @@ class DailyReportService {
 
     public function getDisplayTrip() {
 
-        $driverTrip = $this->modelBMS->getDisplayTrip($_SESSION['driverId']);
+        $shift = $this->modelBMS->getShiftIdByUserId($_SESSION['driverId']);
+
+        if (!$shift) {
+            return [
+                'status' => 'Oops!',
+                'message' => 'Something went wrong.',
+                'error' => 'Error while get shift ID fromconductor table.'
+            ];
+        }
+
+        $driverTrip = $this->modelBMS->getDisplayTrip($_SESSION['driverId'], $shift['shift_id']);
 
         if (!$driverTrip) {
             return [
@@ -204,6 +214,16 @@ class DailyReportService {
                     //Insert shift workers
                     $responseSW = $this->modelBMS->setShiftWorker($_SESSION['companyId'], $_SESSION['driverId'], $shift['shift_id'], $currentDate, $currentTime);
 
+                    //Insert Trip (While new conductor or driver is enter to shift we need to insert all the exiting trips in trip_conductor or trip_driver)
+                    $exitTrips = $this->modelBMS->getTripByShiftId($shift['shift_id']);
+                    
+                    if ($exitTrips) {
+                        foreach ($exitTrips as $exitTrip) {
+                            $this->modelBMS->createTripDriver($_SESSION['companyId'], $exitTrip['trip_id'], $_SESSION['driverId']);
+                        }
+                    }
+                    
+
                     if ($responseSW['status'] == 'success') {
                         return [
                             "status" => "success",
@@ -253,9 +273,20 @@ class DailyReportService {
                 'error' => 'Error while select shift id from shift driver table.'
             ];
         }
-        $response2 = $this->modelBMS->createTrip($_SESSION['companyId'], $response1['shiftId'], $startRoute, $endRoute, $startKm);
 
-        if ($response2['status'] != 'success') {
+        $conductorTrip = $this->modelBMS->getDisplayTrip($_SESSION['driverId'], $response1['shiftId']);
+
+        if ($conductorTrip) {
+            return [
+                'status' => 'trip exist',
+                'title' => 'Trip Already Exists',
+                'message' => 'Please re-enter the starting KM.'
+            ];
+        }
+        
+        $trip = $this->modelBMS->createTrip($_SESSION['companyId'], $response1['shiftId'], $startRoute, $endRoute, $startKm);
+
+        if ($trip['status'] != 'success') {
             return [
                 'status' => 'Oops!',
                 'message' => 'Something went wrong while start trip',
@@ -263,10 +294,28 @@ class DailyReportService {
             ];
         }
 
-        //Loop and insert trip_driver and trip_conductor
-        $response3 = $this->modelBMS->createTripDriver($_SESSION['companyId'], $response2['tripId'], $_SESSION['driverId']);
+        //Insert trip_driver
+        $response3 = $this->modelBMS->createTripDriver($_SESSION['companyId'], $trip['tripId'], $_SESSION['driverId']);
 
-        if ($response2['status'] != 'success') {
+        //Loop and insert trip_driver and trip_conductor
+        //Get How many conductor assign for this shift & insert trip to those conductor
+        $shiftConductor = $this->modelBMS->getConductorByShifId($response1['shiftId']);
+        
+        if ($shiftConductor) {
+            foreach($shiftConductor as  $conductor) {
+                $this->modelBMS->createTripConductor($_SESSION['companyId'], $trip['tripId'], $conductor['conductor_id']);
+            }
+        }
+
+        //Get How many driver assign for this shift & insert trip to those driver
+        $shiftDriver = $this->modelBMS->getDriverByShifId($response1['shiftId'], $_SESSION['driverId']);
+        if ($shiftDriver) {
+            foreach($shiftDriver as  $driver) {
+                $this->modelBMS->createTripDriver($_SESSION['companyId'], $trip['tripId'], $driver['driver_id']);
+            }
+        }
+
+        if ($trip['status'] != 'success') {
             return [
                 'status' => 'Oops!',
                 'message' => 'Something went wrong while start trip',
@@ -298,6 +347,16 @@ class DailyReportService {
     }
 
     public function endTrip($tripId, $tripDriverId, $endKm) {
+        $tripStartKm = $this->modelBMS->getEndKm($tripId);
+        if ($tripStartKm) {
+            if ($tripStartKm['start_km'] > $endKm) {
+                return [
+                    "status" => "error",
+                    "message" => "End KM is lower than Start KM."
+                ];
+            }
+        }
+
         $updateTrip = $this->modelBMS->updateEndTrip($tripId, $endKm);
         $updateTripDriver = $this->modelBMS->updateTripDriverStatus($tripDriverId);
 
@@ -305,10 +364,27 @@ class DailyReportService {
         if ($updateTrip && $updateTripDriver) {
             $checkTripStatus = $this->modelBMS->checkTripStatus($tripId);
 
-            if (!$checkTripStatus) {
-                $updateTripStatus = $this->modelBMS->updateTripStatus($tripId);
+            if ($checkTripStatus) {
+                if ($checkTripStatus['passenger'] != 0 && $checkTripStatus['collection_amount'] !== 0) {
+                    //Check for the passenger and collection amount is 0 than change the trip_status = false
+                    $updateTripStatus = $this->modelBMS->updateTripStatus($tripId);
+                }
 
-                if ($updateTripStatus) {
+                //Add and update the KM in bms_daily_report and bms_shift
+                $totalKm = $endKm - $checkTripStatus['start_km'];
+
+                //Update KM in bms_shift
+                $updateKmInDailyReport = $this->modelBMS->updateKmInShift($checkTripStatus['shift_id'], $totalKm);
+
+                //Update KM in bms_daily_report
+                $dailyReport = $this->modelBMS->getDailyReport($checkTripStatus['shift_id']);
+
+                if ($dailyReport) {
+                    $updateKmInDailyReport = $this->modelBMS->updateKmInDailyReport($dailyReport['report_id'], $totalKm);
+                }
+                
+
+                if ($updateKmInDailyReport && $dailyReport) {
                     return [
                         'status' => 'success',
                         'message' => 'Trip ended.',
@@ -319,14 +395,15 @@ class DailyReportService {
                         'status' => 'success',
                         'message' => 'Trip ended.',
                         'tripId' => $tripId,
-                        'error' => 'Error while updating trip status'
+                        'error' => 'Error while updating KM'
                     ];
                 }
             } else {
                 return [
                     'status' => 'success',
                     'message' => 'Trip ended.',
-                    'tripId' => $tripId
+                    'tripId' => $tripId,
+                    'error' => 'Error while fetch trip from trip table'
                 ];
             }
         } else {
@@ -366,9 +443,11 @@ class DailyReportService {
 
         //check for conductor work status is true
 
-        $conductor = false;
+        $conductors = $this->modelBMS->checkConductorsStatus($shiftId);
 
-        if (!$conductor) {
+        $drivers = $this->modelBMS->checkDriversStatus($shiftId);
+
+        if (!$conductors && !$drivers) {
             $updateShiftStatus = $this->modelBMS->updateShiftStatus($shiftId);
 
             if (!$updateShiftStatus) {
@@ -391,7 +470,7 @@ class DailyReportService {
         ];
     }
 
-    public function endDuty2() {
+    public function endDuty2($fuelUsage, $salary, $commission, $totalCommission) {
         $driverShift = $this->modelBMS->getShiftIdByDriverId($_SESSION['driverId']);
 
         if (!$driverShift) {
@@ -404,11 +483,11 @@ class DailyReportService {
 
         $shiftId = $driverShift['shiftId'];
 
-        //Update shift driver
+        //Update shift driver salary, commission, and work status
 
-        $updateDriverStatus = $this->modelBMS->updateDriverShiftStatus($shiftId);
+        $updateDriverWorkDetails = $this->modelBMS->updateDriverWorkDetails($shiftId, $salary, $commission, $fuelUsage);
 
-        if (!$updateDriverStatus) {
+        if (!$updateDriverWorkDetails) {
             return [
                 'status' => 'Oops!',
                 'message' => 'Something went wrong while end duty',
@@ -416,18 +495,55 @@ class DailyReportService {
             ];
         }
 
-        //check for conductor work status is true
+        //Update shift salary, commission, and expence
+        // Rules
+        // 1) Salary -> Every time user end the duty we need add the priveious salary in shift table and than update the salary.
+        // 2) Commission -> Every time user end the duty we will get the total commission. So we do not need to add we only update the commission in shift table.
+        // 3) Expence -> We directly update the expence.
 
-        $conductor = false;
+        $updateShiftDetails = $this->modelBMS->updateShiftDetails($shiftId, $salary, $fuelUsage);
 
-        if (!$conductor) {
+        //check workers work status is true
+
+        $conductors = $this->modelBMS->checkConductorsStatus($shiftId);
+
+        $drivers = $this->modelBMS->checkDriversStatus($shiftId);
+
+        if (!$conductors && !$drivers) {
             $updateShiftStatus = $this->modelBMS->updateShiftStatus($shiftId);
 
-            if (!$updateShiftStatus) {
+            //Update salary, commision, and expance in daily report as per shift
+            //Get shift details
+            $shiftDetails = $this->modelBMS->getShiftDetails($shiftId);
+            
+            if ($shiftDetails) {
+                //First we need get Total KM and Fuel Usage in Daily Report
+                $dailyReportId = $this->modelBMS->getDailyReport($shiftId);
+
+                $avgMilage = 0;
+
+                if($dailyReportId) {
+                    $dailyReport = $this->modelBMS->getDailyReportDetails($dailyReportId['report_id']);
+                    
+                    if ($dailyReport) {
+                        if ($shiftDetails['fuel_usage'] == 0 && $dailyReport['fuel_usage'] == 0) {
+                            $avgMilage = 0;
+                        } elseif ($shiftDetails['fuel_usage'] == 0) {
+                            $avgMilage = $dailyReport['avg_milage'];
+                        } else {
+                            $totalFuelUsage = $shiftDetails['fuel_usage'] + $dailyReport['fuel_usage'];
+                            $avgMilage = $dailyReport['total_km'] / $totalFuelUsage;
+                        }
+                    }
+                }
+                $this->modelBMS->updateDailyReportSCEM($shiftDetails['report_id'], $shiftDetails['salary'], $shiftDetails['commission'], $shiftDetails['expence'], $shiftDetails['fuel_usage'], $avgMilage);
+            }
+
+            if (!$updateShiftStatus || !$shiftDetails) {
                 return [
                     'status' => 'success',
                     'message' => 'Duty ended successfully.',
-                    'error' => 'Error while update status in shift table.'
+                    'error' => 'Error while update status in shift table or updating in report table'
                 ];
             }
             return [
@@ -441,5 +557,75 @@ class DailyReportService {
             'status' => 'success',
             'message' => 'Duty ended successfully.'
         ];
+    }
+
+    public function getTripsDetails() {
+        //Get the trip details from BMS DB
+        $tripDetails = $this->modelBMS->getTripsDetails($_SESSION['driverId'], $_SESSION['languageCode']);
+        //Get the Card Count from BMS DB
+        $cardCounts = $this->modelBMS->getTripsDetailsCardCount($_SESSION['driverId']);
+
+        //Get the salary and commission
+        $salary = $this->modelBMS->getSalary($_SESSION['driverId']);
+
+        $busNumber = "";
+        $workerSalary = 0;
+        $workerCommission = 0;
+        $totalCommission = 0;
+        if($cardCounts && $salary) {
+
+            $busNumber = $salary['bus_number'];
+            $commission = $this->modelBMS->getCommissionDetails($cardCounts['collections'], $_SESSION['companyId']);
+
+            $noOfWorkerInShift = $this->modelBMS->getWorkersInShift($salary['shift_id']);
+
+            $workerSalary = (int)$salary['driver_salary'];
+
+            if($commission && $noOfWorkerInShift) {
+                $commissionAmt = (int)$commission['commission_amount'];
+                $amountPerCommission = (int)$commission['amount_per_commission'];
+                $collection = (int)$cardCounts['collections'];
+
+                $workers = (int) $noOfWorkerInShift['conductors'] + (int) $noOfWorkerInShift['drivers'];
+
+                $totalCommission = ($collection/$amountPerCommission) * $commissionAmt;
+
+                $workerCommission = $totalCommission / $workers;
+            }
+            
+        }
+
+        if ($tripDetails && $cardCounts) {
+            return [
+                'status' => 'success',
+                'busNumber' => $busNumber,
+                'tripDetails' => $tripDetails,
+                'cardCounts' => $cardCounts,
+                'salary' => $workerSalary,
+                'commission' => $workerCommission,
+                'totalCommission' => $totalCommission
+            ];
+        } else {
+            return [
+                'status' => 'error',
+                'message' => 'Error while fetching trip details data'
+            ];
+        }
+    }
+
+    public function getEndKm($tripId) {
+        $response = $this->modelBMS->getEndKm($tripId);
+        if ($response) {
+            return [
+                "status" => "success",
+                "data" => $response
+            ];
+        } else {
+            return [
+                'status' => 'Oops!',
+                'message' => 'Something went wrong.',
+                'error' => 'Error while select trip details from trip table'
+            ];
+        }
     }
 }

@@ -136,6 +136,14 @@
     flex: 1;
 }
 
+.row-head-div-1 {
+    flex: 1 !important;
+}
+
+.row-head-div-2 {
+    flex: 1 !important;
+}
+
 .box-container {
     width: calc(100% - 20px);
 }
@@ -200,7 +208,7 @@
 }
 
 .card-body {
-    padding: 1.25rem !important;
+    padding: 20px !important;
     border: none !important;
     margin: 0 !important;
 }
@@ -345,7 +353,7 @@
 
 .card-row-d-r {
     display: flex;
-    row-gap: 1.5rem;
+    row-gap: 24px;
 }
 
 .card-col-d-r {

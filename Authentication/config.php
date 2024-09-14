@@ -1,6 +1,11 @@
 <?php
 // MySQL server credentials
-$servername = "localhost"; // or your server IP address
+// $servername = "localhost";
+// $username = "u632564128_authentication";
+// $password = "e~/]JD/4L";
+// $database = "u632564128_authentication";
+
+$servername = "localhost";
 $username = "root";
 $password = "";
 $database = "authentication";

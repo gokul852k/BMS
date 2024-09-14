@@ -422,7 +422,7 @@ async function getBusDetailsForEdit(BusId) {
     });
 }
 
-//Update driver details
+//Update bus details
 
 $(document).ready(function () {
     $('#bus-edit-form').on('submit', function (e) {
@@ -478,7 +478,7 @@ $(document).ready(function () {
     });
 });
 
-//Delete Driver
+//Delete Bus
 
 function deleteBus(busId, busName) {
     Swal.fire({

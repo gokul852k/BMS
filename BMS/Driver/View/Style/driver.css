@@ -78,3 +78,56 @@
 .select-bus-container {
     display: none;
 }
+
+/*Salary summary style*/
+
+.salary-card {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0 15px 15px 15px;
+    border-radius: 10px 4px 10px 4px;
+    border: 1px solid #e9ecef;
+}
+.salary-card-left {
+    flex: 2;
+    /* border-right: 1px solid #e9ecef; */
+}
+
+.salary-card-left > .salary-card-row:first-child {
+    background-color: var(--input-border) !important;
+    border-radius: 10px 0 0 0;
+}
+
+.salary-card-right > .salary-card-row:first-child {
+    background-color: var(--input-border) !important;
+    border-radius: 0 4px 0 0;
+}
+
+/* .salary-card-row {
+    border-bottom: 1px solid #e9ecef;
+}
+
+.salary-card-left > .salary-card-row:last-child {
+    border-bottom: none;
+}
+
+.salary-card-right > .salary-card-row:last-child {
+    border-bottom: none;
+} */
+
+.salary-card-left > .salary-card-row:last-child {
+    background-color: ghostwhite;
+}
+
+.salary-card-right > .salary-card-row:last-child {
+    background-color: ghostwhite;
+}
+
+.salary-card-right .salary-card-row {
+    text-align: end;
+}
+
+.salary-card-row {
+    padding: 2px 10px;
+}

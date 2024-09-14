@@ -8,4 +8,6 @@
 
 <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js"></script>
 
+<link href="./style.css" rel="stylesheet" />
+
 <!-- Search select end -->

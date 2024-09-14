@@ -15,9 +15,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@100..900&display=swap" rel="stylesheet">
 
     <style>
+        /* Apply the Tamil font to body and textual elements */
+        body, p, h1, h2, h3, h4, h5, h6, span, div {
+            font-family: "Noto Sans Tamil", sans-serif !important;
+        }
 
-        * {
-        font-family: "Noto Sans Tamil", sans-serif !important;
+        /* Ensure Font Awesome icons are unaffected */
+        .fa, .fas, .far, .fal, .fab {
+            font-family: 'Font Awesome 5 Free' !important;
         }
     </style>
 </head>

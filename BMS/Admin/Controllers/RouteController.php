@@ -50,6 +50,10 @@ class RouteController {
     private function deleteRoute() {
         echo json_encode($this->routeService->deleteRoute($_POST['routeId']));
     }
+
+    private function getRouteField() {
+        echo json_encode($this->routeService->getRouteField());
+    }
 }
 
 new RouteController();

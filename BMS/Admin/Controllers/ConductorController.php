@@ -77,6 +77,10 @@ class ConductorController {
     private function deleteConductor() {
         echo json_encode($this->service->deleteConductor($_POST['conductorId']));
     }
+
+    private function getConductorField() {
+        echo json_encode($this->service->getConductorField());
+    }
 }
 
 new ConductorController();

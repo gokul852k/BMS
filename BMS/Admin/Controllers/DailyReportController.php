@@ -19,7 +19,7 @@ class DailyReportController {
         if (method_exists($this, $action)) {
             $this->$action();
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request!', 'error' => $action . "this method is not exit"]);
+            echo json_encode(['status' => 'error', 'message' => 'Invalid request!', 'error' => $action . " this method is not exit"]);
         }
     }
 
@@ -29,6 +29,11 @@ class DailyReportController {
 
     private function getDailyReports() {
         echo json_encode($this->service->getDailyReports());
+    }
+
+    private function createDailyReport() {
+        // echo json_encode($_POST);
+        echo json_encode($this->service->createDailyReport($_POST));
     }
 
 }

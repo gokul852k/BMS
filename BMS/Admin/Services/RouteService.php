@@ -172,4 +172,20 @@ class RouteService {
         }
     }
 
+    public function getRouteField(){
+        $response = $this->modelBMS->getRouteField($_SESSION['companyId'], 'en');
+
+        if (!$response) {
+            return [
+                'status' => 'error',
+                'message' => 'No data found'
+            ];
+        }
+
+        return [
+            'status' => 'success',
+            'data' => $response
+        ];
+    }
+
 }

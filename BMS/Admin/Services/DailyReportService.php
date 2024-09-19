@@ -16,8 +16,250 @@ class DailyReportService {
         }
         global $bmsDB;
         global $authenticationDB;
-        $this->modelBMS = new BusModel($bmsDB);
-        $this->modelA = new BusModel($authenticationDB);
+        $this->modelBMS = new DailyReportModel($bmsDB);
+        $this->modelA = new DailyReportModel($authenticationDB);
+    }
+
+    public function createDailyReport($postData) {
+
+        $busId = $postData['bus-number'];
+        $date = $postData['date'];
+
+        $dailyKM = 0;
+        $dailypassengers = 0;
+        $dailyCollection = 0;
+        $dailyFuelAmount = 0;
+        $dailyFuelUsage = 0;
+        $dailyExpense = 0;
+        $dailySalary = 0;
+        $dailyCommission = 0;
+
+        //Check if the daily report is created or not
+        $dailyReport = $this->modelBMS->getDailyReport($busId, $date, $_SESSION['companyId']);
+
+        if ($dailyReport) {
+            return [
+                'status' => 'error',
+                'message' => 'An already created daily report exists for this bus and date. Please edit that report.'
+            ];
+        }
+
+        $setDailyReport = $this->modelBMS->setDailyReport($_SESSION['companyId'], $busId, $date);
+
+        if ($setDailyReport['status'] == 'error') {
+            return [
+                'status' => 'error',
+                'message' => 'Something went wrong while add the daily report',
+                'error' => 'Error while set daily report in daily report table.'
+            ];
+        }
+
+        $reportId = $setDailyReport['reportId'];
+
+        //Get Shift Data
+        if (isset($postData['shift']) && is_array($postData['shift'])) {
+            foreach ($postData['shift'] as $shift_data) {
+
+                $shiftKM = 0;
+                $shiftPassengers = 0;
+                $shiftCollection = 0;
+
+                $shiftStartDate = $date;
+                $shiftEndDate = $shift_data['shiftEndDate'];
+                $shiftStartTime = $shift_data['shiftStartTime'];
+                $shiftEndTime = $shift_data['shiftEndTime'];
+                $shiftNameId = $this->getCurrentShift();
+                
+                $setShift = $this->modelBMS->setShift($_SESSION['companyId'], $reportId, $shiftNameId, $shiftStartDate, $shiftEndDate, $shiftStartTime, $shiftEndTime);
+
+                if ($setShift["status"] == "error") {
+                    return [
+                        'status' => 'error',
+                        'message' => 'Something went wrong while add the daily report',
+                        'error' => 'Error while set shift in shift table.'
+                    ];
+                }
+
+                $shiftId = $setShift['shiftId'];
+                $drivers = array();
+                $conductors = array();
+
+                //Get Trip Data
+                if (isset($shift_data['trip']) && is_array($shift_data['trip'])) {
+                    foreach ($shift_data['trip'] as $trip_data) {
+
+                        $startRoute = $trip_data['startRoute'];
+                        $endRoute = $trip_data['endRoute'];
+
+                        $setTrip = $this->modelBMS->setTrip($_SESSION['companyId'], $shiftId, $startRoute, $endRoute);
+
+                        if ($setTrip['status'] == "error") {
+                            return [
+                                'status' => 'error',
+                                'message' => 'Something went wrong while add the daily report',
+                                'error' => 'Error while set trip in trip table.'
+                            ];
+                        }
+
+                        $tripId = $setTrip['tripId'];
+
+                        $tripStartTime = 0;
+                        $tripEndTime = 0;
+                        $tripStartKM = 0;
+                        $tripEndKM = 0;
+                        $tripKM = 0;
+                        $tripPassengers = 0;
+                        $tripcollection = 0;
+
+                        //Get Driver Data
+                        if (isset($trip_data['driver']) && is_array($trip_data['driver'])) {
+                            foreach ($trip_data['driver'] as $driver_data) {
+                                $tripStartTime = $driver_data['start_time'];
+                                $tripEndTime = $driver_data['end_time'];
+                                $tripStartKM = (int) $driver_data['start_km'];
+                                $tripEndKM = (int) $driver_data['end_km'];
+                                $tripKM =  $tripEndKM - $tripStartKM;
+
+
+                                if (!in_array($driver_data['driver_id'], $drivers)) {
+                                    $drivers[] = $driver_data['driver_id'];
+                                }
+                                $this->modelBMS->setTripDriver($_SESSION['companyId'], $tripId, $driver_data['driver_id']);
+                            }
+                        }
+
+                        //Get Conductor Data
+                        if (isset($trip_data['conductor']) && is_array($trip_data['conductor'])) {
+                            foreach ($trip_data['conductor'] as $conductor_data) {
+                                $tripPassengers += $conductor_data['passangers'];
+                                $tripcollection += $conductor_data['collection'];
+
+
+                                if (!in_array($conductor_data['conductor_id'], $conductors)) {
+                                    $conductors[] = $conductor_data['conductor_id'];
+                                }
+                                $this->modelBMS->setTripConductor($_SESSION['companyId'], $tripId, $conductor_data['conductor_id']);
+                            }
+                        }
+
+                        $shiftKM += $tripKM;
+                        $shiftPassengers += $tripPassengers;
+                        $shiftCollection += $tripcollection;
+
+                        //Set Trip data
+                        $updateTrip = $this->modelBMS->updateTrip($tripId, $tripStartTime, $tripEndTime, $tripStartKM, $tripEndKM, $tripPassengers, $tripcollection);
+
+                        if (!$updateTrip) {
+                            return [
+                                'status' => 'error',
+                                'message' => 'Something went wrong while add the daily report',
+                                'error' => 'Error while update trip in trip table.'
+                            ];
+                        }
+
+                    }
+                }
+
+                $shiftFuelUsage = $shift_data['fuelUsage'];
+                $shiftExpence = $shift_data['otherExpence'];
+
+                //Calculate Commission
+                $shiftCommission = 0;
+                $shiftWorkerCommission = 0;
+
+                $shiftworkers = count($drivers) + count($conductors);
+
+                $commission = $this->modelBMS->getCommissionDetails($shiftCollection, $_SESSION['companyId']);
+
+                if ($commission) {
+                    $commissionAmt = (int)$commission['commission_amount'];
+                    $amountPerCommission = (int)$commission['amount_per_commission'];
+
+                    $shiftCommission = ($shiftCollection/$amountPerCommission) * $commissionAmt;
+
+                    $shiftWorkerCommission = $shiftCommission / $shiftworkers;
+                }
+
+                //Get workers salary
+                $shiftSalary = 0;
+                $shiftDriverSalary = 0;
+                $shiftConductorSalary = 0;
+
+                $salary = $this->modelBMS->getSalary($busId);
+
+                if ($salary) {
+                    $shiftDriverSalary = $salary['driver_salary'];
+                    $shiftConductorSalary = $salary['conductor_salary'];
+
+                    $shiftSalary = (count($drivers) * (int) $shiftDriverSalary) + (count($conductors) * (int) $shiftConductorSalary);
+                }
+
+                //UpdateShift
+                $updateShift = $this->modelBMS->updateShift($shiftId, $shiftKM, $shiftPassengers, $shiftCollection, $shiftSalary, $shiftCommission, $shiftExpence, $shiftFuelUsage);
+
+                if (!$updateShift) {
+                    return [
+                        'status' => 'error',
+                        'message' => 'Something went wrong while add the daily report',
+                        'error' => 'Error while update shift in shift table.'
+                    ];
+                }
+
+                //set driver shift
+                foreach ($drivers as $driver) {
+                    $this->modelBMS->setShiftDriver($_SESSION['companyId'], $shiftId, $driver, $shiftStartDate, $shiftStartTime, $shiftEndDate, $shiftEndTime, $shiftDriverSalary, $shiftWorkerCommission, $shiftFuelUsage);
+                }
+
+                //set conductor shift
+                foreach ($conductors as $conductor) {
+                    $this->modelBMS->setShiftConductor($_SESSION['companyId'], $shiftId, $conductor, $shiftStartDate, $shiftStartTime, $shiftEndDate, $shiftEndTime, $shiftConductorSalary, $shiftWorkerCommission);
+                }
+
+                $dailyKM += $shiftKM;
+                $dailypassengers += $shiftPassengers;
+                $dailyCollection += $shiftCollection;
+                $dailyFuelUsage += $shiftFuelUsage;
+                $dailyExpense += $shiftExpence;
+                $dailySalary += $shiftSalary;
+                $dailyCommission += $shiftCommission;
+
+            }
+        }
+        $tempFuelAmount = $this->calcFuelUsage2($date);
+
+        if ($tempFuelAmount != 0) {
+            $dailyFuelAmount = $tempFuelAmount * $dailyFuelUsage;
+        }
+
+        $dailyAvgMilage = $dailyKM / $dailyFuelUsage;
+        //Update Daily Report
+        $updateDailyReport = $this->modelBMS->updateDailyReport($reportId, $dailyKM, $dailypassengers, $dailyAvgMilage, $dailyCollection, $dailyFuelAmount, $dailyFuelUsage, $dailyExpense, $dailySalary, $dailyCommission);
+
+        if (!$updateDailyReport) {
+            return [
+                'status' => 'error',
+                'message' => 'Something went wrong while add the daily report',
+                'error' => 'Error while update Daily report in daily report table.'
+            ];
+        }
+
+        return [
+            'status' => 'success',
+            'message' => 'Daily Report Added Successfully.',
+            'error' => 'Error while update Daily report in daily report table.'
+        ];
+    }
+
+    public function getCurrentShift() {
+        $currentHour = date('H');
+
+        if ($currentHour >= 1 && $currentHour <= 8) {
+            return 1; //First Shift
+        } elseif ($currentHour > 8 && $currentHour <= 16) {
+            return 2; //Second Shift
+        } else {
+            return 3; //Third Shift
+        }
     }
 
     public function getBusCardDetails() {
@@ -119,5 +361,58 @@ class DailyReportService {
                 'error' => 'Error while delete bus data in bus table in bms DB.'
             ];
         }
+    }
+
+    public function calcFuelUsage($busId, $date, $fuelLiters, $fuelAmount){
+        $dailyReport = $this->modelBMS->getFuelUsage($busId, $date, $_SESSION['companyId']);
+        
+        if (!$dailyReport) {
+            return [
+                'status' => 'no data',
+                'message' => 'No Daily Report found.',
+            ];
+        }
+
+        $oneLiterAmount = $fuelAmount / $fuelLiters;
+
+        $fuelUsageAmount = $dailyReport['fuel_usage'] * $oneLiterAmount;
+
+        $response = $this->modelBMS->updateFuelUsage($dailyReport['report_id'], $fuelUsageAmount);
+
+        if ($response) {
+            return [
+                'status' => 'success',
+                'message' => 'Fuel Amount Updated.'
+            ];
+        } else {
+            return [
+                'status' => 'error',
+                'message' => 'Something went wrong while update Fuel amount',
+                'error' => 'Error while update fuel amount in daily report table in bms DB.'
+            ];
+        }
+    }
+
+    public function calcFuelUsage2($date) {
+        $fuelAmount1 = $this->modelBMS->getFuelAmount($date);
+
+        if ($fuelAmount1) {
+            return $fuelAmount1['fuel_cost'] / $fuelAmount1['fuel_quantity'];
+        }
+
+        $date2 = new DateTime('2024-09-18'); // Current date
+
+        // Subtract 10 days
+        $date2->modify('-10 days');
+
+        $fromDate = $date2->format('Y-m-d');
+
+        $fuelAmount2 = $this->modelBMS->getFuelAmount2($fromDate, $date);
+
+        if ($fuelAmount2) {
+            return $fuelAmount2['fuel_cost'] / $fuelAmount2['fuel_quantity'];
+        }
+
+        return 0;
     }
 }

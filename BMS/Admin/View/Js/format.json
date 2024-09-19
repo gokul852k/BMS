@@ -1,0 +1,1007 @@
+{
+    "bus-id": "1",
+    "date": "2024-09-18",
+    "shift": {
+        "1": {
+            "trip": {
+                "1": {
+                    "driver": {
+                        "1": {
+                            "driver_id": "1",
+                            "start_time": "11:51",
+                            "end_time": "12:51",
+                            "start_km": "100",
+                            "end_km": "200"
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "2",
+                            "passangers": "80",
+                            "collection": "1500"
+                        }
+                    }
+                },
+                "2": {
+                    "driver": {
+                        "1": {
+                            "driver_id": "1",
+                            "start_time": "12:52",
+                            "end_time": "13:52",
+                            "start_km": "200",
+                            "end_km": "300"
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "2",
+                            "passangers": "50",
+                            "collection": "1500"
+                        },
+                        "2": {
+                            "conductor_id": "2",
+                            "passangers": "55",
+                            "collection": "1600"
+                        }
+                    }
+                }
+            }
+        },
+        "3": {
+            "trip": {
+                "1": {
+                    "driver": {
+                        "1": {
+                            "driver_id": "1",
+                            "start_time": "11:53",
+                            "end_time": "12:53",
+                            "start_km": "300",
+                            "end_km": "400"
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "2",
+                            "passangers": "50",
+                            "collection": "800"
+                        }
+                    }
+                },
+                "3": {
+                    "driver": {
+                        "1": {
+                            "driver_id": "1",
+                            "start_time": "12:54",
+                            "end_time": "13:54",
+                            "start_km": "400",
+                            "end_km": "500"
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "2",
+                            "passangers": "40",
+                            "collection": "1300"
+                        },
+                        "3": {
+                            "conductor_id": "2",
+                            "passangers": "60",
+                            "collection": "2000"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "action": "createDailyReport"
+}
+
+{
+    "bus-number": "4",
+    "date": "2024-09-28",
+    "shift": {
+        "1": {
+            "shiftEndDate": "2024-09-28",
+            "shiftStartTime": "07:18",
+            "shiftEndTime": "09:18",
+            "trip": {
+                "2": {
+                    "driver": {
+                        "1": {
+                            "driver_id": "1",
+                            "start_time": "07:20",
+                            "end_time": "08:20",
+                            "start_km": "150",
+                            "end_km": "200"
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "2",
+                            "passangers": "50",
+                            "collection": "1500"
+                        },
+                        "2": {
+                            "conductor_id": "2",
+                            "passangers": "50",
+                            "collection": "1500"
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "10",
+            "otherExpence": "50"
+        }
+    },
+    "action": "createDailyReport"
+}
+
+
+{
+    "bus-number": "1",
+    "date": "2024-09-20",
+    "shift": {
+        "1": {
+            "shiftEndDate": "2024-09-20",
+            "shiftStartTime": "07:30",
+            "shiftEndTime": "07:30",
+            "trip": {
+                "1": {
+                    "startRoute": "1",
+                    "endRoute": "2",
+                    "driver": {
+                        "1": {
+                            "driver_id": "1",
+                            "start_time": "08:30",
+                            "end_time": "09:30",
+                            "start_km": "100",
+                            "end_km": "150"
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "2",
+                            "passangers": "100",
+                            "collection": "2000"
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "20",
+            "otherExpence": "100"
+        }
+    },
+    "action": "createDailyReport"
+}
+
+{
+    "bus-number": "1",
+    "date": "2024-09-20",
+    "shift": {
+        "1": {
+            "shiftEndDate": "2024-09-20",
+            "shiftStartTime": "07:30",
+            "shiftEndTime": "07:30",
+            "trip": {
+                "1": {
+                    "startRoute": "1",
+                    "endRoute": "2",
+                    "driver": {
+                        "1": {
+                            "driver_id": "1",
+                            "start_time": "08:30",
+                            "end_time": "09:30",
+                            "start_km": "100",
+                            "end_km": "150"
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "2",
+                            "passangers": "100",
+                            "collection": "2000"
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "20",
+            "otherExpence": "100"
+        },
+        "2": {
+            "shiftEndDate": "2024-09-20",
+            "shiftStartTime": "07:32",
+            "shiftEndTime": "07:32",
+            "trip": {
+                "1": {
+                    "startRoute": "1",
+                    "endRoute": "2",
+                    "driver": {
+                        "1": {
+                            "driver_id": "1",
+                            "start_time": "07:32",
+                            "end_time": "08:33",
+                            "start_km": "200",
+                            "end_km": "300"
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "2",
+                            "passangers": "100",
+                            "collection": "2500"
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "10",
+            "otherExpence": "200"
+        }
+    },
+    "action": "createDailyReport"
+}
+//two trip
+{
+    "bus-number": "1",
+    "date": "2024-09-19",
+    "shift": {
+        "1": {
+            "shiftEndDate": "2024-09-19",
+            "shiftStartTime": "07:35",
+            "shiftEndTime": "08:35",
+            "trip": {
+                "2": {
+                    "driver": {
+                        "1": {
+                            "driver_id": "1",
+                            "start_time": "08:36",
+                            "end_time": "09:36",
+                            "start_km": "200",
+                            "end_km": "300"
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "2",
+                            "passangers": "50",
+                            "collection": "1500"
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "10",
+            "otherExpence": "100"
+        }
+    },
+    "action": "createDailyReport"
+}
+
+{
+    "date": "",
+    "shift": {
+        "1": {
+            "shiftEndDate": "",
+            "shiftStartTime": "",
+            "shiftEndTime": "",
+            "trip": {
+                "1": {
+                    "driver": {
+                        "1": {
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "",
+            "otherExpence": ""
+        }
+    },
+    "action": "createDailyReport"
+}
+
+{
+    "date": "",
+    "shift": {
+        "1": {
+            "shiftEndDate": "",
+            "shiftStartTime": "",
+            "shiftEndTime": "",
+            "trip": {
+                "1": {
+                    "driver": {
+                        "1": {
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                },
+                "2": {
+                    "driver": {
+                        "1": {
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "",
+            "otherExpence": ""
+        }
+    },
+    "action": "createDailyReport"
+}
+
+{
+    "date": "",
+    "shift": {
+        "1": {
+            "shiftEndDate": "",
+            "shiftStartTime": "",
+            "shiftEndTime": "",
+            "trip": {
+                "1": {
+                    "driver": {
+                        "1": {
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "",
+            "otherExpence": ""
+        }
+    },
+    "action": "createDailyReport"
+}
+
+{
+    "date": "",
+    "shift": {
+        "1": {
+            "shiftEndDate": "",
+            "shiftStartTime": "",
+            "shiftEndTime": "",
+            "trip": {
+                "1": {
+                    "driver": {
+                        "1": {
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                },
+                "2": {
+                    "driver": {
+                        "1": {
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "",
+            "otherExpence": ""
+        }
+    },
+    "action": "createDailyReport"
+}
+
+{
+    "date": "",
+    "shift": {
+        "1": {
+            "shiftEndDate": "",
+            "shiftStartTime": "",
+            "shiftEndTime": "",
+            "trip": {
+                "1": {
+                    "driver": {
+                        "1": {
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "",
+            "otherExpence": ""
+        }
+    },
+    "action": "createDailyReport"
+}
+
+{
+    "date": "",
+    "shift": {
+        "1": {
+            "shiftEndDate": "",
+            "shiftStartTime": "",
+            "shiftEndTime": "",
+            "trip": {
+                "1": {
+                    "startRoute": "",
+                    "endRoute": "",
+                    "driver": {
+                        "1": {
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "",
+            "otherExpence": ""
+        }
+    },
+    "action": "createDailyReport"
+}
+
+{
+    "date": "",
+    "shift": {
+        "1": {
+            "shiftEndDate": "",
+            "shiftStartTime": "",
+            "shiftEndTime": "",
+            "trip": {
+                "1": {
+                    "startRoute": "route1",
+                    "endRoute": "route1",
+                    "driver": {
+                        "1": {
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "",
+            "otherExpence": ""
+        }
+    },
+    "action": "createDailyReport"
+}
+
+{
+    "date": "",
+    "shift": {
+        "1": {
+            "shiftEndDate": "",
+            "shiftStartTime": "",
+            "shiftEndTime": "",
+            "trip": {
+                "1": {
+                    "driver": {
+                        "1": {
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "",
+            "otherExpence": ""
+        }
+    },
+    "action": "createDailyReport"
+}
+
+{
+    "date": "",
+    "shift": {
+        "1": {
+            "shiftEndDate": "",
+            "shiftStartTime": "",
+            "shiftEndTime": "",
+            "trip": {
+                "1": {
+                    "driver": {
+                        "1": {
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "",
+            "otherExpence": ""
+        }
+    },
+    "action": "createDailyReport"
+}
+
+{
+    "bus-number": "",
+    "date": "",
+    "shift": {
+        "1": {
+            "shiftEndDate": "",
+            "shiftStartTime": "",
+            "shiftEndTime": "",
+            "trip": {
+                "1": {
+                    "startRoute": "",
+                    "endRoute": "",
+                    "driver": {
+                        "1": {
+                            "driver_id": "",
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "",
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "",
+            "otherExpence": ""
+        }
+    },
+    "action": "createDailyReport"
+}
+
+{
+    "bus-number": "",
+    "date": "",
+    "shift": {
+        "1": {
+            "shiftEndDate": "",
+            "shiftStartTime": "",
+            "shiftEndTime": "",
+            "trip": {
+                "2": {
+                    "driver": {
+                        "1": {
+                            "driver_id": "",
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "",
+                            "passangers": "",
+                            "collection": ""
+                        },
+                        "2": {
+                            "conductor_id": "",
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "",
+            "otherExpence": ""
+        },
+        "2": {
+            "shiftEndDate": "",
+            "shiftStartTime": "",
+            "shiftEndTime": "",
+            "trip": {
+                "3": {
+                    "driver": {
+                        "1": {
+                            "driver_id": "",
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "",
+                            "passangers": "",
+                            "collection": ""
+                        },
+                        "3": {
+                            "conductor_id": "",
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "",
+            "otherExpence": ""
+        }
+    },
+    "action": "createDailyReport"
+}
+
+{
+    "bus-number": "",
+    "date": "",
+    "shift": {
+        "1": {
+            "shiftEndDate": "",
+            "shiftStartTime": "",
+            "shiftEndTime": "",
+            "trip": {
+                "1": {
+                    "startRoute": "",
+                    "endRoute": "",
+                    "driver": {
+                        "1": {
+                            "driver_id": "",
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "",
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "",
+            "otherExpence": ""
+        },
+        "2": {
+            "shiftEndDate": "",
+            "shiftStartTime": "",
+            "shiftEndTime": "",
+            "trip": {
+                "1": {
+                    "startRoute": "",
+                    "endRoute": "",
+                    "driver": {
+                        "1": {
+                            "driver_id": "",
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "",
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "",
+            "otherExpence": ""
+        }
+    },
+    "action": "createDailyReport"
+}
+
+{
+    "bus-number": "",
+    "date": "",
+    "shift": {
+        "1": {
+            "shiftEndDate": "",
+            "shiftStartTime": "",
+            "shiftEndTime": "",
+            "trip": {
+                "2": {
+                    "driver": {
+                        "1": {
+                            "driver_id": "",
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "",
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "",
+            "otherExpence": ""
+        },
+        "2": {
+            "shiftEndDate": "",
+            "shiftStartTime": "",
+            "shiftEndTime": "",
+            "trip": {
+                "1": {
+                    "startRoute": "",
+                    "endRoute": "",
+                    "driver": {
+                        "1": {
+                            "driver_id": "",
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "",
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "",
+            "otherExpence": ""
+        }
+    },
+    "action": "createDailyReport"
+}
+
+{
+    "bus-number": "",
+    "date": "",
+    "shift": {
+        "1": {
+            "shiftEndDate": "",
+            "shiftStartTime": "",
+            "shiftEndTime": "",
+            "trip": {
+                "1": {
+                    "startRoute": "",
+                    "endRoute": "",
+                    "driver": {
+                        "1": {
+                            "driver_id": "",
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "",
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                },
+                "2": {
+                    "startRoute": "",
+                    "endRoute": "",
+                    "driver": {
+                        "1": {
+                            "driver_id": "",
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "",
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "",
+            "otherExpence": ""
+        }
+    },
+    "action": "createDailyReport"
+}
+
+{
+    "bus-number": "",
+    "date": "",
+    "shift": {
+        "1": {
+            "shiftEndDate": "",
+            "shiftStartTime": "",
+            "shiftEndTime": "",
+            "trip": {
+                "1": {
+                    "startRoute": "",
+                    "endRoute": "",
+                    "driver": {
+                        "1": {
+                            "driver_id": "",
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "",
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                },
+                "2": {
+                    "startRoute": "",
+                    "endRoute": "",
+                    "driver": {
+                        "1": {
+                            "driver_id": "",
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "",
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "",
+            "otherExpence": ""
+        },
+        "2": {
+            "shiftEndDate": "",
+            "shiftStartTime": "",
+            "shiftEndTime": "",
+            "trip": {
+                "1": {
+                    "startRoute": "",
+                    "endRoute": "",
+                    "driver": {
+                        "1": {
+                            "driver_id": "",
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "",
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                },
+                "3": {
+                    "startRoute": "",
+                    "endRoute": "",
+                    "driver": {
+                        "1": {
+                            "driver_id": "",
+                            "start_time": "",
+                            "end_time": "",
+                            "start_km": "",
+                            "end_km": ""
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "",
+                            "passangers": "",
+                            "collection": ""
+                        },
+                        "3": {
+                            "conductor_id": "",
+                            "passangers": "",
+                            "collection": ""
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "",
+            "otherExpence": ""
+        }
+    },
+    "action": "createDailyReport"
+}

@@ -174,11 +174,14 @@ require_once './navbar.php';
                 <div class="admin-modal-body">
                     <div>
                         <div class="row p-20">
-                            <div class="col-sm-3">
-                                <label for="" class="input-label">Bus No</label>
-                                <select class="input-field" name="bus-number" id="bus-no" required>
+                            <div class="selectpicker-row p-0 col-sm-3">
+                                <div class="search-select-1">
+                                    <label for="" class="input-label">Bus No</label>
+                                    <select class="selectpicker input-field" data-show-subtext="true"
+                                        data-live-search="true" name="bus-number" id="bus-no">
 
-                                </select>
+                                    </select>
+                                </div>
                             </div>
 
                             <div class="col-sm-3">
@@ -212,6 +215,40 @@ require_once './navbar.php';
                                         </div>
                                     </div>
                                     <div class="bms-shift-workers">
+                                        <!-- <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="bms-shift-drivers">
+                                                    <div class="bms-shift-driver">
+                                                        <div class="row selectpicker-row p-0">
+                                                            <div class="col-sm-10 search-select-1">
+                                                                <label for="" class="input-label label-btn"><span>Driver</span><button class="add-button" title="Add Driver"><i class="fa-solid fa-circle-plus"></i></button></label>
+                                                                <select class="selectpicker input-field"
+                                                                    data-show-subtext="true" data-live-search="true"
+                                                                    name="shift[1][driver][1]" id="bus-no">
+
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="bms-shift-conductors">
+                                                    <div class="bms-shift-conductor">
+                                                        <div class="row selectpicker-row p-0">
+                                                            <div class="col-sm-10 search-select-1">
+                                                                <label for="" class="input-label label-btn"><span>Conductor</span><button class="add-button" title="Add Conductor"><i class="fa-solid fa-circle-plus"></i></button></label>
+                                                                <select class="selectpicker input-field"
+                                                                    data-show-subtext="true" data-live-search="true"
+                                                                    name="shift[1][conductor][1]" id="bus-no">
+
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> -->
                                         <div class="bms-trip-container">
                                             <div class="bms-trips" id="bms-trips-1">
                                                 <div class="bms-trip" id="bms-trips-1-1">
@@ -223,16 +260,28 @@ require_once './navbar.php';
                                                         <div class="bms-trip-route">
                                                             <div class="row">
                                                                 <div class="col-sm-4">
-                                                                    <label for="" class="input-label">Start Route</label>
-                                                                    <select class="input-field" name="shift[1][trip][1][startRoute]" id="start-route" required>
+                                                                    <div class="row selectpicker-row p-0">
+                                                                        <div class="col-sm-12 search-select-1">
+                                                                            <label for="" class="input-label">Start Route</label>
+                                                                            <select class="selectpicker input-field"
+                                                                                data-show-subtext="true" data-live-search="true"
+                                                                                name="shift[1][trip][1][startRoute]">
 
-                                                                    </select>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                                 <div class="col-sm-4">
-                                                                    <label for="" class="input-label">End Route</label>
-                                                                    <select class="input-field" name="shift[1][trip][1][endRoute]" id="end-route" required>
+                                                                    <div class="row selectpicker-row p-0">
+                                                                        <div class="col-sm-12 search-select-1">
+                                                                            <label for="" class="input-label">End Route</label>
+                                                                            <select class="selectpicker input-field"
+                                                                                data-show-subtext="true" data-live-search="true"
+                                                                                name="shift[1][trip][1][endRoute]">
 
-                                                                    </select>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -247,10 +296,16 @@ require_once './navbar.php';
                                                                         <div class="bms-trip-driver-content">
                                                                             <div class="row">
                                                                                 <div class="col-sm-4">
-                                                                                    <label for="" class="input-label">Driver</label>
-                                                                                    <select class="input-field" name="shift[1][trip][1][driver][1][driver_id]" id="driver-1-1-1" required>
+                                                                                    <div class="row selectpicker-row p-0">
+                                                                                        <div class="col-sm-12 search-select-1">
+                                                                                            <label for="" class="input-label">Driver</label>
+                                                                                            <select class="selectpicker input-field"
+                                                                                                data-show-subtext="true" data-live-search="true"
+                                                                                                name="shift[1][trip][1][driver][1][driver_id]" id="driver-1-1-1">
 
-                                                                                    </select>
+                                                                                            </select>
+                                                                                        </div>
+                                                                                    </div>
                                                                                 </div>
                                                                                 <div class="col-sm-2">
                                                                                     <label for="" class="input-label">Start Time</label>
@@ -289,10 +344,16 @@ require_once './navbar.php';
                                                                         <div class="bms-trip-conductor-content">
                                                                             <div class="row">
                                                                                 <div class="col-sm-4">
-                                                                                    <label for="" class="input-label">Conductor</label>
-                                                                                    <select class="input-field" name="shift[1][trip][1][conductor][1][conductor_id]" id="conductor-1-1-1" required>
+                                                                                    <div class="row selectpicker-row p-0">
+                                                                                        <div class="col-sm-12 search-select-1">
+                                                                                            <label for="" class="input-label">Conductor</label>
+                                                                                            <select class="selectpicker input-field"
+                                                                                                data-show-subtext="true" data-live-search="true"
+                                                                                                name="shift[1][trip][1][conductor][1][conductor_id]" id="conductor-1-1-1">
 
-                                                                                    </select>
+                                                                                            </select>
+                                                                                        </div>
+                                                                                    </div>
                                                                                 </div>
                                                                                 <!-- <div class="col-sm-2">
                                                                                     <label for="" class="input-label">Start Time</label>
@@ -781,5 +842,6 @@ require_once './navbar.php';
 <script src="./Js/daily_report.js"></script>
 <script src="./Js/bus_ajax.js"></script>
 <?php
+require_once '../../../Common/Common file/search_select_cdn.php';
 require_once './footer.php';
 ?>

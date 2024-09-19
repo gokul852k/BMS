@@ -139,4 +139,16 @@ class RouteModel {
 
         return $stmt->execute() ? true : false;
     }
+
+    public function getRouteField($companyId, $languageCode) {
+        $isActive = true;
+        $stmt = $this->db->prepare("SELECT bms_routes.id AS 'routeId', bms_route_translations.route_name AS 'routeName' FROM bms_routes INNER JOIN bms_route_translations ON bms_routes.id = bms_route_translations.route_id INNER JOIN bms_languages ON bms_route_translations.language_id = bms_languages.id WHERE bms_languages.code = :languageCode AND bms_routes.is_active = :isActive AND bms_routes.company_id = :companyId ORDER BY bms_route_translations.language_id ASC");
+        $stmt->bindParam("companyId", $companyId);
+        $stmt->bindParam("languageCode", $languageCode);
+        $stmt->bindParam("isActive", $isActive);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
 }

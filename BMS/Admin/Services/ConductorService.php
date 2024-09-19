@@ -594,4 +594,20 @@ class ConductorService
             ];
         }
     }
+
+    public function getConductorField(){
+        $response = $this->modelBMS->getConductorField($_SESSION['companyId']);
+
+        if (!$response) {
+            return [
+                'status' => 'error',
+                'message' => 'No data found'
+            ];
+        }
+
+        return [
+            'status' => 'success',
+            'data' => $response
+        ];
+    }
 }

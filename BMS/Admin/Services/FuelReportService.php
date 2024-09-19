@@ -4,6 +4,7 @@ require_once '../../config.php';
 require_once '../Models/FuelReportModel.php';
 require_once '../Services/FileUpload.php';
 require_once '../Services/ChartService.php';
+require_once '../Services/DailyReportService.php';
 
 class FuelReportService {
     private $modelBMS;
@@ -58,6 +59,8 @@ class FuelReportService {
         $response = $this->modelBMS->setFuelReport($_SESSION['companyId'], $busNumber, $date, $fuelLiters, $fuelAmount, $fuelbill_path);
 
         if ($response['status'] == 'success') {
+            $DRservice = new DailyReportService();
+            $dailyReport = $DRservice->calcFuelUsage($busNumber, $date, $fuelLiters, $fuelAmount);
             return [
                 "status" => "success",
                 "message" => "The Fuel report added successfully."
@@ -70,6 +73,7 @@ class FuelReportService {
             ];
         }
     }
+
 
     public function updateFuelReport($fuelReportId, $busId, $fuelDate, $fuelQuantity, $fuelCost, $fuelBill) {
         $reportInfo = [

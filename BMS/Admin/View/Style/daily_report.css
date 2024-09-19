@@ -1,0 +1,99 @@
+.admin-modal-body {
+    padding: 20px;
+}
+
+.bms-shift, .bms-trip {
+    border-radius: 10px 4px 10px 4px;
+    border: 1px solid #e9ecef;
+    margin-bottom: 20px;
+}
+
+.bms-shift-header, .bms-trip-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #f8f9fa;
+    border-radius: 10px 4px 10px 4px;
+}
+
+.bms-shift-title, .bms-trip-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.bms-shift-header .button-2, .bms-trip-header .button-2, .bms-trip-conductor-header .button-2 {
+    padding: 5px 10px;
+    font-size: 15px;
+    font-weight: normal;
+}
+
+.bms-shift-workers {
+    padding: 10px;
+}
+
+.bms-trip-driver, .bms-trip-conductor {
+    border-radius: 10px 4px 10px 4px;
+    border: 1px solid #e9ecef;
+    margin: 10px;
+}
+
+.bms-trip-driver-header, .bms-trip-conductor-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #f8f9fa;
+    border-radius: 10px 4px 10px 4px;
+}
+
+.bms-trip-driver-title, .bms-trip-conductor-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.bms-trip-driver-body, .bms-trip-conductor-body {
+    padding: 10px;
+}
+
+.bms-shift-footer, .bms-trip-footer{
+    padding: 10px 0;
+}
+
+.bms-shift-footer .button-2, .bms-trip-footer .button-2 {
+    padding: 5px 10px;
+    font-size: 15px;
+    font-weight: normal;
+}
+
+.label-btn {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.add-button{
+    color: var(--primary-color) !important;
+    cursor: pointer;
+    font-size: 22px;
+    border: none;
+    background-color: transparent;
+    font-weight: bold;
+}
+
+.remove-button{
+    color: var(--secondary-color);
+    cursor: pointer;
+    font-size: 22px;
+    border: none;
+    background-color: transparent;
+    font-weight: bold;
+}
+
+.bms-shift-details, .bms-trip-route {
+    padding: 10px 10px 0 10px;
+}

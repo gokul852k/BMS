@@ -136,7 +136,7 @@ $(document).ready(function () {
                 popupClose("progress-loader");
                 let data = JSON.parse(response);
                 if (data.status === 'success') {
-                    getBuses();
+                    getCommission();
                     Swal.fire({
                         title: "Success",
                         text: data.message,

@@ -36,6 +36,11 @@ class DailyReportController {
         echo json_encode($this->service->createDailyReport($_POST));
     }
 
+    private function getDailyReportForEdit() {
+        $reportId = $_POST['reportId'];
+        echo json_encode($this->service->getDailyReportForEdit($reportId));
+    }
+
 }
 
 new DailyReportController();

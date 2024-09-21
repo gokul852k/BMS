@@ -64,11 +64,11 @@ function getDailyReports() {
                         '<td>' + item.profit + '</td>' +
                         `<td>
                             <div class="th-btn">
-                                <button class="table-btn view" onclick="popupOpen('bus-view'); getBusDetails(`+ item.bus_id + `);"><i
+                                <button class="table-btn view" onclick="popupOpen('bus-view'); getBusDetails(`+ item.reportId + `);"><i
                                                 class="fa-duotone fa-eye"></i></button>
-                                <button class="table-btn edit" onclick="popupOpen('bus-edit'); getBusDetailsForEdit(`+ item.bus_id + `);"><i
+                                <button class="table-btn edit" onclick="popupOpen('edit'); getDailyReportForEdit(`+ item.reportId + `);"><i
                                                 class="fa-duotone fa-pen-to-square"></i></button>
-                                <button class="table-btn delete" onclick="deleteBus(`+ item.bus_id + `, '` + item.bus_number + `')"><i class="fa-duotone fa-trash"></i></button>
+                                <button class="table-btn delete" onclick="deleteBus(`+ item.reportId + `, '` + item.bus_number + `')"><i class="fa-duotone fa-trash"></i></button>
                             </div>
                         </td>`      
                     '</tr>';
@@ -151,3 +151,49 @@ $(document).ready(function () {
         });
     });
 });
+
+//Edit Daily Report
+
+function getDailyReportForEdit(reportId) {
+    let formData = {
+        reportId: reportId,
+        action: 'getDailyReportForEdit'
+    }
+    // document.getElementsByClassName("loader-div")[0].style.display = "block";
+    $.ajax({
+        type: 'POST',
+        url: '../Controllers/DailyReportController.php',
+        data: formData,
+        dataType: 'json',
+        success: function (response) {
+            console.log(response);
+            if (response.status === 'success') {
+                
+            }
+            else if (response.status === 'error') {
+                popupClose('bus-view');
+                Swal.fire({
+                    title: "Oops!",
+                    text: response.message,
+                    icon: "error"
+                });
+            } else {
+                popupClose('bus-view');
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Something went wrong! Please try again.",
+                    icon: "error"
+                });
+            }
+        },
+        error: function (xhr, status, error) {
+            popupClose('bus-view');
+            console.error(xhr.responseText);
+            Swal.fire({
+                title: "Oops!",
+                text: "Something went wrong! Please try again.",
+                icon: "error"
+            });
+        }
+    });
+}

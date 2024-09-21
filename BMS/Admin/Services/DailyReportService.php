@@ -250,6 +250,133 @@ class DailyReportService {
         ];
     }
 
+    public function getDailyReportForEdit($reportId) {
+
+        //1:-> Get Daily Report
+        $dailyReport = $this->modelBMS->getDailyReport2($reportId);
+
+        if (!$dailyReport) {
+            return [
+                'status' => 'error',
+                'message' => 'Something went wrong while get the daily report',
+                'error' => 'Error while get daily report in daily report table.'
+            ];
+        }
+
+        $response = [
+            "reportId" => $dailyReport['report_id'],
+            "busId" => $dailyReport['bus_id'],
+            "date" => $dailyReport['date']
+        ];
+
+
+        //2:-> Get Shifts
+        $shifts = $this->modelBMS->getShift($reportId);
+
+        if (!$shifts) {
+            return [
+                'status' => 'error',
+                'message' => 'Something went wrong while get the daily report',
+                'error' => 'Error while get shift in shift table.'
+            ];
+        }
+        $shiftCount = 1;
+        $shiftMainArray = array();
+        foreach ($shifts as $shift) {
+            $shiftId = $shift['shift_id'];
+            $shiftArray = [
+                "shiftId" => $shift['shift_id'],
+                "shiftEndDate" => $shift['end_date'],
+                "shiftStartTime" => $shift['start_time'],
+                "shiftEndTime" => $shift['end_time'],
+                "fuelUsage" => $shift['fuel_usage'],
+                "otherExpence" => $shift['expence']
+            ];
+
+            //3:-> Get Trips
+
+            $trips = $this->modelBMS->getTrips($shiftId);
+
+            if (!$shifts) {
+                return [
+                    'status' => 'error',
+                    'message' => 'Something went wrong while get the daily report',
+                    'error' => 'Error while get trips in trips table.'
+                ];
+            }
+
+            $tripCount = 1;
+            $tripMainArray = array();
+            foreach ($trips as $trip) {
+                $tripId = $trip['trip_id'];
+
+                $tripArray = [
+                    "tripId" => $trip['trip_id'],
+                    "startRoute" => $trip['start_route_id'],
+                    "endRoute" => $trip['end_route_id']
+                ];
+
+                //4:-> Get Driver
+
+                $drivers = $this->modelBMS->getTripDrivers($tripId);
+
+                if ($drivers) {
+                    $driverCount = 1;
+                    $driverMainArray = array();
+                    foreach ($drivers as $driver) {
+                        $driverArray = [
+                            "tripDriverId" => $driver['trip_driver_id'],
+                            "driverId" => $driver['driver_id'],
+                            "startTime" => $trip['start_time'],
+                            "endTime" => $trip['end_time'],
+                            "startKm" => $trip['start_km'],
+                            "endKm" => $trip['end_km']
+                        ];
+                        $driverMainArray[$driverCount] = $driverArray;
+                        $driverCount++;
+                    }
+
+                    $tripArray["driver"] = $driverMainArray;
+                }
+
+                //5:-> Get Conductor
+
+                $conductors = $this->modelBMS->getTripConductors($tripId);
+
+                if ($conductors) {
+                    $conductorCount = 1;
+                    $conductorMainArray = array();
+                    foreach ($conductors as $conductor) {
+                        $conductorArray = [
+                            "tripConductorId" => $conductor['trip_conductor_id'],
+                            "conductorId" => $conductor['conductor_id'],
+                            "passangers" => $trip['passenger'],
+                            "collection" => $trip['collection_amount']
+                        ];
+                        $conductorMainArray[$conductorCount] = $conductorArray;
+                        $conductorCount++;
+                    }
+
+                    $tripArray["conductor"] = $conductorMainArray;
+                }
+
+                $tripMainArray[$tripCount] = $tripArray;
+                $tripCount++;
+
+            }
+
+            $shiftArray['trip'] = $tripMainArray;
+
+            $shiftMainArray[$shiftCount] = $shiftArray;
+            $shiftCount++;
+        }
+
+        $response['shift'] = $shiftMainArray;
+
+        return $response;
+
+    }
+
     public function getCurrentShift() {
         $currentHour = date('H');
 

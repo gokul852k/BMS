@@ -27,6 +27,7 @@ class DailyReportModel {
     public function getDailyReports($companyId, $currentDate) {
         $isActive = true;
         $stmt = $this->db->prepare("SELECT 
+                                    dr.report_id AS 'reportId',
                                     DATE_FORMAT(dr.date, '%d-%m-%Y') AS 'date',
                                     b.bus_number AS 'busNumber',
                                     dr.total_km AS 'km',
@@ -469,5 +470,61 @@ class DailyReportModel {
         $stmt->bindParam(":reportId", $reportId);
 
         return $stmt->execute() ? true : false;
+    }
+
+    //Edit Daily Report
+    public function getDailyReport2($reportId) {
+        $isActive = true;
+        $stmt = $this->db->prepare("SELECT `report_id`, `company_id`, `bus_id`, `date`, `total_km`, `total_passenger`, `fuel`, `avg_milage`, `total_collection`, `fuel_amount`, `fuel_usage`, `expenses`, `salary`, `commission` FROM `bms_daily_reports` WHERE `report_id` = :reportId AND `is_active` = :isActive");
+        $stmt->bindParam("reportId", $reportId);
+        $stmt->bindParam("isActive", $isActive);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function getShift($reportId) {
+        $isActive = true;
+        $stmt = $this->db->prepare("SELECT `shift_id`, `company_id`, `report_id`, `shift_name_id`, `start_date`, `start_time`, `end_date`, `end_time`, `total_km`, `total_passenger`, `total_collection`, `salary`, `commission`, `expence`, `fuel_usage` FROM `bms_shifts` WHERE `report_id` = :reportId AND `is_active` = :isActive");
+        $stmt->bindParam("reportId", $reportId);
+        $stmt->bindParam("isActive", $isActive);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function getTrips($shiftId) {
+        $isActive = true;
+        $stmt = $this->db->prepare("SELECT `trip_id`, `company_id`, `shift_id`, `start_route_id`, `end_route_id`, `start_time`, `end_time`, `start_km`, `end_km`, `passenger`, `collection_amount` FROM `bms_trips` WHERE `shift_id` = :shiftId AND `is_active` = :isActive");
+        $stmt->bindParam("shiftId", $shiftId);
+        $stmt->bindParam("isActive", $isActive);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function getTripDrivers($tripId) {
+        $isActive = true;
+        $stmt = $this->db->prepare("SELECT `trip_driver_id`, `company_id`, `trip_id`, `driver_id` FROM `bms_trip_drivers` WHERE `trip_id` = :tripId AND `is_active` = :isActive");
+        $stmt->bindParam("tripId", $tripId);
+        $stmt->bindParam("isActive", $isActive);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function getTripConductors($tripId) {
+        $isActive = true;
+        $stmt = $this->db->prepare("SELECT `trip_conductor_id`, `company_id`, `trip_id`, `conductor_id` FROM `bms_trip_conductors` WHERE `trip_id` = :tripId AND `is_active` = :isActive");
+        $stmt->bindParam("tripId", $tripId);
+        $stmt->bindParam("isActive", $isActive);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
     }
 }

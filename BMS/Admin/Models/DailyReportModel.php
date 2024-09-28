@@ -53,49 +53,6 @@ class DailyReportModel {
         return $result ? $result : null;
     }
 
-    function getBus($busId) {
-        $isActive = true;
-        $stmt = $this->db->prepare("SELECT * FROM bms_bus WHERE id=:busId AND is_active=:isActive");
-        $stmt->bindParam(":busId", $busId);
-        $stmt->bindParam(":isActive", $isActive);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $result ? $result : null;
-    }
-
-    function getBusView($busId) {
-        $isActive = true;
-        $stmt = $this->db->prepare("SELECT 
-                                    b.bus_number,
-                                    b.bus_model,
-                                    b.seating_capacity,
-                                    ft.fuel AS 'fuel_type',
-                                    b.rcbook_no,
-                                    b.rcbook_expiry,
-                                    b.rcbook_path,
-                                    b.insurance_no,
-                                    b.insurance_expiry,
-                                    b.insurance_path,
-                                    b.driver_salary,
-                                    b.conductor_salary,
-                                    b.bus_status,
-                                    COALESCE(bs.total_km, 0) AS 'total_km',
-                                    COALESCE(bs.avg_mileage, 0) AS 'avg_mileage',
-                                    COALESCE(bs.cost_per_km, 0) AS 'cost_per_km',
-                                    COALESCE(bs.fuel_cost, 0) AS 'fuel_cost',
-                                    COALESCE(bs.maintenance_cost, 0) AS 'maintenance_cost'
-                                FROM bms_bus b
-                                INNER JOIN bms_fuel_type ft ON b.fuel_type_id = ft.id
-                                LEFT JOIN bms_bus_summary bs ON b.id = bs.bus_id
-                                WHERE b.id=:busId AND b.is_active=:isActive");
-        $stmt->bindParam(":busId", $busId);
-        $stmt->bindParam(":isActive", $isActive);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $result ? $result : null;
-    }
 
     function deleteBus($busId) {
         $stmt = $this->db->prepare("DELETE FROM `bms_bus` WHERE `id`=:busId");
@@ -342,16 +299,18 @@ class DailyReportModel {
         return $result ? $result : null;
     }
 
-    public function updateShift($shiftId, $shiftKM, $shiftPassengers, $shiftCollection, $shiftSalary, $shiftCommission, $otherExpence, $fuelUsage) {
+    public function updateShift($shiftId, $shiftKM, $shiftAvgMilage, $shiftPassengers, $shiftCollection, $shiftSalary, $shiftCommission, $otherExpence, $fuelUsage, $shiftFuelAmount) {
         $status = false;
-        $stmt = $this->db->prepare("UPDATE `bms_shifts` SET `total_km` = :shiftKM, `total_passenger` = :shiftPassengers, `total_collection` = :shiftCollection, `salary` = :shiftSalary, `commission` = :shiftCommission, `expence` = :otherExpence,`fuel_usage` = :fuelUsage, `shift_status` = :status WHERE `shift_id` = :shiftId");
+        $stmt = $this->db->prepare("UPDATE `bms_shifts` SET `total_km` = :shiftKM, `avg_milage` = :shiftAvgMilage, `total_passenger` = :shiftPassengers, `total_collection` = :shiftCollection, `salary` = :shiftSalary, `commission` = :shiftCommission, `expence` = :otherExpence,`fuel_usage` = :fuelUsage, `fuel_amount` = :shiftFuelAmount, `shift_status` = :status WHERE `shift_id` = :shiftId");
         $stmt->bindParam(":shiftKM", $shiftKM);
+        $stmt->bindParam(":shiftAvgMilage", $shiftAvgMilage);
         $stmt->bindParam(":shiftPassengers", $shiftPassengers);
         $stmt->bindParam(":shiftCollection", $shiftCollection);
         $stmt->bindParam(":shiftSalary", $shiftSalary);
         $stmt->bindParam(":shiftCommission", $shiftCommission);
         $stmt->bindParam(":otherExpence", $otherExpence);
         $stmt->bindParam(":fuelUsage", $fuelUsage);
+        $stmt->bindParam(":shiftFuelAmount", $shiftFuelAmount);
         $stmt->bindParam(":status", $status);
         $stmt->bindParam(":shiftId", $shiftId);
 
@@ -475,7 +434,9 @@ class DailyReportModel {
     //Edit Daily Report
     public function getDailyReport2($reportId) {
         $isActive = true;
-        $stmt = $this->db->prepare("SELECT `report_id`, `company_id`, `bus_id`, `date`, `total_km`, `total_passenger`, `fuel`, `avg_milage`, `total_collection`, `fuel_amount`, `fuel_usage`, `expenses`, `salary`, `commission` FROM `bms_daily_reports` WHERE `report_id` = :reportId AND `is_active` = :isActive");
+        $stmt = $this->db->prepare("SELECT dr.report_id, dr.company_id, dr.bus_id, b.bus_number, dr.date, DATE_FORMAT(dr.date, '%d-%m-%Y') AS 'format_date', dr.total_km, dr.total_passenger, dr.fuel, dr.avg_milage, dr.total_collection, dr.fuel_amount, dr.fuel_usage, dr.expenses, dr.salary, dr.commission FROM bms_daily_reports dr
+                            INNER JOIN bms_bus b ON dr.bus_id = b.id
+                            WHERE dr.report_id = :reportId AND dr.is_active = :isActive");
         $stmt->bindParam("reportId", $reportId);
         $stmt->bindParam("isActive", $isActive);
         $stmt->execute();
@@ -486,7 +447,7 @@ class DailyReportModel {
 
     public function getShift($reportId) {
         $isActive = true;
-        $stmt = $this->db->prepare("SELECT `shift_id`, `company_id`, `report_id`, `shift_name_id`, `start_date`, `start_time`, `end_date`, `end_time`, `total_km`, `total_passenger`, `total_collection`, `salary`, `commission`, `expence`, `fuel_usage` FROM `bms_shifts` WHERE `report_id` = :reportId AND `is_active` = :isActive");
+        $stmt = $this->db->prepare("SELECT `shift_id`, `company_id`, `report_id`, `shift_name_id`, `start_date`, `start_time`, `end_date`, `end_time`, `total_km`, `avg_milage`, `total_passenger`, `total_collection`, `salary`, `commission`, `expence`, `fuel_usage`, `fuel_amount` FROM `bms_shifts` WHERE `report_id` = :reportId AND `is_active` = :isActive");
         $stmt->bindParam("reportId", $reportId);
         $stmt->bindParam("isActive", $isActive);
         $stmt->execute();
@@ -523,6 +484,326 @@ class DailyReportModel {
         $stmt->bindParam("tripId", $tripId);
         $stmt->bindParam("isActive", $isActive);
         $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    function deleteShift($shiftId) {
+        $isActive = false;
+        $stmt = $this->db->prepare("UPDATE `bms_shifts` SET `is_active` = :isActive WHERE `shift_id` = :shiftId");
+        $stmt->bindParam(":shiftId", $shiftId);
+        $stmt->bindParam(":isActive", $isActive);
+
+        return $stmt->execute() ? true : false;
+    }
+
+    function deleteTrip($tripId) {
+        $isActive = false;
+        $stmt = $this->db->prepare("UPDATE `bms_trips` SET `is_active` = :isActive WHERE `trip_id` = :tripId");
+        $stmt->bindParam(":tripId", $tripId);
+        $stmt->bindParam(":isActive", $isActive);
+
+        return $stmt->execute() ? true : false;
+    }
+
+    function deleteConductor($conductorId) {
+        $isActive = false;
+        $stmt = $this->db->prepare("UPDATE `bms_trip_conductors` SET `is_active` = :isActive WHERE `trip_conductor_id` = :conductorId");
+        $stmt->bindParam(":conductorId", $conductorId);
+        $stmt->bindParam(":isActive", $isActive);
+
+        return $stmt->execute() ? true : false;
+    }
+
+    function updateShift2($shiftId, $companyId, $reportId, $shiftNameId, $shiftStartDate, $shiftEndDate, $shiftStartTime, $shiftEndTime) {
+        $stmt = $this->db->prepare("UPDATE `bms_shifts` SET `shift_name_id` = :shiftNameId, `start_date` = :shiftStartDate, `start_time` = :shiftStartTime, `end_date` = :shiftEndDate,`end_time` = :shiftEndTime WHERE `shift_id` = :shiftId");
+        
+        $stmt->bindParam(":shiftNameId", $shiftNameId);
+        $stmt->bindParam(":shiftStartDate", $shiftStartDate);
+        $stmt->bindParam(":shiftStartTime", $shiftStartTime);
+        $stmt->bindParam(":shiftEndDate", $shiftEndDate);
+        $stmt->bindParam(":shiftEndTime", $shiftEndTime);
+        $stmt->bindParam(":shiftId", $shiftId);
+
+        return $stmt->execute() ? true : false;
+    }
+
+    function updateTrip2($tripId, $companyId, $shiftId, $startRoute, $endRoute) {
+        $stmt = $this->db->prepare("UPDATE `bms_trips` SET `start_route_id` = :startRoute, `end_route_id` = :endRoute WHERE `trip_id` = :tripId");
+        
+        $stmt->bindParam(":startRoute", $startRoute);
+        $stmt->bindParam(":endRoute", $endRoute);
+        $stmt->bindParam(":tripId", $tripId);
+
+        return $stmt->execute() ? true : false;
+    }
+
+    function updateTripDriver2($tripDriverId, $companyId, $tripId, $driverId) {
+        $stmt = $this->db->prepare("UPDATE `bms_trip_drivers` SET `trip_id` = :tripId, `driver_id` = :driverId WHERE `trip_driver_id` = :tripDriverId");
+        
+        $stmt->bindParam(":tripId", $tripId);
+        $stmt->bindParam(":driverId", $driverId);
+        $stmt->bindParam(":tripDriverId", $tripDriverId);
+
+        return $stmt->execute() ? true : false;
+    }
+
+    function updateTripConductor2($tripConductorId, $companyId, $tripId, $conductorId) {
+        $stmt = $this->db->prepare("UPDATE `bms_trip_conductors` SET `trip_id` = :tripId, `conductor_id` = :conductorId WHERE `trip_conductor_id` = :tripConductorId");
+        
+        $stmt->bindParam(":tripId", $tripId);
+        $stmt->bindParam(":conductorId", $conductorId);
+        $stmt->bindParam(":tripConductorId", $tripConductorId);
+
+        return $stmt->execute() ? true : false;
+    }
+
+    function updateShiftDriver2($shiftId, $driverId, $shiftStartDate, $shiftStartTime, $shiftEndDate, $shiftEndTime, $shiftDriverSalary, $shiftWorkerCommission, $shiftFuelUsage) {
+        $isActive = true;
+        $stmt = $this->db->prepare("UPDATE `bms_shift_driver` SET `start_date` = :shiftStartDate, `start_time` = :shiftStartTime, `end_date` = :shiftEndDate, `end_time` = :shiftEndTime, `salary` = :shiftDriverSalary, `commission` = :shiftWorkerCommission, `fuel_usage` = :shiftFuelUsage WHERE `shift_id` = :shiftId AND `driver_id` = :driverId AND `is_active` = :isActive");
+        
+        $stmt->bindParam(":shiftStartDate", $shiftStartDate);
+        $stmt->bindParam(":shiftStartTime", $shiftStartTime);
+        $stmt->bindParam(":shiftEndDate", $shiftEndDate);
+        $stmt->bindParam(":shiftEndTime", $shiftEndTime);
+        $stmt->bindParam(":shiftDriverSalary", $shiftDriverSalary);
+        $stmt->bindParam(":shiftWorkerCommission", $shiftWorkerCommission);
+        $stmt->bindParam(":shiftFuelUsage", $shiftFuelUsage);
+        $stmt->bindParam(":shiftId", $shiftId);
+        $stmt->bindParam(":driverId", $driverId);
+        $stmt->bindParam(":isActive", $isActive);
+
+        return $stmt->execute() ? true : false;
+    }
+
+    function updateShiftConductor2($shiftId, $conductorId, $shiftStartDate, $shiftStartTime, $shiftEndDate, $shiftEndTime, $shiftConductorSalary, $shiftWorkerCommission) {
+        $isActive = true;
+        $stmt = $this->db->prepare("UPDATE `bms_shift_conductor` SET `start_date` = :shiftStartDate, `start_time` = :shiftStartTime, `end_date` = :shiftEndDate, `end_time` = :shiftEndTime, `salary` = :shiftConductorSalary, `commission` = :shiftWorkerCommission WHERE `shift_id` = :shiftId AND `conductor_id` = :conductorId AND `is_active` = :isActive");
+        
+        $stmt->bindParam(":shiftStartDate", $shiftStartDate);
+        $stmt->bindParam(":shiftStartTime", $shiftStartTime);
+        $stmt->bindParam(":shiftEndDate", $shiftEndDate);
+        $stmt->bindParam(":shiftEndTime", $shiftEndTime);
+        $stmt->bindParam(":shiftConductorSalary", $shiftConductorSalary);
+        $stmt->bindParam(":shiftWorkerCommission", $shiftWorkerCommission);
+        $stmt->bindParam(":shiftId", $shiftId);
+        $stmt->bindParam(":conductorId", $conductorId);
+        $stmt->bindParam(":isActive", $isActive);
+
+        return $stmt->execute() ? true : false;
+    }
+
+    //View Daily Report
+    public function getTrips2($shiftId) {
+        $isActive = true;
+        $stmt = $this->db->prepare("SELECT t.trip_id, t.shift_id, r1.route_name AS 'start_route_name', r2.route_name AS 'end_route_name', t.start_time, t.end_time, t.start_km, t.end_km, t.passenger, t.collection_amount FROM bms_trips t
+                                INNER JOIN bms_routes r1 ON t.start_route_id = r1.id
+                                INNER JOIN bms_routes r2 ON t.end_route_id = r2.id
+                                WHERE t.shift_id = :shiftId AND t.is_active = :isActive
+                                ");
+        $stmt->bindParam("shiftId", $shiftId);
+        $stmt->bindParam("isActive", $isActive);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function getTripDrivers2($tripId) {
+        $isActive = true;
+        $stmt = $this->db->prepare("SELECT td.trip_driver_id, td.driver_id, d.fullname FROM bms_trip_drivers td
+                                    INNER JOIN bms_drivers d ON td.driver_id = d.id
+                                    WHERE td.trip_id = :tripId AND td.is_active = :isActive");
+        $stmt->bindParam("tripId", $tripId);
+        $stmt->bindParam("isActive", $isActive);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function getTripConductors2($tripId) {
+        $isActive = true;
+        $stmt = $this->db->prepare("SELECT tc.trip_conductor_id, tc.conductor_id, c.fullname FROM `bms_trip_conductors` tc
+                                    INNER JOIN bms_conductors c ON tc.conductor_id = c.id
+                                    WHERE tc.trip_id = :tripId AND tc.is_active = :isActive");
+        $stmt->bindParam("tripId", $tripId);
+        $stmt->bindParam("isActive", $isActive);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    function getFilterCardCount($filters, $companyId) {
+        $isActive = true;
+        $sql = "SELECT 
+                FORMAT(SUM(dr.total_km), 0) AS 'totalKm',
+                FORMAT(SUM(dr.fuel_usage), 1) AS 'fuelUsage',
+                FORMAT(AVG(dr.avg_milage), 1) AS 'avgMilage',
+                FORMAT(SUM(dr.total_passenger), 0) AS 'passengers',
+                FORMAT(SUM(dr.total_collection), 0) AS 'collection',
+                FORMAT(SUM(dr.expenses), 0) AS 'expenses',
+                FORMAT(SUM(dr.fuel_amount), 0) AS 'fuelAmount',
+                FORMAT(SUM(dr.salary), 0) AS 'salary',
+                FORMAT(SUM(dr.commission), 0) AS 'commission',
+                FORMAT(SUM(dr.total_collection - dr.fuel_amount - dr.expenses - dr.salary - dr.commission), 0) AS 'profit'
+                FROM `bms_daily_reports` dr
+                INNER JOIN bms_bus b ON dr.bus_id = b.id
+                WHERE 1=1 ";
+                //company_id = :companyId AND is_active = :isActive
+        $params = [];
+
+        if (!empty($filters['fromDate'])) {
+            $sql .= "AND dr.date >= :fromDate ";
+            $params[':fromDate'] = $filters['fromDate'];
+        }
+
+        if (!empty($filters['toDate'])) {
+            $sql .= "AND dr.date <= :toDate ";
+            $params[':toDate'] = $filters['toDate'];
+        }
+
+        if (!empty($filters['bus'])) {
+            $sql .= "AND dr.bus_id = :bus ";
+            $params[':bus'] = $filters['bus'];
+        }
+
+        if (!empty($filters['collectionFrom'])) {
+            $sql .= "AND dr.total_collection >= :collectionFrom ";
+            $params[':collectionFrom'] = $filters['collectionFrom'];
+        }
+
+        if (!empty($filters['collectionTo'])) {
+            $sql .= "AND dr.total_collection <= :collectionTo ";
+            $params[':collectionTo'] = $filters['collectionTo'];
+        }
+
+        if (!empty($filters['profitFrom'])) {
+            $sql .= "AND (dr.total_collection - dr.fuel_amount - dr.expenses - dr.salary - dr.commission) >= :profitFrom ";
+            $params[':profitFrom'] = $filters['profitFrom'];
+        }
+    
+        if (!empty($filters['profitTo'])) {
+            $sql .= "AND (dr.total_collection - dr.fuel_amount - dr.expenses - dr.salary - dr.commission) <= :profitTo ";
+            $params[':profitTo'] = $filters['profitTo'];
+        }
+
+        if (!empty($filters['kmFrom'])) {
+            $sql .= "AND dr.total_km >= :kmFrom ";
+            $params[':kmFrom'] = $filters['kmFrom'];
+        }
+
+        if (!empty($filters['kmTo'])) {
+            $sql .= "AND dr.total_km <= :kmTo ";
+            $params[':kmTo'] = $filters['kmTo'];
+        }
+
+        $sql .= "AND dr.company_id = :companyId ";
+        $params[':companyId'] = $companyId;
+
+        $sql .= "AND dr.is_active = :isActive";
+        $params[':isActive'] = $isActive;
+
+        if (!empty($filters['orderBy'])) {
+            // Ensure that the value is either ASC or DESC
+            if ($filters['orderBy'] === "ASC" || $filters['orderBy'] === "DESC") {
+                $sql .= " ORDER BY dr.date " . $filters['orderBy'];
+            }
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    function getFilterFuelReport($filters, $companyId) {
+        $isActive = true;
+        $sql = "SELECT 
+                dr.report_id AS 'reportId',
+                DATE_FORMAT(dr.date, '%d-%m-%Y') AS 'date',
+                b.bus_number AS 'busNumber',
+                dr.total_km AS 'km',
+                dr.fuel_usage AS 'fuelUsage',
+                dr.avg_milage AS 'avgMilage',
+                dr.total_passenger AS 'passenger',
+                dr.total_collection AS 'collection',
+                dr.expenses AS 'expenses',
+                dr.fuel_amount AS 'fuelAmount',
+                dr.salary AS 'salary',
+                dr.commission AS 'commission',
+                (dr.total_collection - dr.fuel_amount - dr.expenses - dr.salary - dr.commission) AS 'profit'
+                FROM `bms_daily_reports` dr
+                INNER JOIN bms_bus b ON dr.bus_id = b.id
+                WHERE 1=1 ";
+                //company_id = :companyId AND is_active = :isActive
+        $params = [];
+
+        if (!empty($filters['fromDate'])) {
+            $sql .= "AND dr.date >= :fromDate ";
+            $params[':fromDate'] = $filters['fromDate'];
+        }
+
+        if (!empty($filters['toDate'])) {
+            $sql .= "AND dr.date <= :toDate ";
+            $params[':toDate'] = $filters['toDate'];
+        }
+
+        if (!empty($filters['bus'])) {
+            $sql .= "AND dr.bus_id = :bus ";
+            $params[':bus'] = $filters['bus'];
+        }
+
+        if (!empty($filters['collectionFrom'])) {
+            $sql .= "AND dr.total_collection >= :collectionFrom ";
+            $params[':collectionFrom'] = $filters['collectionFrom'];
+        }
+
+        if (!empty($filters['collectionTo'])) {
+            $sql .= "AND dr.total_collection <= :collectionTo ";
+            $params[':collectionTo'] = $filters['collectionTo'];
+        }
+
+        if (!empty($filters['profitFrom'])) {
+            $sql .= "AND (dr.total_collection - dr.fuel_amount - dr.expenses - dr.salary - dr.commission) >= :profitFrom ";
+            $params[':profitFrom'] = $filters['profitFrom'];
+        }
+    
+        if (!empty($filters['profitTo'])) {
+            $sql .= "AND (dr.total_collection - dr.fuel_amount - dr.expenses - dr.salary - dr.commission) <= :profitTo ";
+            $params[':profitTo'] = $filters['profitTo'];
+        }
+
+        if (!empty($filters['kmFrom'])) {
+            $sql .= "AND dr.total_km >= :kmFrom ";
+            $params[':kmFrom'] = $filters['kmFrom'];
+        }
+
+        if (!empty($filters['kmTo'])) {
+            $sql .= "AND dr.total_km <= :kmTo ";
+            $params[':kmTo'] = $filters['kmTo'];
+        }
+
+        $sql .= "AND dr.company_id = :companyId ";
+        $params[':companyId'] = $companyId;
+
+        $sql .= "AND dr.is_active = :isActive";
+        $params[':isActive'] = $isActive;
+
+        if (!empty($filters['orderBy'])) {
+            // Ensure that the value is either ASC or DESC
+            if ($filters['orderBy'] === "ASC" || $filters['orderBy'] === "DESC") {
+                $sql .= " ORDER BY dr.date " . $filters['orderBy'];
+            }
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $result ? $result : null;

@@ -217,7 +217,7 @@ class DailyReportService {
 
                     if ($exitTrips) {
                         foreach ($exitTrips as $exitTrip) {
-                            $this->modelBMS->createTripConductor($_SESSION['companyId'], $exitTrip['trip_id'], $_SESSION['driverId']);
+                            $this->modelBMS->createTripConductor($_SESSION['companyId'], $exitTrip['trip_id'], $_SESSION['conductorId']);
                         }
                     }
 

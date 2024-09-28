@@ -361,6 +361,10 @@ input:focus {
   background: none;
 }
 
+.calculate {
+  color: #ed143d;
+}
+
 .bill {
   color: blue;
 }
@@ -564,6 +568,10 @@ div.dt-container .dt-paging {
 
 .m-t-20 {
   margin-top: 20px;
+}
+
+.m-b-20 {
+  margin-bottom: 20px !important;
 }
 
 .m-t-30 {
@@ -989,6 +997,10 @@ div.dt-container .dt-paging {
   overflow-x: hidden;
 }
 
+.admin-view-body {
+  max-height: calc(100vh - 63px - 20px);
+}
+
 /* hide scrollbar but allow scrolling */
 .admin-modal-body {
   -ms-overflow-style: none;
@@ -1261,4 +1273,121 @@ div.dt-container .dt-paging {
 .filter-date {
   margin: 0;
   height: 35px;
+}
+
+.filter-btn-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.btn_check input {
+  display: none;
+}
+
+.btn_check label {
+  color: var(--group-color);
+  background: var(--group-background);
+  border: 1px solid var(--group-border);
+}
+.btn_check input:checked + label {
+  color: #ffffff;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+
+
+/*Counter Card 2 Style*/
+.counter-cards-2 {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 30px 40px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.counter-card-2 {
+  display: flex;
+  flex-direction: column;
+  /* gap: 5px; */
+  align-items: center;
+  justify-content: center;  
+}
+
+.counter-card-2-icon {
+  background-color: gainsboro;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 5px;
+  color: white;
+}
+
+.counter-card-2-icon i {
+  font-size: 20px;
+}
+
+.counter-card-2-value {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.counter-card-2-value p {
+  margin: 0;
+}
+
+.counter-card-2-name {
+  font-size: 14px;
+  color: gray;
+}
+
+.counter-card-2-name p {
+  margin: 0;
+}
+
+.counter-card-2 .c-1 {
+  background: linear-gradient(45deg, #f54ea2, #ff7676);
+}
+
+.counter-card-2 .c-2 {
+  background: linear-gradient(45deg, #b14cff, #7500cf);
+}
+
+.counter-card-2 .c-3 {
+  background: linear-gradient(45deg, #a52a2a, #ff3434);
+}
+
+.counter-card-2 .c-4 {
+  background: linear-gradient(45deg, #004ec2, #6ba7ff);
+}
+
+.counter-card-2 .c-5 {
+  background: linear-gradient(45deg, #ffdf40, #ff8359);
+}
+
+.counter-card-2 .c-6 {
+  background: linear-gradient(45deg, #dc3545, #ff7676);
+}
+
+.counter-card-2 .c-7 {
+  background: linear-gradient(45deg, #31ddff, #1e9bb5);
+}
+
+.counter-card-2 .c-8 {
+  background: linear-gradient(45deg, #2be86f, #00b541);
+}
+
+.counter-card-2 .c-9 {
+  background: linear-gradient(45deg, #c20e83, #ff48bf);
+}
+
+.counter-card-2 .c-10 {
+  background: linear-gradient(45deg, #00b09b, #19e0c8);
 }

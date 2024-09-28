@@ -299,12 +299,43 @@
     background: -webkit-linear-gradient(45deg, #004ec2, #6ba7ff) !important;
     background: linear-gradient(45deg, #004ec2, #6ba7ff) !important;
 }
+
+.bg-g-8 {
+    background: #a52a2a;
+    background: -webkit-linear-gradient(45deg, #a52a2a, #ff3434) !important;
+    background: linear-gradient(45deg, #a52a2a, #ff3434) !important;
+}
+
+.bg-g-9 {
+    background: #dc3545;
+    background: -webkit-linear-gradient(45deg, #dc3545, #ff7676) !important;
+    background: linear-gradient(45deg, #dc3545, #ff7676) !important;
+}
+
+.bg-g-10 {
+    background: #21abc7;
+    background: -webkit-linear-gradient(45deg, #31ddff, #21abc7) !important;
+    background: linear-gradient(45deg, #31ddff, #21abc7) !important;
+}
+
+.bg-g-11 {
+    background: #00b541;
+    background: -webkit-linear-gradient(45deg, #2be86f, #00b541) !important;
+    background: linear-gradient(45deg, #2be86f, #00b541) !important;
+}
+
+.bg-g-12 {
+    background: #c20e83;
+    background: -webkit-linear-gradient(45deg, #c20e83, #ff48bf) !important;
+    background: linear-gradient(45deg, #c20e83, #ff48bf) !important;
+}
+
 .t-c-2 {
     color: #00b09b !important;
 }
 
 .t-c-3 {
-    color: #ffdf40 !important;
+    color: #ff8359 !important;
 }
 
 .t-c-4 {
@@ -321,6 +352,22 @@
 .t-c-7 {
     color: #004ec2 !important;
 }
+.t-c-8 {
+    color: #a52a2a !important;
+}
+.t-c-9 {
+    color: #dc3545 !important;
+}
+.t-c-10 {
+    color: #21abc7 !important;
+}
+.t-c-11 {
+    color: #00b541 !important;
+}
+.t-c-12 {
+    color: #c20e83 !important;
+}
+
 .text-info {
     font-weight: bold !important;
 }

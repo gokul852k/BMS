@@ -33,6 +33,7 @@
     border-radius: 25px;
     border: 2px solid var(--primary-color);
     cursor: pointer;
+    font-weight: 500;
 }
 
 .active-duty-button {

@@ -33,6 +33,7 @@ class DriverController {
         $state = $_POST['state'];
         $district = $_POST['district'];
         $pincode = $_POST['pincode'];
+        $language = $_POST['language'];
         $drivingLicence = $_FILES['driving-licence'];
         $licenceNo = $_POST['driving-licence-no'];
         $licenceExpiry = $_POST['licence-expiry'];
@@ -41,7 +42,7 @@ class DriverController {
         $panCard = $_FILES['pan-card'];
         $panNo = $_POST['pan-no'];
 
-        echo json_encode($this->service->createDriver($driverImage, $name, $mobile, $mail, $password, $address, $state, $district, $pincode, $drivingLicence, $licenceNo, $licenceExpiry, $aadharCard, $aadharNo, $panCard, $panNo));
+        echo json_encode($this->service->createDriver($driverImage, $name, $mobile, $mail, $password, $address, $state, $district, $pincode, $language, $drivingLicence, $licenceNo, $licenceExpiry, $aadharCard, $aadharNo, $panCard, $panNo));
     }
 
     private function getDriver() {
@@ -60,6 +61,7 @@ class DriverController {
         $driverId = $_POST['driver_id'];
         $name = $_POST['fullname'];
         $mobile = $_POST['mobile'];
+        $language = $_POST['language'];
         // $mail = $_POST['mail'];
         $password = $_POST['password'];
         $address = $_POST['address'];
@@ -76,7 +78,7 @@ class DriverController {
         $aadharCard = $_FILES['aadhar_path'];
         $panCard = $_FILES['pan_path'];
 
-        echo json_encode($this->service->updateDriver($driverId, $driverImage, $name, $mobile, $password, $address, $state, $district, $pincode, $drivingLicence, $licenceNo, $licenceExpiry, $aadharCard, $aadharNo, $panCard, $panNo));
+        echo json_encode($this->service->updateDriver($driverId, $driverImage, $name, $mobile, $language, $password, $address, $state, $district, $pincode, $drivingLicence, $licenceNo, $licenceExpiry, $aadharCard, $aadharNo, $panCard, $panNo));
     
     }
 

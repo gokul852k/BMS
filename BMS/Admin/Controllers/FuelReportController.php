@@ -69,12 +69,14 @@ class FuelReportController {
     private function applyFilter() {
 
         $filterData = [
+            'days' => $_POST['days'] ?? null,
             'fromDate' => $_POST['filter-from-date'] ?? null,
             'toDate' => $_POST['filter-to-date'] ?? null,
             'bus' => $_POST['filter-bus'] ?? null,
             'fuelType' => $_POST['filter-fuel-type'] ?? null,
             'costFrom' => $_POST['filter-fuel-cost-from'] ?? null,
-            'costTo' => $_POST['filter-fuel-cost-to'] ?? null
+            'costTo' => $_POST['filter-fuel-cost-to'] ?? null,
+            'orderBy' => $_POST['orderBy'] ?? null
         ];
 
         echo json_encode($this->service->applyFilter($filterData));

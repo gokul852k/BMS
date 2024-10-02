@@ -23,7 +23,6 @@ function getDrivers() {
             }
         },
         error: function (xhr, status, error) {
-            popupClose('driver-view');
             console.error(xhr.responseText);
             // Swal.fire({
             //     title: "Error",
@@ -61,9 +60,9 @@ function getDrivers() {
                         '<td><div class="btn-td"><span class="' + item.license_status + '">' + item.license_status + '</span></div></td>' +
                         `<td>
                             <div class="th-btn">
-                                <button class="table-btn view" onclick="popupOpen('driver-view'); getDriverDetails(`+ item.id + `);"><i
+                                <button class="table-btn view" onclick="popupOpen('view'); getDriverDetails(`+ item.id + `);"><i
                                                 class="fa-duotone fa-eye"></i></button>
-                                <button class="table-btn edit" onclick="popupOpen('driver-edit'); getDriverDetailsForEdit(`+ item.id + `);"><i
+                                <button class="table-btn edit" onclick="popupOpen('edit'); getDriverDetailsForEdit(`+ item.id + `);"><i
                                                 class="fa-duotone fa-pen-to-square"></i></button>
                                 <button class="table-btn delete" onclick="deleteDriver(`+ item.id + `, '` + item.fullname + `')"><i class="fa-duotone fa-trash"></i></button>
                             </div>
@@ -75,7 +74,7 @@ function getDrivers() {
             }
         },
         error: function (xhr, status, error) {
-            popupClose('driver-view');
+            popupClose('view');
             console.error(xhr.responseText);
             // Swal.fire({
             //     title: "Error",
@@ -97,7 +96,7 @@ $(document).ready(function () {
             return;
         }
 
-        popupClose('driver-add');
+        popupClose('add');
         //Calling progress bar
         popupOpen("progress-loader");
         let array = [["Creating driver. Please waite..", 4000], ["Uploading driver documents..", 4000], ["Sending mail to driver...", 4000]];
@@ -116,6 +115,7 @@ $(document).ready(function () {
                 popupClose("progress-loader");
                 let data = JSON.parse(response);
                 if (data.status === 'success') {
+                    document.getElementById('driver-form').reset();
                     getDrivers();
                     Swal.fire({
                         title: "Success",
@@ -187,14 +187,14 @@ function getDriverDetails(driverId) {
                 driverDetails.pan_no != "" ? document.getElementById("d-v-pincode").innerHTML = driverDetails.pincode : document.getElementById("d-v-pincode").innerHTML = "-";
             }
             else if (response.status === 'error') {
-                popupClose('driver-view');
+                popupClose('view');
                 Swal.fire({
                     title: "Oops!",
                     text: response.message,
                     icon: "error"
                 });
             } else {
-                popupClose('driver-view');
+                popupClose('view');
                 Swal.fire({
                     title: "Oops!",
                     text: "Something went wrong! Please try again.",
@@ -203,7 +203,7 @@ function getDriverDetails(driverId) {
             }
         },
         error: function (xhr, status, error) {
-            popupClose('driver-view');
+            popupClose('view');
             console.error(xhr.responseText);
             Swal.fire({
                 title: "Oops!",
@@ -216,7 +216,10 @@ function getDriverDetails(driverId) {
 
 //Get Driver details for edit
 
-function getDriverDetailsForEdit(driverId) {
+async function getDriverDetailsForEdit(driverId) {
+    if(!languages) {
+        await languageAjax();
+    }
     let formData = {
         driverId: driverId,
         action: 'getDriver'
@@ -238,6 +241,24 @@ function getDriverDetailsForEdit(driverId) {
                 driverDetails.fullname != "" ? document.getElementById("d-e-name").value = driverDetails.fullname : document.getElementById("d-e-name").value = "";
                 driverDetails.mail != "" ? document.getElementById("d-e-mail").value = driverDetails.mail : document.getElementById("d-e-mail").value = "";
                 driverDetails.mobile != "" ? document.getElementById("d-e-mobile").value = driverDetails.mobile : document.getElementById("d-e-mobile").value = "";
+            
+                //Bus
+                let select = $('#d-e-language');
+                select.empty();  // Clear existing options
+            
+                // Add default "Select Bus" option
+                select.append('<option value="" disabled>Select Language</option>');
+            
+                languages.forEach((language) => {
+                    if (driverDetails.language == language.code) {
+                        select.append('<option value="' + language.code + '" selected>' + language.name + '</option>');
+                    } else {
+                        select.append('<option value="' + language.code + '">' + language.name + '</option>');
+                    }
+                    
+                });
+
+
                 driverDetails.licence_no != "" ? document.getElementById("d-e-licence-no").value = driverDetails.licence_no : document.getElementById("d-e-licence-no").value = "";
                 driverDetails.licence_expiry != "" ? document.getElementById("d-e-licence-ex").value = driverDetails.licence_expiry : document.getElementById("d-e-licence-ex").value = "";
                 driverDetails.aadhar_no != "" ? document.getElementById("d-e-aadhar-no").value = driverDetails.aadhar_no : document.getElementById("d-e-aadhar-no").value = "";
@@ -254,14 +275,14 @@ function getDriverDetailsForEdit(driverId) {
                 driverDetails.pincode != "" ? document.getElementById("d-e-pincode").value = driverDetails.pincode : document.getElementById("d-e-pincode").value = "";
             }
             else if (response.status === 'error') {
-                popupClose('driver-edit');
+                popupClose('edit');
                 Swal.fire({
                     title: "Oops!",
                     text: response.message,
                     icon: "error"
                 });
             } else {
-                popupClose('driver-edit');
+                popupClose('edit');
                 Swal.fire({
                     title: "Oops!",
                     text: "Something went wrong! Please try again.",
@@ -270,7 +291,7 @@ function getDriverDetailsForEdit(driverId) {
             }
         },
         error: function (xhr, status, error) {
-            popupClose('driver-edit');
+            popupClose('edit');
             console.error(xhr.responseText);
             Swal.fire({
                 title: "Oops!",
@@ -286,6 +307,7 @@ function getDriverDetailsForEdit(driverId) {
 $(document).ready(function () {
     $('#driver-edit-form').on('submit', function (e) {
         e.preventDefault();
+        popupClose('edit');
         //Calling progress bar
         popupOpen("progress-loader");
         let array = [["Updating driver. Please wait..", 4000], ["please wait a moment..", 4000], ["Uploading driver documents..", 4000]];
@@ -302,6 +324,7 @@ $(document).ready(function () {
             success: function (response) {
                 console.log(JSON.stringify(response));
                 popupClose("progress-loader");
+                document.getElementById('driver-edit-form').reset();
                 let data = JSON.parse(response);
                 if (data.status === 'success') {
                     getDrivers();
@@ -400,4 +423,55 @@ function deleteDriver(driverId, driverName) {
             });
         }
     });
+}
+
+let languages;
+
+async function getLanguageField() {
+    if(!languages) {
+        await languageAjax();
+    }
+
+    //Bus
+    let select = $('#language');
+    select.empty();  // Clear existing options
+
+    // Add default "Select Bus" option
+    select.append('<option value="" disabled selected>Select Language</option>');
+
+    languages.forEach((language) => {
+        select.append('<option value="' + language.code + '">' + language.name + '</option>');
+    });
+}
+
+function languageAjax() {
+    return new Promise((resolve, reject) => {
+        let formData = {
+            action: 'getLanguage'
+        }
+        $.ajax({
+            type: 'POST',
+            url: '../Controllers/DailyReportController.php',
+            data: formData,
+            dataType: 'json',
+            success: function (response) {
+                console.log(response);
+                if (response.status === 'success') {
+                    languages = response.data;
+                    resolve();
+                } else {
+                    reject();
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+                reject();
+                // Swal.fire({
+                //     title: "Error",
+                //     text: "Something went wrong! Please try again.",
+                //     icon: "error"
+                // });
+            }
+        });
+    })  
 }

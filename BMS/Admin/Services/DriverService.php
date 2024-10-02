@@ -25,7 +25,7 @@ class DriverService
         $this->mail = new Mail2();
     }
 
-    public function createDriver($driverImage, $name, $mobile, $mail, $password, $address, $state, $district, $pincode, $drivingLicence, $licenceNo, $licenceExpiry, $aadharCard, $aadharNo, $panCard, $panNo)
+    public function createDriver($driverImage, $name, $mobile, $mail, $password, $address, $state, $district, $pincode, $language, $drivingLicence, $licenceNo, $licenceExpiry, $aadharCard, $aadharNo, $panCard, $panNo)
     {
 
         //Check mail ID is already exit
@@ -104,7 +104,7 @@ class DriverService
 
         //Insert Driver details in drivers table in bms DB
 
-        $response3 = $this->modelBMS->setDriver($userId, $_SESSION['companyId'], $name, $mobile, $mail, $address, $state, $district, $pincode, $driverImage_path, $licenceNo, $licenceExpiry, $drivingLicence_path, $aadharNo, $aadharCard_path, $panNo, $panCard_path);
+        $response3 = $this->modelBMS->setDriver($userId, $_SESSION['companyId'], $name, $mobile, $mail, $address, $state, $district, $pincode, $language, $driverImage_path, $licenceNo, $licenceExpiry, $drivingLicence_path, $aadharNo, $aadharCard_path, $panNo, $panCard_path);
 
         if (!$response3) {
             //Delete the user from users table
@@ -139,11 +139,12 @@ class DriverService
 
     }
 
-    public function updateDriver($driverId, $driverImage, $name, $mobile, $password, $address, $state, $district, $pincode, $drivingLicence, $licenceNo, $licenceExpiry, $aadharCard, $aadharNo, $panCard, $panNo)
+    public function updateDriver($driverId, $driverImage, $name, $mobile, $language, $password, $address, $state, $district, $pincode, $drivingLicence, $licenceNo, $licenceExpiry, $aadharCard, $aadharNo, $panCard, $panNo)
     {
         $driverInfo = [
             "fullname" => $name,
             "mobile" => $mobile,
+            "language" => $language,
             "address" => $address,
             "state" => $state,
             "district" => $district,
@@ -166,7 +167,7 @@ class DriverService
 
         //Check for changes
         $changes = [];
-        $fields = ['fullname', 'mobile', 'address', 'state', 'district', 'pincode', 'licence_no', 'licence_expiry', 'aadhar_no', 'pan_no'];
+        $fields = ['fullname', 'mobile', 'language', 'address', 'state', 'district', 'pincode', 'licence_no', 'licence_expiry', 'aadhar_no', 'pan_no'];
 
         //check & upload file changes
         $fileChanges = false;
@@ -246,6 +247,26 @@ class DriverService
             }
         }
 
+        //Change password
+        $passwordChange = false;
+        if (isset($password) && !empty($password)) {
+            //Password Hasing
+
+            $hashPassword = password_hash($password, PASSWORD_DEFAULT);
+
+            $pass_response = $this->modelA->updatePassword($currentData['user_id'], $hashPassword);
+
+            if(!$pass_response) {
+                return [
+                    'status' => 'error',
+                    'message' => 'Something went wrong while updating the password',
+                    'error' => 'Error while update password in user table.'
+                ];
+            }
+
+            $passwordChange = true;
+        }
+
         foreach ($fields as $field) {
             if ($driverInfo[$field] != $currentData[$field]) {
                 $changes[$field] = $driverInfo[$field];
@@ -279,6 +300,12 @@ class DriverService
             }
 
         } else {
+            if ($passwordChange) {
+                return [
+                    'status' => 'success',
+                    'message' => 'Driver details updated successfully'
+                ];
+            }
             return [
                 'status' => 'error',
                 'message' => 'There are no changes in driver details.',

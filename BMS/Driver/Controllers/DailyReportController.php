@@ -52,6 +52,10 @@ class DailyReportController {
     private function getEndKm() {
         echo json_encode($this->serviceDR->getEndKm($_POST['tripId']));
     }
+
+    private function getTranslations() {
+        echo json_encode($this->serviceDR->getTranslationsLabels2($_POST['pageId']));
+    }
 }
 
 new DailyReportController();

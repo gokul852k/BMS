@@ -99,7 +99,7 @@ function getDailyReports() {
         profitTo: '',
         kmFrom: '',
         kmTo: '',
-        orderBy: 'ASC',
+        orderBy: 'DESC',
         action: 'applyFilter'
     }
 

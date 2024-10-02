@@ -253,7 +253,11 @@ class DailyReportModel {
     public function getShiftIdByDriverId($driverId) {
         $workStatus = true;
         $isActive = true;
-        $stmt = $this->db->prepare("SELECT shift_id AS 'shiftId' FROM `bms_shift_driver` WHERE `driver_id` = :driverId AND `work_status` = :workStatus AND `is_active` = :isActive");
+        // $stmt = $this->db->prepare("SELECT shift_id AS 'shiftId' FROM `bms_shift_driver` WHERE `driver_id` = :driverId AND `work_status` = :workStatus AND `is_active` = :isActive");
+        $stmt = $this->db->prepare("SELECT sd.shift_id AS 'shiftId', s.start_date, dr.bus_id FROM bms_shift_driver sd
+                                    INNER JOIN bms_shifts s ON sd.shift_id = s.shift_id
+                                    INNER JOIN bms_daily_reports dr ON s.report_id = dr.report_id
+                                    WHERE   sd.driver_id = :driverId AND sd.work_status = :workStatus AND sd.is_active = :isActive");
         $stmt->bindParam("driverId", $driverId);
         $stmt->bindParam("workStatus", $workStatus);
         $stmt->bindParam("isActive", $isActive);
@@ -397,10 +401,11 @@ class DailyReportModel {
         return $stmt->execute() ? true : false;
     }
 
-    public function updateShiftDetails($shiftId, $salary, $fuelUsage) {
-        $stmt = $this->db->prepare("UPDATE `bms_shifts` SET `salary` = `salary` + :salary, `fuel_usage` = `fuel_usage` + :fuelUsage WHERE `shift_id` = :shiftId");
+    public function updateShiftDetails($shiftId, $salary, $fuelUsage, $fuelAmount) {
+        $stmt = $this->db->prepare("UPDATE `bms_shifts` SET `salary` = `salary` + :salary, `fuel_usage` = `fuel_usage` + :fuelUsage, `fuel_amount` = `fuel_amount` + :fuelAmount WHERE `shift_id` = :shiftId");
         $stmt->bindParam(":salary", $salary);
         $stmt->bindParam(":fuelUsage", $fuelUsage);
+        $stmt->bindParam(":fuelAmount", $fuelAmount);
         $stmt->bindParam(":shiftId", $shiftId);
 
         return $stmt->execute() ? true : false;
@@ -417,7 +422,7 @@ class DailyReportModel {
     }
 
     public function getShiftDetails($shiftId) {
-        $stmt = $this->db->prepare("SELECT `report_id`, `salary`, `commission`, `expence`, `fuel_usage` FROM `bms_shifts` WHERE `shift_id` = :shiftId");
+        $stmt = $this->db->prepare("SELECT `start_date`, `report_id`, `salary`, `commission`, `expence`, `fuel_usage` FROM `bms_shifts` WHERE `shift_id` = :shiftId");
         $stmt->bindParam(":shiftId", $shiftId);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -425,13 +430,14 @@ class DailyReportModel {
         return $result ? $result : null;
     }
 
-    public function updateDailyReportSCEM($reportId, $salary, $commission, $expence, $fuelusage, $avgMilage) {
-        $stmt = $this->db->prepare("UPDATE `bms_daily_reports` SET `expenses` = `expenses` + :expence, `salary` = `salary` + :salary, `commission` = `commission` + :commission, `fuel_usage` = `fuel_usage` + :fuelusage, `avg_milage` = :avgMilage WHERE `report_id` = :reportId");
+    public function updateDailyReportSCEM($reportId, $salary, $commission, $expence, $fuelusage, $avgMilage, $fuelAmount) {
+        $stmt = $this->db->prepare("UPDATE `bms_daily_reports` SET `expenses` = `expenses` + :expence, `salary` = `salary` + :salary, `commission` = `commission` + :commission, `fuel_usage` = `fuel_usage` + :fuelusage, `avg_milage` = :avgMilage, `fuel_amount` = `fuel_amount` + :fuelAmount WHERE `report_id` = :reportId");
         $stmt->bindParam(":salary", $salary);
         $stmt->bindParam(":commission", $commission);
         $stmt->bindParam(":expence", $expence);
         $stmt->bindParam(":fuelusage", $fuelusage);
         $stmt->bindParam(":avgMilage", $avgMilage);
+        $stmt->bindParam(":fuelAmount", $fuelAmount);
         $stmt->bindParam(":reportId", $reportId);
 
         return $stmt->execute() ? true : false;
@@ -456,7 +462,7 @@ class DailyReportModel {
     }
 
     public function getDailyReportDetails($reportId) {
-        $stmt = $this->db->prepare("SELECT `total_km`, `fuel_usage`, `avg_milage` FROM `bms_daily_reports` WHERE `report_id` = :reportId");
+        $stmt = $this->db->prepare("SELECT `total_km`, `fuel_usage`, `avg_milage`, `fuel_amount` FROM `bms_daily_reports` WHERE `report_id` = :reportId");
         $stmt->bindParam(":reportId", $reportId);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -644,6 +650,32 @@ class DailyReportModel {
     public function getEndKm($tripId) {
         $stmt = $this->db->prepare("SELECT `start_km` FROM `bms_trips` WHERE `trip_id` = :tripId");
         $stmt->bindParam("tripId", $tripId);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+
+    public function getFuelAmount($date, $busId) {
+        $isActive = true;
+        $stmt = $this->db->prepare("SELECT `fuel_quantity`, `fuel_cost` FROM `bms_fuel_reports` WHERE `fuel_date` = :date AND `bus_id` = :busId AND `is_active` = :isActive");
+        $stmt->bindParam("date", $date);
+        $stmt->bindParam("busId", $busId);
+        $stmt->bindParam("isActive", $isActive);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function getFuelAmount2($fromDate, $toDate, $busId) {
+        $isActive = true;
+        $stmt = $this->db->prepare("SELECT `fuel_quantity`, `fuel_cost` FROM `bms_fuel_reports` WHERE `fuel_date` >= :fromDate AND `fuel_date` <= :toDate AND `bus_id` = :busId AND `is_active` = :isActive ORDER BY `fuel_report_id` DESC");
+        $stmt->bindParam("fromDate", $fromDate);
+        $stmt->bindParam("toDate", $toDate);
+        $stmt->bindParam("busId", $busId);
+        $stmt->bindParam("isActive", $isActive);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 

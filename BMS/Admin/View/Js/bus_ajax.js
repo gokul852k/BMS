@@ -427,6 +427,10 @@ async function getBusDetailsForEdit(BusId) {
 $(document).ready(function () {
     $('#bus-edit-form').on('submit', function (e) {
         e.preventDefault();
+        // Check if form is valid
+        if (!this.checkValidity()) {
+            return;
+        }
         //Calling progress bar
         popupOpen("progress-loader");
         let array = [["Updating bus. Please wait..", 4000], ["please wait a moment..", 4000], ["Uploading bus documents..", 4000]];

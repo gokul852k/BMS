@@ -61,7 +61,7 @@ body.dark {
 }
 
 .heading {
-  font-size: 18px;
+  font-size: 16px;
   color: var(--primary-color);
   margin-bottom: 25px;
   font-weight: 500;
@@ -574,6 +574,10 @@ div.dt-container .dt-paging {
   margin-bottom: 20px !important;
 }
 
+.m-t-40 {
+  margin-top: 40px !important;
+}
+
 .m-t-30 {
   margin-top: 30px;
 }
@@ -871,6 +875,7 @@ div.dt-container .dt-paging {
 
 /* Select Search */
 .selectpicker-row button {
+  top: -4px;
   color: #333;
   background-color: transparent !important;
   border: none !important;

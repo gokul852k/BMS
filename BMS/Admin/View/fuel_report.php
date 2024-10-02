@@ -9,7 +9,6 @@ require_once '../Services/FuelReportService.php';
 <link rel="stylesheet" href="../../../Common/Common file/card.css">
 <link rel="stylesheet" href="../../../Common/Common file/header.css">
 <link rel="stylesheet" href="../../../Common/Common file/pop_up.css">
-<link rel="stylesheet" href="../../../Common/Common file/search_select.css">
 <link rel="stylesheet" href="./Style/driver.css">
 <link rel="stylesheet" href="./Style/chart.css">
 
@@ -249,14 +248,11 @@ require_once '../Services/FuelReportService.php';
                 </div>
                 <div class="admin-modal-body">
                     <div class="row p-20">
-                        <div class="selectpicker-row p-0">
-                            <div class="col-sm-12 search-select-1">
-                                <label for="" class="input-label">Bus No</label>
-                                <select class="selectpicker input-field" data-show-subtext="true"
-                                    data-live-search="true" name="bus-id" id="bus-no">
+                        <div class="col-sm-12">
+                            <label for="" class="input-label">Bus No</label>
+                            <select class="input-field" name="bus-id" id="bus-no">
 
-                                </select>
-                            </div>
+                            </select>
                         </div>
 
                         <div class="col-sm-12">
@@ -308,14 +304,11 @@ require_once '../Services/FuelReportService.php';
                 <div class="admin-modal-body edit-info" style="display: none">
                     <div class="row p-20">
                         <input type="hidden" name="fuel_report_id" id="e-fuel_report_id">
-                        <div class="selectpicker-row p-0">
-                            <div class="col-sm-12">
-                                <label for="" class="input-label">Bus No</label>
-                                <select class="selectpicker input-field" data-show-subtext="true"
-                                    data-live-search="true" name="bus_id" id="e-bus_id">
+                        <div class="col-sm-12">
+                            <label for="" class="input-label">Bus No</label>
+                            <select class="input-field" name="bus_id" id="e-bus_id">
 
-                                </select>
-                            </div>
+                            </select>
                         </div>
                         <div class="col-sm-12">
                             <label for="" class="input-label">Date</label>
@@ -378,51 +371,50 @@ require_once '../Services/FuelReportService.php';
                 </div>
                 <div class="admin-modal-body">
                     <div class="row p-20">
+                        <div class="col-sm-12 filter-btn-list">
+                            <div class="btn_check">
+                                <input type="radio" id="check1" name="days" value="1" onchange="uncheck()">
+                                <label class="btn btn-default" for="check1">Today</label>
+                            </div>
+                            <div class="btn_check">
+                                <input type="radio" id="check2" name="days" value="7" onchange="uncheck()">
+                                <label class="btn btn-default" for="check2">Last 7 Days</label>
+                            </div>
+                            <div class="btn_check">
+                                <input type="radio" id="check3" name="days" value="30" onchange="uncheck()">
+                                <label class="btn btn-default" for="check3">Last 30 Days</label>
+                            </div>
+                        </div>
                         <div class="col-sm-12">
                             <label for="" class="input-label">Date</label>
-                            <div class="form-group filter-date">
+                            <div class="form-group filter-date m-b-20">
                                 <span>From</span>
-                                <input type="date" name="filter-from-date" class="form-field">
+                                <input type="date" name="filter-from-date" class="form-field" onchange="unSelect()">
                             </div>
-                            <div class="form-group filter-date">
-                                <input type="date" name="filter-to-date" class="form-field">
+                            <div class="form-group filter-date m-b-20">
+                                <input type="date" name="filter-to-date" class="form-field" onchange="unSelect()">
                                 <span>To</span>
                             </div>
                         </div>
-                        <div class="selectpicker-row p-0">
-                            <div class="col-sm-12 search-select-1">
-                                <label for="" class="input-label">Bus No</label>
-                                <select class="selectpicker input-field" data-show-subtext="true"
-                                    data-live-search="true" name="filter-bus" id="filter-bus">
+                        <div class="col-sm-12">
+                            <label for="" class="input-label">Bus No</label>
+                            <select class="input-field" name="filter-bus" id="filter-bus">
 
-                                </select>
-                            </div>
+                            </select>
                         </div>
-                        <div class="selectpicker-row p-0">
-                            <div class="col-sm-12 search-select-1">
-                                <label for="" class="input-label">Bus No</label>
-                                <select class="selectpicker input-field" data-show-subtext="true"
-                                    data-live-search="true" name="filter-fuel-type" id="filter-fuel-type">
+                        <div class="col-sm-12">
+                            <label for="" class="input-label">Fuel Type</label>
+                            <select class="input-field" name="filter-fuel-type" id="filter-fuel-type">
 
-                                </select>
-                            </div>
+                            </select>
                         </div>
-                        <!-- <div class="selectpicker-row p-0">
-                            <div class="col-sm-12 search-select-1">
-                                <label for="" class="input-label">Driver</label>
-                                <select class="selectpicker input-field" data-show-subtext="true"
-                                    data-live-search="true" name="filter-driver" id="filter-driver">
-
-                                </select>
-                            </div>
-                        </div> -->
                         <div class="col-sm-12">
                             <label for="" class="input-label">Fuel Cost Range</label>
-                            <div class="form-group filter-date">
+                            <div class="form-group filter-date m-b-20">
                                 <span>From</span>
                                 <input type="number" name="filter-fuel-cost-from" class="form-field">
                             </div>
-                            <div class="form-group filter-date">
+                            <div class="form-group filter-date m-b-20">
                                 <input type="number" name="filter-fuel-cost-to" class="form-field">
                                 <span>To</span>
                             </div>
@@ -452,6 +444,5 @@ require_once '../Services/FuelReportService.php';
 <script src="../../../Common/Common file/main.js"></script>
 <script src="./Js/fuel_report_ajax.js"></script>
 <?php
-require_once '../../../Common/Common file/search_select_cdn.php';
 require_once './footer.php';
 ?>

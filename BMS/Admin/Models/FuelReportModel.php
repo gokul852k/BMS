@@ -202,7 +202,7 @@ class FuelReportModel {
 
     function getFilterCardCount($filters, $companyId) {
         $isActive = true;
-        $sql = "SELECT  SUM(fr.fuel_cost) AS 'totalAmount', SUM(fr.fuel_quantity) AS 'totalLiters', COUNT(*) AS 'reFueled'
+        $sql = "SELECT  FORMAT(SUM(fr.fuel_cost), 0) AS 'totalAmount', FORMAT(SUM(fr.fuel_quantity), 1) AS 'totalLiters', COUNT(*) AS 'reFueled'
                 FROM bms_fuel_reports fr
                 INNER JOIN bms_bus b ON fr.bus_id = b.id
                 WHERE 1=1 ";
@@ -244,6 +244,13 @@ class FuelReportModel {
 
         $sql .= "AND fr.is_active = :isActive";
         $params[':isActive'] = $isActive;
+
+        if (!empty($filters['orderBy'])) {
+            // Ensure that the value is either ASC or DESC
+            if ($filters['orderBy'] === "ASC" || $filters['orderBy'] === "DESC") {
+                $sql .= " ORDER BY fr.fuel_date " . $filters['orderBy'];
+            }
+        }
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
@@ -304,6 +311,13 @@ class FuelReportModel {
 
         $sql .= "AND fr.is_active = :isActive";
         $params[':isActive'] = $isActive;
+
+        if (!empty($filters['orderBy'])) {
+            // Ensure that the value is either ASC or DESC
+            if ($filters['orderBy'] === "ASC" || $filters['orderBy'] === "DESC") {
+                $sql .= " ORDER BY fr.fuel_date " . $filters['orderBy'];
+            }
+        }
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);

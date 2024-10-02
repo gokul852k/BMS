@@ -39,7 +39,7 @@ class SessionServices {
             $_SESSION['userId'] = $userId;
             $_SESSION['companyId'] = $companyId;
             $_SESSION['userName'] = $response2['fullname'];
-            $_SESSION['languageCode'] = 'ta';
+            $_SESSION['languageCode'] = $response2['language'];
             $_SESSION['userRoleId'] = $response4['id'];
             $_SESSION['driverId'] = $response2['id'];
 
@@ -55,6 +55,23 @@ class SessionServices {
             "status" => "error",
             "message" => "Session value not stored."
         ];
+    }
+
+    public function changeLanguage($code) {
+        $language = $this->modelBMS->getLanguage($code, $_SESSION['companyId']);
+        if ($language) {
+            $this->modelBMS->updateLanguage($_SESSION['driverId'], $language['code']);
+            $_SESSION['languageCode'] = $language['code'];
+            return [
+                "status" => "success",
+                "message" => "Language changed."
+            ];
+        } else {
+            return [
+                "status" => "error",
+                "message" => "error"
+            ];
+        }
     }
 
     public function isLoggedIn() {

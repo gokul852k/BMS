@@ -194,7 +194,7 @@ class DailyReportService {
                     $shiftSalary = (count($drivers) * (int) $shiftDriverSalary) + (count($conductors) * (int) $shiftConductorSalary);
                 }
 
-                $shiftTempFuelAmount = $this->calcFuelUsage2($date);
+                $shiftTempFuelAmount = $this->calcFuelUsage2($date, $busId);
 
                 if ($shiftTempFuelAmount != 0) {
                     $shiftFuelAmount = $shiftTempFuelAmount * $shiftFuelUsage;
@@ -233,7 +233,7 @@ class DailyReportService {
 
             }
         }
-        $tempFuelAmount = $this->calcFuelUsage2($date);
+        $tempFuelAmount = $this->calcFuelUsage2($date, $busId);
 
         if ($tempFuelAmount != 0) {
             $dailyFuelAmount = $tempFuelAmount * $dailyFuelUsage;
@@ -557,7 +557,7 @@ class DailyReportService {
                     $shiftSalary = (count($drivers) * (int) $shiftDriverSalary) + (count($conductors) * (int) $shiftConductorSalary);
                 }
 
-                $shiftTempFuelAmount = $this->calcFuelUsage2($date);
+                $shiftTempFuelAmount = $this->calcFuelUsage2($date, $busId);
 
                 if ($shiftTempFuelAmount != 0) {
                     $shiftFuelAmount = $shiftTempFuelAmount * $shiftFuelUsage;
@@ -604,7 +604,7 @@ class DailyReportService {
 
             }
         }
-        $tempFuelAmount = $this->calcFuelUsage2($date);
+        $tempFuelAmount = $this->calcFuelUsage2($date, $busId);
 
         if ($tempFuelAmount != 0) {
             $dailyFuelAmount = $tempFuelAmount * $dailyFuelUsage;
@@ -1209,8 +1209,8 @@ class DailyReportService {
         }
     }
 
-    public function calcFuelUsage2($date) {
-        $fuelAmount1 = $this->modelBMS->getFuelAmount($date);
+    public function calcFuelUsage2($date, $busId) {
+        $fuelAmount1 = $this->modelBMS->getFuelAmount($date, $busId);
 
         if ($fuelAmount1) {
             return $fuelAmount1['fuel_cost'] / $fuelAmount1['fuel_quantity'];
@@ -1223,12 +1223,28 @@ class DailyReportService {
 
         $fromDate = $date2->format('Y-m-d');
 
-        $fuelAmount2 = $this->modelBMS->getFuelAmount2($fromDate, $date);
+        $fuelAmount2 = $this->modelBMS->getFuelAmount2($fromDate, $date, $busId);
 
         if ($fuelAmount2) {
             return $fuelAmount2['fuel_cost'] / $fuelAmount2['fuel_quantity'];
         }
 
         return 0;
+    }
+
+    public function getLanguage()
+    {
+        $response = $this->modelBMS->getLanguage($_SESSION['companyId']);
+        if (!$response) {
+            return [
+                'status' => 'no data',
+                'message' => 'No data found'
+            ];
+        }
+
+        return [
+            'status' => 'success',
+            'data' => $response
+        ];
     }
 }

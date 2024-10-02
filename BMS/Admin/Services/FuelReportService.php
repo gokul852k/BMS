@@ -280,6 +280,19 @@ class FuelReportService {
         // Validate and sanitize filters
         $filters = [];
 
+        if (!empty($filterData['days'])) {
+            if ($filterData['days'] == 1) {
+                $filters['fromDate'] = date("Y-m-d");
+                $filters['toDate'] = date("Y-m-d");
+            } else if ($filterData['days'] == 7) {
+                $filters['fromDate'] = date("Y-m-d", strtotime("-7 days"));
+                $filters['toDate'] = date("Y-m-d");
+            } else if ($filterData['days'] == 30) {
+                $filters['fromDate'] = date("Y-m-d", strtotime("-30 days"));
+                $filters['toDate'] = date("Y-m-d");
+            }
+        }
+
         if (!empty($filterData['fromDate'])  && $this->isValidDate($filterData['fromDate'])) {
             $filters['fromDate'] = $filterData['fromDate'];
         }
@@ -302,6 +315,17 @@ class FuelReportService {
 
         if (!empty($filterData['costTo'])) {
             $filters['costTo'] = $filterData['costTo'];
+        }
+
+        if (empty($filters)) {
+            return [
+                'status' => 'error',
+                'message' => 'No filters are selected.'
+            ];
+        }
+
+        if (!empty($filterData['orderBy'])) {
+            $filters['orderBy'] = $filterData['orderBy'];
         }
 
         //Featching card count based on filter

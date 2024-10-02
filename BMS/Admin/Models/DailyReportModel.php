@@ -392,10 +392,11 @@ class DailyReportModel {
         }
     }
 
-    public function getFuelAmount($date) {
+    public function getFuelAmount($date, $busId) {
         $isActive = true;
-        $stmt = $this->db->prepare("SELECT `fuel_quantity`, `fuel_cost` FROM `bms_fuel_reports` WHERE `fuel_date` = :date AND `is_active` = :isActive");
+        $stmt = $this->db->prepare("SELECT `fuel_quantity`, `fuel_cost` FROM `bms_fuel_reports` WHERE `fuel_date` = :date AND `bus_id` = :busId AND `is_active` = :isActive");
         $stmt->bindParam("date", $date);
+        $stmt->bindParam("busId", $busId);
         $stmt->bindParam("isActive", $isActive);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -403,11 +404,12 @@ class DailyReportModel {
         return $result ? $result : null;
     }
 
-    public function getFuelAmount2($fromDate, $toDate) {
+    public function getFuelAmount2($fromDate, $toDate, $busId) {
         $isActive = true;
-        $stmt = $this->db->prepare("SELECT `fuel_quantity`, `fuel_cost` FROM `bms_fuel_reports` WHERE `fuel_date` >= :fromDate AND `fuel_date` <= :toDate AND `is_active` = :isActive ORDER BY `fuel_report_id` DESC");
+        $stmt = $this->db->prepare("SELECT `fuel_quantity`, `fuel_cost` FROM `bms_fuel_reports` WHERE `fuel_date` >= :fromDate AND `fuel_date` <= :toDate AND `bus_id` = :busId AND `is_active` = :isActive ORDER BY `fuel_report_id` DESC");
         $stmt->bindParam("fromDate", $fromDate);
         $stmt->bindParam("toDate", $toDate);
+        $stmt->bindParam("busId", $busId);
         $stmt->bindParam("isActive", $isActive);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -804,6 +806,19 @@ class DailyReportModel {
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
 
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ? $result : null;
+    }
+
+    public function getLanguage($companyId) {
+        $isActive = true;
+        $stmt = $this->db->prepare("SELECT l.code, l.name FROM bms_company_languages cl
+                                    INNER JOIN bms_languages l ON cl.language_id = l.id
+                                    WHERE cl.company_id = :companyId AND cl.is_active = :isActive");
+        $stmt->bindParam("companyId", $companyId);
+        $stmt->bindParam("isActive", $isActive);
+        $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $result ? $result : null;

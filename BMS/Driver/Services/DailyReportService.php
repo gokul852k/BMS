@@ -23,6 +23,20 @@ class DailyReportService {
         }
     }
 
+    public function getTranslationsLabels2($pageId) {
+        $response = $this->modelBMS->getTranslationsLabels($pageId, $_SESSION['languageCode']);
+        if ($response) {
+            return [
+                'status' => 'success',
+                'data' => $response
+            ];
+        } else {
+            return [
+                'status' => 'error'
+            ];
+        }
+    }
+
     public function getDisplay() {
 
         $currentDate = date('Y-m-d');
@@ -500,8 +514,14 @@ class DailyReportService {
         // 1) Salary -> Every time user end the duty we need add the priveious salary in shift table and than update the salary.
         // 2) Commission -> Every time user end the duty we will get the total commission. So we do not need to add we only update the commission in shift table.
         // 3) Expence -> We directly update the expence.
+        // 4) FuelAmount -> Claculate fuel amount
 
-        $updateShiftDetails = $this->modelBMS->updateShiftDetails($shiftId, $salary, $fuelUsage);
+        $fuelPerLiterAmount = $this->calcFuelUsage2($driverShift['start_date'], $driverShift['bus_id']);
+
+        //Calculate Fuel Amount
+        $fuelAmount = (float)$fuelUsage * $fuelPerLiterAmount;
+
+        $updateShiftDetails = $this->modelBMS->updateShiftDetails($shiftId, $salary, $fuelUsage, $fuelAmount);
 
         //check workers work status is true
 
@@ -536,7 +556,7 @@ class DailyReportService {
                         }
                     }
                 }
-                $this->modelBMS->updateDailyReportSCEM($shiftDetails['report_id'], $shiftDetails['salary'], $shiftDetails['commission'], $shiftDetails['expence'], $shiftDetails['fuel_usage'], $avgMilage);
+                $this->modelBMS->updateDailyReportSCEM($shiftDetails['report_id'], $shiftDetails['salary'], $shiftDetails['commission'], $shiftDetails['expence'], $shiftDetails['fuel_usage'], $avgMilage, $fuelAmount);
             }
 
             if (!$updateShiftStatus || !$shiftDetails) {
@@ -557,6 +577,29 @@ class DailyReportService {
             'status' => 'success',
             'message' => 'Duty ended successfully.'
         ];
+    }
+
+    public function calcFuelUsage2($date, $busId) {
+        $fuelAmount1 = $this->modelBMS->getFuelAmount($date, $busId);
+
+        if ($fuelAmount1) {
+            return $fuelAmount1['fuel_cost'] / $fuelAmount1['fuel_quantity'];
+        }
+
+        $date2 = new DateTime(); // Current date
+
+        // Subtract 7 days
+        $date2->modify('-7 days');
+
+        $fromDate = $date2->format('Y-m-d');
+
+        $fuelAmount2 = $this->modelBMS->getFuelAmount2($fromDate, $date, $busId);
+
+        if ($fuelAmount2) {
+            return $fuelAmount2['fuel_cost'] / $fuelAmount2['fuel_quantity'];
+        }
+
+        return 0;
     }
 
     public function getTripsDetails() {

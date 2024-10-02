@@ -1,3 +1,48 @@
+// Get translations labels
+let tlabels;
+getTranslations();
+function getTranslations () {
+    var formData2 = {
+        action: 'getTranslations',
+        pageId: 2
+    }
+    $.ajax({
+        type: 'POST',
+        url: '../Controllers/DailyReportController.php',
+        data: formData2,
+        dataType: 'json',
+        success: function (response) {
+            if (response.status == "success") {
+                tlabels = response.data;
+                console.log(tlabels);
+            }else {
+                tlabels = [
+                    {"translation": "Oops!"},
+                    {"translation": "Please select bus"},
+                    {"translation": "Something went wrong! Please try again."},
+                    {"translation": "Success"},
+                    {"translation": "Duty Started"},
+                    {"translation": "Trip Started."},
+                    {"translation": "Start route is required"},
+                    {"translation": "End route is required"},
+                    {"translation": "Start KM is required"},
+                    {"translation": "End KM is required"},
+                    {"translation": "End KM is lower than Start KM."},
+                    {"translation": "Trip ended."},
+                    {"translation": "Continue Duty"},
+                    {"translation": "End Duty"},
+                    {"translation": "From"},
+                    {"translation": "To"},
+                    {"translation": "Do not End Duty"},
+                    {"translation": "First, you need to end the trip to finish the duty."},
+                    {"translation": "Duty ended successfully."},
+                ]
+            }
+            
+        }
+    });
+}
+
 // Create Daily Report
 
 $(document).ready(function () {
@@ -6,8 +51,8 @@ $(document).ready(function () {
         // Check if form is valid
         if ($("#bus-id").val() == "") {
             Swal.fire({
-                title: "Oops!",
-                text: "Please select bus",
+                title: tlabels[0]['translation'],
+                text: tlabels[1]['translation'],
                 icon: "warning"
             });
             return;
@@ -27,8 +72,8 @@ $(document).ready(function () {
                 let data = JSON.parse(response);
                 if (data.status === 'success') {
                     Swal.fire({
-                        title: "Success",
-                        text: data.message,
+                        title: tlabels[3]['translation'],
+                        text: tlabels[4]['translation'],
                         icon: "success"
                     }).then((result) => {
                         window.location.reload();
@@ -36,14 +81,14 @@ $(document).ready(function () {
                 }
                 else if (data.status === 'error') {
                     Swal.fire({
-                        title: "Oops!",
-                        text: data.message,
+                        title: tlabels[0]['translation'],
+                        text: tlabels[2]['translation'],
                         icon: "error"
                     });
                 } else {
                     Swal.fire({
-                        title: "Oops!",
-                        text: data.message,
+                        title: tlabels[0]['translation'],
+                        text: tlabels[2]['translation'],
                         icon: "error"
                     });
                 }
@@ -51,8 +96,8 @@ $(document).ready(function () {
             error: function (xhr, status, error) {
                 console.error(xhr.responseText);
                 Swal.fire({
-                    title: "Oops!",
-                    text: "Something went wrong! Please try again.",
+                    title: tlabels[0]['translation'],
+                    text: tlabels[2]['translation'],
                     icon: "error"
                 });
             }
@@ -68,19 +113,19 @@ $(document).ready(function () {
 
         if ($("#start-route").val() == "") {
             $('#start-route').addClass('input-error');
-            $('#start-route-error').html('Start route is required');
+            $('#start-route-error').html(tlabels[6]['translation']);
             return;
         }
 
         if ($("#end-route").val() == "") {
             $('#end-route').addClass('input-error');
-            $('#end-route-error').html('End route is required');
+            $('#end-route-error').html(tlabels[7]['translation']);
             return;
         }
 
         if ($("#start-km").val() == "") {
             $('#start-km').addClass('input-error');
-            $('#start-km-error').html('Start KM is required');
+            $('#start-km-error').html(tlabels[8]['translation']);
             return;
         }
 
@@ -98,8 +143,8 @@ $(document).ready(function () {
                 let data = JSON.parse(response);
                 if (data.status === 'success') {
                     Swal.fire({
-                        title: "Success",
-                        text: data.message,
+                        title: tlabels[3]['translation'],
+                        text: tlabels[5]['translation'],
                         icon: "success"
                     }).then((result) => {
                         window.location.reload();
@@ -108,7 +153,7 @@ $(document).ready(function () {
                 else if (data.status == "trip exist") {
                     Swal.fire({
                         title: data.title,
-                        text: data.message,
+                        text: tlabels[2]['translation'],
                         icon: "warning"
                     }).then((result) => {
                         window.location.reload();
@@ -116,14 +161,14 @@ $(document).ready(function () {
                 }
                 else if (data.status === 'error') {
                     Swal.fire({
-                        title: "Oops!",
-                        text: data.message,
+                        title: tlabels[0]['translation'],
+                        text: tlabels[2]['translation'],
                         icon: "error"
                     });
                 } else {
                     Swal.fire({
-                        title: "Oops!",
-                        text: data.message,
+                        title: tlabels[0]['translation'],
+                        text: tlabels[2]['translation'],
                         icon: "error"
                     });
                 }
@@ -131,8 +176,8 @@ $(document).ready(function () {
             error: function (xhr, status, error) {
                 console.error(xhr.responseText);
                 Swal.fire({
-                    title: "Oops!",
-                    text: "Something went wrong! Please try again.",
+                    title: tlabels[0]['translation'],
+                    text: tlabels[2]['translation'],
                     icon: "error"
                 });
             }
@@ -148,7 +193,7 @@ $(document).ready(function () {
 
         if ($("#start-km-2").val() == "") {
             $('#start-km-2').addClass('input-error');
-            $('#start-km-2-error').html('Start KM is required');
+            $('#start-km-2-error').html(tlabels[6]['translation']);
             return;
         }
 
@@ -166,8 +211,8 @@ $(document).ready(function () {
                 let data = JSON.parse(response);
                 if (data.status === 'success') {
                     Swal.fire({
-                        title: "Success",
-                        text: data.message,
+                        title: tlabels[3]['translation'],
+                        text: tlabels[5]['translation'],
                         icon: "success"
                     }).then((result) => {
                         window.location.reload();
@@ -175,14 +220,14 @@ $(document).ready(function () {
                 }
                 else if (data.status === 'error') {
                     Swal.fire({
-                        title: "Oops!",
-                        text: data.message,
+                        title: tlabels[0]['translation'],
+                        text: tlabels[2]['translation'],
                         icon: "error"
                     });
                 } else {
                     Swal.fire({
-                        title: "Oops!",
-                        text: data.message,
+                        title: tlabels[0]['translation'],
+                        text: tlabels[2]['translation'],
                         icon: "error"
                     });
                 }
@@ -190,8 +235,8 @@ $(document).ready(function () {
             error: function (xhr, status, error) {
                 console.error(xhr.responseText);
                 Swal.fire({
-                    title: "Oops!",
-                    text: "Something went wrong! Please try again.",
+                    title: tlabels[0]['translation'],
+                    text: tlabels[2]['translation'],
                     icon: "error"
                 });
             }
@@ -207,7 +252,7 @@ $(document).ready(function () {
 
         if ($("#end-km").val() == "") {
             $('#end-km').addClass('input-error');
-            $('#end-km-error').html('End KM is required');
+            $('#end-km-error').html(tlabels[9]['translation']);
             return;
         }
 
@@ -228,8 +273,11 @@ $(document).ready(function () {
                 if (response.status == "success") {
                     let rData = response.data;
                     if(rData.start_km > endKm) {
-                        $('#end-km').addClass('input-error');
-                        $('#end-km-error').html('End KM is lower than Start KM.');
+                        Swal.fire({
+                            title: tlabels[0]['translation'],
+                            text: tlabels[10]['translation'],
+                            icon: "warning"
+                        });
                         return;
                     } else {
                         var formData = new FormData(document.getElementById("end-trip"));
@@ -246,14 +294,14 @@ $(document).ready(function () {
                                 let data = JSON.parse(response);
                                 if (data.status === 'success') {
                                     Swal.fire({
-                                        title: "Success",
-                                        text: data.message,
+                                        title: tlabels[3]['translation'],
+                                        text: tlabels[11]['translation'],
                                         icon: "success",
                                         showCancelButton: true,
                                         confirmButtonColor: "#3085d6",
                                         cancelButtonColor: "#d33",
-                                        confirmButtonText: "Continue Work",
-                                        cancelButtonText: "Stop Work"
+                                        confirmButtonText: tlabels[12]['translation'],
+                                        cancelButtonText: tlabels[13]['translation']
                                     }).then((result) => {
                                         if (result.isConfirmed) {
                                             window.location.reload();
@@ -264,14 +312,14 @@ $(document).ready(function () {
                                 }
                                 else if (data.status === 'error') {
                                     Swal.fire({
-                                        title: "Oops!",
-                                        text: data.message,
+                                        title: tlabels[0]['translation'],
+                                        text: tlabels[2]['translation'],
                                         icon: "error"
                                     });
                                 } else {
                                     Swal.fire({
-                                        title: "Oops!",
-                                        text: data.message,
+                                        title: tlabels[0]['translation'],
+                                        text: tlabels[2]['translation'],
                                         icon: "error"
                                     });
                                 }
@@ -279,8 +327,8 @@ $(document).ready(function () {
                             error: function (xhr, status, error) {
                                 console.error(xhr.responseText);
                                 Swal.fire({
-                                    title: "Oops!",
-                                    text: "Something went wrong! Please try again.",
+                                    title: tlabels[0]['translation'],
+                                    text: tlabels[2]['translation'],
                                     icon: "error"
                                 });
                             }
@@ -342,11 +390,11 @@ function endDuty() {
                                 <div class="route-card-left">
                                     <div class="route-card-from">
                                         <span class="r-c-h">${item.startRouteName}</span>
-                                        <span class="r-c-p">From</span>
+                                        <span class="r-c-p">${tlabels[14]['translation']}</span>
                                     </div>
                                     <div class="route-card-to">
                                         <span class="r-c-h">${item.endRouteName}</span>
-                                        <span class="r-c-p">To</span>
+                                        <span class="r-c-p">${tlabels[15]['translation']}</span>
                                     </div>
                                 </div>
                                 <div class="route-card-right">
@@ -378,7 +426,7 @@ function endDuty() {
                 else if (response.status === 'error') {
                     Swal.fire({
                         title: "Error",
-                        text: response.message,
+                        text: tlabels[2]['translation'],
                         icon: "error"
                     });
                 }
@@ -387,15 +435,15 @@ function endDuty() {
                 console.error(xhr.responseText);
                 Swal.fire({
                     title: "Error",
-                    text: "Something went wrong! Please try again.",
+                    text: tlabels[2]['translation'],
                     icon: "error"
                 });
             }
         })
     } else {
         Swal.fire({
-            title: "Do not End Duty",
-            text: "First, you need to end the trip to finish the duty.",
+            title: tlabels[16]['translation'],
+            text: tlabels[17]['translation'],
             icon: "warning",
             confirmButtonColor: "#3085d6",
             confirmButtonText: "Okay"
@@ -430,8 +478,8 @@ $(document).ready(function () {
                 let data = JSON.parse(response);
                 if (data.status === 'success') {
                     Swal.fire({
-                        title: "Success",
-                        text: data.message,
+                        title: tlabels[3]['translation'],
+                        text: tlabels[18]['translation'],
                         icon: "success"
                     }).then((result) => {
                         window.location.reload();
@@ -439,14 +487,14 @@ $(document).ready(function () {
                 }
                 else if (data.status === 'error') {
                     Swal.fire({
-                        title: "Oops!",
-                        text: data.message,
+                        title: tlabels[0]['translation'],
+                        text: tlabels[2]['translation'],
                         icon: "error"
                     });
                 } else {
                     Swal.fire({
-                        title: "Oops!",
-                        text: data.message,
+                        title: tlabels[0]['translation'],
+                        text: tlabels[2]['translation'],
                         icon: "error"
                     });
                 }
@@ -454,8 +502,8 @@ $(document).ready(function () {
             error: function (xhr, status, error) {
                 console.error(xhr.responseText);
                 Swal.fire({
-                    title: "Oops!",
-                    text: "Something went wrong! Please try again.",
+                    title: tlabels[0]['translation'],
+                    text: tlabels[2]['translation'],
                     icon: "error"
                 });
             }

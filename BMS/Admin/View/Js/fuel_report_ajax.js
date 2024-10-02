@@ -19,15 +19,14 @@ async function getFuelReports() {
         let array = [["Loading..", 4000], ["please wait a moment..", 4000]];
         progressLoader(array);
         var formData = new FormData();
-        let currentDate = new Date()
-        let fromDate = await getSixMonthsAgoDate();
-        let toDate = currentDate.toISOString().split('T')[0];
-        formData.append('filter-from-date', fromDate);
-        formData.append('filter-to-date', toDate);
+        formData.append('days', 7);
+        formData.append('filter-from-date', '');
+        formData.append('filter-to-date', '');
         formData.append('filter-bus', '');
         formData.append('filter-fuel-type', '');
         formData.append('filter-fuel-cost-from', '');
         formData.append('filter-fuel-cost-to', '');
+        formData.append('orderBy', 'DESC');
         formData.append('action', 'applyFilter');
 
         $.ajax({
@@ -50,8 +49,10 @@ async function getFuelReports() {
                     //Fuel Report Table
                     let reports = data.fuelReport;
 
-                    let tableBody = $('#fuel-report-table tbody');
-                    tableBody.empty();
+                    let table = $('#fuel-report-table').DataTable();
+
+                    // Clear the DataTable
+                    table.clear(); 
 
                     $.each(reports, function (index, item) {
                         let billUrl = "";
@@ -61,25 +62,23 @@ async function getFuelReports() {
                             billIcon = '<i class="fa-solid fa-receipt"></i>';
                         }
                         
-                        let row = '<tr>' +
-                            '<td>' + (index + 1) + '</td>' +
-                            '<td>' + item.busNumber + '</td>' +
-                            '<td>' + item.date + '</td>' +
-                            '<td>' + item.fuelType + '</td>' +
-                            '<td>' + item.liters + '</td>' +
-                            '<td>' + item.amount + '</td>' +
-                            '<td class="th-btn bill"><a href="' + billUrl + '" target="_blank">' +billIcon+ '</a></td>' +
-                            `<td>
-                                <div class="th-btn">
-                                    <button class="table-btn edit" onclick="popupOpen('edit'); getFuelReportForEdit(`+ item.fuelReportId + `);"><i
-                                                    class="fa-duotone fa-pen-to-square"></i></button>
-                                    <button class="table-btn delete" onclick="deleteFuelReport(`+ item.fuelReportId + `, '` + item.busNumber + `', '` + item.date + `')"><i class="fa-duotone fa-trash"></i></button>
-                                </div>
-                            </td>`      
-                        '</tr>';
-                        tableBody.append(row);
+                        let row = [
+                            index + 1,
+                            item.busNumber,
+                            item.date,
+                            item.fuelType,
+                            item.liters,
+                            item.amount,
+                            `<div class="th-btn bill"><a href="${billUrl}" target="_blank">${billIcon}</a></div>`,
+                            `<div class="th-btn">
+                                <button class="table-btn edit" onclick="popupOpen('edit'); getFuelReportForEdit(${item.fuelReportId});"><i
+                                                class="fa-duotone fa-pen-to-square"></i></button>
+                                <button class="table-btn delete" onclick="deleteFuelReport(${item.fuelReportId}, '${item.busNumber}', '${item.date}')"><i class="fa-duotone fa-trash"></i></button>
+                            </div>`
+                        ]
+                        table.row.add(row);
                     })
-                    DataTable();
+                    table.draw();
 
                     //Chart
                     let chartData = data.chartData;
@@ -290,7 +289,7 @@ async function getBuses() {
     });
 
     // Refresh the selectpicker to apply the changes
-    select.selectpicker('refresh');
+    // select.selectpicker('refresh');
 
 
 }
@@ -434,7 +433,7 @@ async function getFuelReportForEdit(reportId) {
                 });
 
                 // Refresh the selectpicker to apply the changes
-                select.selectpicker('refresh');
+                // select.selectpicker('refresh');
 
                 report.date != "" ? document.getElementById("e-fuel_date").value = report.date : document.getElementById("e-fuel_date").value = "";
                 report.liters != "" ? document.getElementById("e-fuel_quantity").value = report.liters : document.getElementById("e-fuel_quantity").value = "";
@@ -616,7 +615,7 @@ async function getFilterField() {
     });
 
     // Refresh the selectpicker to apply the changes
-    select.selectpicker('refresh');
+    // select.selectpicker('refresh');
 
     //Fuel Type
     if (!fuelTypes) {
@@ -631,7 +630,7 @@ async function getFilterField() {
     });
 
     // Refresh the selectpicker to apply the changes
-    select2.selectpicker('refresh');
+    // select2.selectpicker('refresh');
 
     //Driver
     // if (!drivers) {
@@ -729,178 +728,189 @@ $('#filter').on('reset', function() {
     $('#filter-driver').selectpicker('refresh');
 });
 
+function unSelect() {
+    document.querySelectorAll('[name="days"]').forEach(function(radio) {
+        radio.checked = false;
+    });
+}
+
+function uncheck() {
+    document.querySelector('input[name="filter-from-date"]').value = '';
+    document.querySelector('input[name="filter-to-date"]').value = '';
+}
 
 //Add Filter
 
-$(document).ready(function () {
-    $('#filter-form').on('submit', function (e) {
-        e.preventDefault();
-        //Calling progress bar
-        popupOpen("progress-loader");
-        let array = [["Applying filter..", 4000], ["please wait a moment..", 4000], ["Uploading fuel bill..", 4000]];
-        progressLoader(array);
-        var formData = new FormData(this);
-        formData.append('action', 'applyFilter');
+// $(document).ready(function () {
+//     $('#filter-form').on('submit', function (e) {
+//         e.preventDefault();
+//         //Calling progress bar
+//         popupOpen("progress-loader");
+//         let array = [["Applying filter..", 4000], ["please wait a moment..", 4000], ["Uploading fuel bill..", 4000]];
+//         progressLoader(array);
+//         var formData = new FormData(this);
+//         formData.append('orderBy', 'ASC');
+//         formData.append('action', 'applyFilter');
 
-        $.ajax({
-            type: 'POST',
-            url: '../Controllers/FuelReportController.php',
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function (response) {
-                console.log(response);
-                popupClose("progress-loader");
-                let data = JSON.parse(response);
-                if (data.status === 'success') {
-                    //Card
-                    let cardDetails = data.cardCount;
-                    document.getElementById("total-amount").innerHTML = cardDetails.totalAmount;
-                    document.getElementById("total-liters").innerHTML = cardDetails.totalLiters;
-                    document.getElementById("re-fueled").innerHTML = cardDetails.reFueled;
+//         $.ajax({
+//             type: 'POST',
+//             url: '../Controllers/FuelReportController.php',
+//             data: formData,
+//             contentType: false,
+//             processData: false,
+//             success: function (response) {
+//                 console.log(response);
+//                 popupClose("progress-loader");
+//                 let data = JSON.parse(response);
+//                 if (data.status === 'success') {
+//                     //Card
+//                     let cardDetails = data.cardCount;
+//                     document.getElementById("total-amount").innerHTML = cardDetails.totalAmount;
+//                     document.getElementById("total-liters").innerHTML = cardDetails.totalLiters;
+//                     document.getElementById("re-fueled").innerHTML = cardDetails.reFueled;
 
-                    //Fuel Report Table
-                    let reports = data.fuelReport;
+//                     //Fuel Report Table
+//                     let reports = data.fuelReport;
 
-                    let tableBody = $('#fuel-report-table tbody');
-                    tableBody.empty();
+//                     let table = $('#fuel-report-table').DataTable();
 
-                    $.each(reports, function (index, item) {
-                        let billUrl = "";
-                        let billIcon = "-";
-                        if (item.bill != "") {
-                            billUrl = "../../Assets/User/"+item.bill;
-                            billIcon = '<i class="fa-solid fa-receipt"></i>';
-                        }
+//                     // Clear the DataTable
+//                     table.clear(); 
+
+//                     $.each(reports, function (index, item) {
+//                         let billUrl = "";
+//                         let billIcon = "-";
+//                         if (item.bill != "") {
+//                             billUrl = "../../Assets/User/"+item.bill;
+//                             billIcon = '<i class="fa-solid fa-receipt"></i>';
+//                         }
                         
-                        let row = '<tr>' +
-                            '<td>' + (index + 1) + '</td>' +
-                            '<td>' + item.busNumber + '</td>' +
-                            '<td>' + item.date + '</td>' +
-                            '<td>' + item.fuelType + '</td>' +
-                            '<td>' + item.liters + '</td>' +
-                            '<td>' + item.amount + '</td>' +
-                            '<td class="th-btn bill"><a href="' + billUrl + '" target="_blank">' +billIcon+ '</a></td>' +
-                            `<td>
-                                <div class="th-btn">
-                                    <button class="table-btn edit" onclick="popupOpen('edit'); getFuelReportForEdit(`+ item.fuelReportId + `);"><i
-                                                    class="fa-duotone fa-pen-to-square"></i></button>
-                                    <button class="table-btn delete" onclick="deleteFuelReport(`+ item.fuelReportId + `, '` + item.busNumber + `', '` + item.date + `')"><i class="fa-duotone fa-trash"></i></button>
-                                </div>
-                            </td>`      
-                        '</tr>';
-                        tableBody.append(row);
-                    })
-                    DataTable();
+//                         let row = [
+//                             index + 1,
+//                             item.busNumber,
+//                             item.date,
+//                             item.fuelType,
+//                             item.liters,
+//                             item.amount,
+//                             `<div class="th-btn bill"><a href="${billUrl}" target="_blank">${billIcon}</a></div>`,
+//                             `<div class="th-btn">
+//                                 <button class="table-btn edit" onclick="popupOpen('edit'); getFuelReportForEdit(${item.fuelReportId});"><i
+//                                                 class="fa-duotone fa-pen-to-square"></i></button>
+//                                 <button class="table-btn delete" onclick="deleteFuelReport(${item.fuelReportId}, '${item.busNumber}', '${item.date}')"><i class="fa-duotone fa-trash"></i></button>
+//                             </div>`
+//                         ]
+//                         table.row.add(row);
+//                     })
+//                     table.draw();
 
-                    //Chart
-                    let chartData = data.chartData;
-                    const ctx = document.getElementById("chart");
+//                     //Chart
+//                     let chartData = data.chartData;
+//                     const ctx = document.getElementById("chart");
 
-                    if (chartInstance) {
-                        chartInstance.destroy();
-                    }
+//                     if (chartInstance) {
+//                         chartInstance.destroy();
+//                     }
 
-                    Chart.defaults.color = "#272626";
-                    // Chart.defaults.font.family = "Poppins";
+//                     Chart.defaults.color = "#272626";
+//                     // Chart.defaults.font.family = "Poppins";
 
-                    chartInstance = new Chart(ctx, {
-                        type: "line",
-                        data: {
-                            labels: chartData.labels,
-                            datasets: [
-                                {
-                                    label: "",
-                                    data: chartData.data,
-                                    backgroundColor: "black",
-                                    borderColor: "coral",
-                                    borderRadius: 6,
-                                    cubicInterpolationMode: 'monotone',
-                                    fill: false,
-                                    borderSkipped: false,
-                                },
-                            ],
-                        },
-                        options: {
-                            interaction: {
-                                intersect: false,
-                                mode: 'index'
-                            },
-                            elements: {
-                                point: {
-                                    radius: 0
-                                }
-                            },
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    display: false,
-                                },
-                                tooltip: {
-                                    backgroundColor: "orange",
-                                    bodyColor: "#272626",
-                                    yAlign: "bottom",
-                                    cornerRadius: 4,
-                                    titleColor: "#272626",
-                                    usePointStyle: true,
-                                    callbacks: {
-                                        label: function (context) {
-                                            if (context.parsed.y !== null) {
-                                                const label = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'INR' }).format(context.parsed.y);
-                                                return label;
-                                            }
-                                            return null;
-                                        }
-                                    }
-                                },
-                            },
-                            scales: {
-                                x: {
-                                    border: {
-                                        dash: [4, 4],
-                                    },
-                                    title: {
-                                        text: "2023",
-                                    },
-                                },
-                                y: {
-                                    grid: {
-                                        color: "#27292D",
-                                    },
-                                    border: {
-                                        dash: [1, 2],
-                                    }
-                                },
-                            },
-                        },
-                    });
-                }
-                else if (data.status === 'error') {
-                    Swal.fire({
-                        title: "Oops!",
-                        text: data.message,
-                        icon: "error"
-                    });
-                } else {
-                    Swal.fire({
-                        title: "Oops!",
-                        text: data.message,
-                        icon: "error"
-                    });
-                }
-            },
-            error: function (response) {
-                console.error(xhr.responseText);
-                Swal.fire({
-                    title: "Oops!",
-                    text: "Something went wrong! Please try again.",
-                    icon: "error"
-                });
-            }
-        });
-    });
-});
+//                     chartInstance = new Chart(ctx, {
+//                         type: "line",
+//                         data: {
+//                             labels: chartData.labels,
+//                             datasets: [
+//                                 {
+//                                     label: "",
+//                                     data: chartData.data,
+//                                     backgroundColor: "black",
+//                                     borderColor: "coral",
+//                                     borderRadius: 6,
+//                                     cubicInterpolationMode: 'monotone',
+//                                     fill: false,
+//                                     borderSkipped: false,
+//                                 },
+//                             ],
+//                         },
+//                         options: {
+//                             interaction: {
+//                                 intersect: false,
+//                                 mode: 'index'
+//                             },
+//                             elements: {
+//                                 point: {
+//                                     radius: 0
+//                                 }
+//                             },
+//                             responsive: true,
+//                             maintainAspectRatio: false,
+//                             plugins: {
+//                                 legend: {
+//                                     display: false,
+//                                 },
+//                                 tooltip: {
+//                                     backgroundColor: "orange",
+//                                     bodyColor: "#272626",
+//                                     yAlign: "bottom",
+//                                     cornerRadius: 4,
+//                                     titleColor: "#272626",
+//                                     usePointStyle: true,
+//                                     callbacks: {
+//                                         label: function (context) {
+//                                             if (context.parsed.y !== null) {
+//                                                 const label = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'INR' }).format(context.parsed.y);
+//                                                 return label;
+//                                             }
+//                                             return null;
+//                                         }
+//                                     }
+//                                 },
+//                             },
+//                             scales: {
+//                                 x: {
+//                                     border: {
+//                                         dash: [4, 4],
+//                                     },
+//                                     title: {
+//                                         text: "2023",
+//                                     },
+//                                 },
+//                                 y: {
+//                                     grid: {
+//                                         color: "#27292D",
+//                                     },
+//                                     border: {
+//                                         dash: [1, 2],
+//                                     }
+//                                 },
+//                             },
+//                         },
+//                     });
+//                 }
+//                 else if (data.status === 'error') {
+//                     Swal.fire({
+//                         title: "Oops!",
+//                         text: data.message,
+//                         icon: "error"
+//                     });
+//                 } else {
+//                     Swal.fire({
+//                         title: "Oops!",
+//                         text: data.message,
+//                         icon: "error"
+//                     });
+//                 }
+//             },
+//             error: function (response) {
+//                 console.error(xhr.responseText);
+//                 Swal.fire({
+//                     title: "Oops!",
+//                     text: "Something went wrong! Please try again.",
+//                     icon: "error"
+//                 });
+//             }
+//         });
+//     });
+// });
 
 
 // Function to get the start of the month for a given date

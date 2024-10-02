@@ -122,8 +122,8 @@ class DriverModel {
         }
     }
 
-    public function setDriver($userId, $companyId, $name, $mobile, $mail, $address, $state, $district, $pincode, $driverImage_path, $licenceNo, $licenceExpiry, $drivingLicence_path, $aadharNo, $aadharCard_path, $panNo, $panCard_path) {
-        $stmt = $this->db->prepare("INSERT INTO `bms_drivers` (`user_id`, `company_id`, `fullname`, `mail`, `mobile`, `address`, `state`, `district`, `pincode`, `driver_image_path`, `licence_no`, `licence_expiry`, `licence_path`, `aadhar_no`, `aadhar_path`, `pan_no`, `pan_path`) VALUES (:userId, :companyId, :name, :mail, :mobile, :address, :state, :district, :pincode, :driverImage_path, :licenceNo, :licenceExpiry, :drivingLicence_path, :aadharNo, :aadharCard_path, :panNo, :panCard_path)");
+    public function setDriver($userId, $companyId, $name, $mobile, $mail, $address, $state, $district, $pincode, $language, $driverImage_path, $licenceNo, $licenceExpiry, $drivingLicence_path, $aadharNo, $aadharCard_path, $panNo, $panCard_path) {
+        $stmt = $this->db->prepare("INSERT INTO `bms_drivers` (`user_id`, `company_id`, `fullname`, `mail`, `mobile`, `address`, `state`, `district`, `pincode`, `language`, `driver_image_path`, `licence_no`, `licence_expiry`, `licence_path`, `aadhar_no`, `aadhar_path`, `pan_no`, `pan_path`) VALUES (:userId, :companyId, :name, :mail, :mobile, :address, :state, :district, :pincode, :language, :driverImage_path, :licenceNo, :licenceExpiry, :drivingLicence_path, :aadharNo, :aadharCard_path, :panNo, :panCard_path)");
         $stmt->bindParam("userId", $userId);
         $stmt->bindParam("companyId", $companyId);
         $stmt->bindParam("name", $name);
@@ -133,6 +133,7 @@ class DriverModel {
         $stmt->bindParam("state", $state);
         $stmt->bindParam("district", $district);
         $stmt->bindParam("pincode", $pincode);
+        $stmt->bindParam("language", $language);
         $stmt->bindParam("driverImage_path", $driverImage_path);
         $stmt->bindParam("licenceNo", $licenceNo);
         $stmt->bindParam("licenceExpiry", $licenceExpiry);
@@ -196,6 +197,14 @@ class DriverModel {
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $result ? $result : null;
+    }
+
+    public function updatePassword($userId, $hashPassword) {
+        $stmt = $this->db->prepare("UPDATE `users` SET `password` = :hashPassword WHERE `id` = :userId");
+        $stmt->bindParam(":hashPassword", $hashPassword);
+        $stmt->bindParam(":userId", $userId);
+
+        return $stmt->execute() ? true : false;
     }
 }
 

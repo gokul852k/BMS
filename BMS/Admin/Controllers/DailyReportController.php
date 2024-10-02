@@ -77,6 +77,10 @@ class DailyReportController {
         // echo json_encode($_POST);
     }
 
+    private function getLanguage() {
+        echo json_encode($this->service->getLanguage());
+    }
+
 }
 
 new DailyReportController();

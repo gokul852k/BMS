@@ -948,21 +948,17 @@ async function displayEdit(data) {
 
             let tripDrivers = trips[t]['driver'];
 
-            for (let d = 1; d <= Object.keys(tripDrivers); d++) {
-                
+            if (tripDrivers == undefined || tripDrivers == null) {
                 //Driver
                 if (!drivers) {
                     await driverAjax();
                 }
 
-                
-
                 // Add default "Select Bus" option
                 let ds = '<option value="" selected>Select Driver</option>';
 
                 drivers.forEach((driver) => {
-                    let isSelected = (tripDrivers[d]['driverId'] == driver.id) ? 'selected' : '';
-                    ds += '<option value="' + driver.id + '"'+isSelected+'>' + driver.fullname + '</option>';
+                    ds += '<option value="' + driver.id + '">' + driver.fullname + '</option>';
                 });
                 
 
@@ -988,7 +984,6 @@ async function displayEdit(data) {
                         <div class="bms-trip-driver-body">
                             <div class="bms-trip-driver-content">
                                 <div class="row">
-                                    <input type="hidden" name="shift[${shiftCounterEdit}][trip][${tripNumber}][driver][${driverNumber}][trip_driver_id]" value="${tripDrivers[d]['tripDriverId']}">
                                     <div class="col-sm-4">
                                         <label for="" class="input-label">Driver</label>
                                         <select class="input-field" name="shift[${shiftCounterEdit}][trip][${tripNumber}][driver][${driverNumber}][driver_id]" required>
@@ -998,22 +993,22 @@ async function displayEdit(data) {
                                     <div class="col-sm-2">
                                         <label for="" class="input-label">Start Time</label>
                                         <input type="time" class="input-field"
-                                            name="shift[${shiftCounterEdit}][trip][${tripNumber}][driver][${driverNumber}][start_time]" placeholder="" value="${tripDrivers[d]['startTime']}" required />
+                                            name="shift[${shiftCounterEdit}][trip][${tripNumber}][driver][${driverNumber}][start_time]" placeholder="" required />
                                     </div>
                                     <div class="col-sm-2">
                                         <label for="" class="input-label">End Time</label>
                                         <input type="time" class="input-field"
-                                            name="shift[${shiftCounterEdit}][trip][${tripNumber}][driver][${driverNumber}][end_time]" placeholder="" value="${tripDrivers[d]['endTime']}" required />
+                                            name="shift[${shiftCounterEdit}][trip][${tripNumber}][driver][${driverNumber}][end_time]" placeholder="" required />
                                     </div>
                                     <div class="col-sm-2">
                                         <label for="" class="input-label">Start KM</label>
                                         <input type="text" class="input-field"
-                                            name="shift[${shiftCounterEdit}][trip][${tripNumber}][driver][${driverNumber}][start_km]" placeholder="" value="${tripDrivers[d]['startKm']}" required />
+                                            name="shift[${shiftCounterEdit}][trip][${tripNumber}][driver][${driverNumber}][start_km]" placeholder="" required />
                                     </div>
                                     <div class="col-sm-2">
                                         <label for="" class="input-label">End KM</label>
                                         <input type="text" class="input-field"
-                                            name="shift[${shiftCounterEdit}][trip][${tripNumber}][driver][${driverNumber}][end_km]" placeholder="" value="${tripDrivers[d]['endKm']}" required />
+                                            name="shift[${shiftCounterEdit}][trip][${tripNumber}][driver][${driverNumber}][end_km]" placeholder="" required />
                                     </div>
                                 </div>
                             </div>
@@ -1021,13 +1016,87 @@ async function displayEdit(data) {
                     </div>
                     `
                 )
+            } else {
+                for (let d = 1; d <= Object.keys(tripDrivers); d++) {
+                
+                    //Driver
+                    if (!drivers) {
+                        await driverAjax();
+                    }
+    
+                    // Add default "Select Bus" option
+                    let ds = '<option value="" selected>Select Driver</option>';
+    
+                    drivers.forEach((driver) => {
+                        let isSelected = (tripDrivers[d]['driverId'] == driver.id) ? 'selected' : '';
+                        ds += '<option value="' + driver.id + '"'+isSelected+'>' + driver.fullname + '</option>';
+                    });
+                    
+    
+                    if (!driverCountersEdit[shiftCounterEdit]) {
+                        driverCountersEdit[shiftCounterEdit] = {};
+                    } 
+    
+                    if (!driverCountersEdit[shiftCounterEdit][tripNumber]) {
+                        driverCountersEdit[shiftCounterEdit][tripNumber] = 1;
+                    } else {
+                        driverCountersEdit[shiftCounterEdit][tripNumber]++;
+                    }
+    
+                    let driverNumber = driverCountersEdit[shiftCounterEdit][tripNumber];
+    
+                    // let driverBtn = d == 1 ? `<button type="button" class="add-button" onclick="addEditDriver(${shiftCounterEdit},${tripNumber})"><i class="fa-solid fa-circle-plus"></i></button>` : `<button type="button" class="remove-button" title="Remove Driver" onclick="deleteItem('bms-trip-driver-${shiftCounterEdit}-${tripNumber}-${driverNumber}')"><i class="fa-solid fa-trash"></i></button>`;
+                    $("#bms-trip-drivers-edit-"+shiftCounterEdit+"-"+tripNumber).append(
+                        `
+                        <div class="bms-trip-driver" id="bms-trip-driver-edit-${shiftCounterEdit}-${tripNumber}-${driverNumber}">
+                            <div class="bms-trip-driver-header">
+                                <p class="bms-trip-driver-title">Driver</p>
+                            </div>
+                            <div class="bms-trip-driver-body">
+                                <div class="bms-trip-driver-content">
+                                    <div class="row">
+                                        <input type="hidden" name="shift[${shiftCounterEdit}][trip][${tripNumber}][driver][${driverNumber}][trip_driver_id]" value="${tripDrivers[d]['tripDriverId']}">
+                                        <div class="col-sm-4">
+                                            <label for="" class="input-label">Driver</label>
+                                            <select class="input-field" name="shift[${shiftCounterEdit}][trip][${tripNumber}][driver][${driverNumber}][driver_id]" required>
+                                                ${ds}
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label for="" class="input-label">Start Time</label>
+                                            <input type="time" class="input-field"
+                                                name="shift[${shiftCounterEdit}][trip][${tripNumber}][driver][${driverNumber}][start_time]" placeholder="" value="${tripDrivers[d]['startTime']}" required />
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label for="" class="input-label">End Time</label>
+                                            <input type="time" class="input-field"
+                                                name="shift[${shiftCounterEdit}][trip][${tripNumber}][driver][${driverNumber}][end_time]" placeholder="" value="${tripDrivers[d]['endTime']}" required />
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label for="" class="input-label">Start KM</label>
+                                            <input type="text" class="input-field"
+                                                name="shift[${shiftCounterEdit}][trip][${tripNumber}][driver][${driverNumber}][start_km]" placeholder="" value="${tripDrivers[d]['startKm']}" required />
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label for="" class="input-label">End KM</label>
+                                            <input type="text" class="input-field"
+                                                name="shift[${shiftCounterEdit}][trip][${tripNumber}][driver][${driverNumber}][end_km]" placeholder="" value="${tripDrivers[d]['endKm']}" required />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        `
+                    )
+                }
             }
+
+            
 
 
             let tripconductors = trips[t]['conductor'];
 
-            for (let c = 1; c <= Object.keys(tripconductors).length; c++) {
-                // console.log(tripconductors[c]['tripConductorId']);
+            if (tripconductors == undefined || tripCounters == null) {
                 //Conductor
                 if (!conductors) {
                     await conductorAjax();
@@ -1036,11 +1105,10 @@ async function displayEdit(data) {
                 
 
                 // Add default "Select Bus" option
-                let cs = '<option value="">Select Conductor</option>';
+                let cs = '<option value="" selected>Select Conductor</option>';
 
                 conductors.forEach((conductor) => {
-                    let isSelected = (tripconductors[c]['conductorId'] == conductor.id) ? 'selected' : '';
-                    cs += '<option value="' + conductor.id + '"'+isSelected+'>' + conductor.fullname + '</option>';
+                    cs += '<option value="' + conductor.id + '">' + conductor.fullname + '</option>';
                 });
                 
 
@@ -1056,7 +1124,7 @@ async function displayEdit(data) {
 
                 let conductorNumber = conductorCountersEdit[shiftCounterEdit][tripNumber];
 
-                let conductorBtn = c == 1 ? `<button type="button" class="add-button" onclick="addEditConductor(${shiftCounterEdit},${tripNumber})"><i class="fa-solid fa-circle-plus"></i></button>` : `<button type="button" class="remove-button" title="Remove Conductor" onclick="deleteItem('bms-trip-conductor-edit-${shiftCounterEdit}-${tripNumber}-${conductorNumber}', '${tripconductors[c]['tripConductorId']}', 'conductor')"><i class="fa-solid fa-trash"></i></button>`;
+                let conductorBtn = `<button type="button" class="add-button" onclick="addEditConductor(${shiftCounterEdit},${tripNumber})"><i class="fa-solid fa-circle-plus"></i></button>`;
                 // alert("#bms-trip-conductors-edit-"+shiftCounterEdit+"-"+tripNumber);
                 $("#bms-trip-conductors-edit-"+shiftCounterEdit+"-"+tripNumber).append(
                     `
@@ -1068,7 +1136,6 @@ async function displayEdit(data) {
                         <div class="bms-trip-conductor-body">
                             <div class="bms-trip-conductor-content">
                                 <div class="row">
-                                    <input type="hidden" name="shift[${shiftCounterEdit}][trip][${tripNumber}][conductor][${conductorNumber}][trip_conductor_id]" value="${tripconductors[c]['tripConductorId']}">
                                     <div class="col-sm-4">
                                         <label for="" class="input-label">Conductor</label>
                                         <select class="input-field" name="shift[${shiftCounterEdit}][trip][${tripNumber}][conductor][${conductorNumber}][conductor_id]" required>
@@ -1078,12 +1145,12 @@ async function displayEdit(data) {
                                     <div class="col-sm-3">
                                         <label for="" class="input-label">Passangers</label>
                                         <input type="text" class="input-field"
-                                            name="shift[${shiftCounterEdit}][trip][${tripNumber}][conductor][${conductorNumber}][passangers]" placeholder="" value="${tripconductors[c]['passangers']}" required />
+                                            name="shift[${shiftCounterEdit}][trip][${tripNumber}][conductor][${conductorNumber}][passangers]" placeholder="" required />
                                     </div>
                                     <div class="col-sm-3">
                                         <label for="" class="input-label">Collection</label>
                                         <input type="text" class="input-field"
-                                            name="shift[${shiftCounterEdit}][trip][${tripNumber}][conductor][${conductorNumber}][collection]" placeholder="" value="${tripconductors[c]['collection']}" required />
+                                            name="shift[${shiftCounterEdit}][trip][${tripNumber}][conductor][${conductorNumber}][collection]" placeholder="" required />
                                     </div>
                                 </div>
                             </div>
@@ -1091,6 +1158,73 @@ async function displayEdit(data) {
                     </div>
                     `
                 )
+            } else {
+                for (let c = 1; c <= Object.keys(tripconductors).length; c++) {
+                    // console.log(tripconductors[c]['tripConductorId']);
+                    //Conductor
+                    if (!conductors) {
+                        await conductorAjax();
+                    }
+    
+                    
+    
+                    // Add default "Select Bus" option
+                    let cs = '<option value="">Select Conductor</option>';
+    
+                    conductors.forEach((conductor) => {
+                        let isSelected = (tripconductors[c]['conductorId'] == conductor.id) ? 'selected' : '';
+                        cs += '<option value="' + conductor.id + '"'+isSelected+'>' + conductor.fullname + '</option>';
+                    });
+                    
+    
+                    if (!conductorCountersEdit[shiftCounterEdit]) {
+                        conductorCountersEdit[shiftCounterEdit] = {};
+                    } 
+    
+                    if (!conductorCountersEdit[shiftCounterEdit][tripNumber]) {
+                        conductorCountersEdit[shiftCounterEdit][tripNumber] = 1;
+                    } else {
+                        conductorCountersEdit[shiftCounterEdit][tripNumber]++;
+                    }
+    
+                    let conductorNumber = conductorCountersEdit[shiftCounterEdit][tripNumber];
+    
+                    let conductorBtn = c == 1 ? `<button type="button" class="add-button" onclick="addEditConductor(${shiftCounterEdit},${tripNumber})"><i class="fa-solid fa-circle-plus"></i></button>` : `<button type="button" class="remove-button" title="Remove Conductor" onclick="deleteItem('bms-trip-conductor-edit-${shiftCounterEdit}-${tripNumber}-${conductorNumber}', '${tripconductors[c]['tripConductorId']}', 'conductor')"><i class="fa-solid fa-trash"></i></button>`;
+                    // alert("#bms-trip-conductors-edit-"+shiftCounterEdit+"-"+tripNumber);
+                    $("#bms-trip-conductors-edit-"+shiftCounterEdit+"-"+tripNumber).append(
+                        `
+                        <div class="bms-trip-conductor" id="bms-trip-conductor-edit-${shiftCounterEdit}-${tripNumber}-${conductorNumber}">
+                            <div class="bms-trip-conductor-header">
+                                <p class="bms-trip-conductor-title">Conductor</p>
+                                ${conductorBtn}
+                            </div>
+                            <div class="bms-trip-conductor-body">
+                                <div class="bms-trip-conductor-content">
+                                    <div class="row">
+                                        <input type="hidden" name="shift[${shiftCounterEdit}][trip][${tripNumber}][conductor][${conductorNumber}][trip_conductor_id]" value="${tripconductors[c]['tripConductorId']}">
+                                        <div class="col-sm-4">
+                                            <label for="" class="input-label">Conductor</label>
+                                            <select class="input-field" name="shift[${shiftCounterEdit}][trip][${tripNumber}][conductor][${conductorNumber}][conductor_id]" required>
+                                                ${cs}
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label for="" class="input-label">Passangers</label>
+                                            <input type="text" class="input-field"
+                                                name="shift[${shiftCounterEdit}][trip][${tripNumber}][conductor][${conductorNumber}][passangers]" placeholder="" value="${tripconductors[c]['passangers']}" required />
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label for="" class="input-label">Collection</label>
+                                            <input type="text" class="input-field"
+                                                name="shift[${shiftCounterEdit}][trip][${tripNumber}][conductor][${conductorNumber}][collection]" placeholder="" value="${tripconductors[c]['collection']}" required />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        `
+                    )
+                }
             }
         }
         shiftCounterEdit++;
@@ -1339,7 +1473,11 @@ async function addEditTrip(shiftNumber) {
         });
     }
 
-    tripCountersEdit[shiftNumber]++
+    if (!tripCountersEdit[shiftNumber]) {
+        tripCountersEdit[shiftNumber] = 1;
+    } else {
+        tripCountersEdit[shiftNumber]++
+    }
 
     if (!driverCountersEdit[shiftNumber]) {
         driverCountersEdit[shiftNumber] = {};

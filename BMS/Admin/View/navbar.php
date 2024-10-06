@@ -10,7 +10,7 @@ if ($navbarResponse && !empty($navbarResponse)) {
 
     <link rel="stylesheet" href="../../../Common/Common file/admin_navbar.css">
 
-    <nav class="sidebar labtop-nav">
+    <nav class="sidebar labtop-nav close">
         <header>
             <div class="image-text">
                 <span class="image">

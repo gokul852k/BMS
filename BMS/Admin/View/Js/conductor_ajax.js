@@ -209,7 +209,10 @@ function getConductorDetails(conductorId) {
 
 //Get Driver details for edit
 
-function getConductorDetailsForEdit(conductorId) {
+async function getConductorDetailsForEdit(conductorId) {
+    if(!languages) {
+        await languageAjax();
+    }
     let formData = {
         conductorId: conductorId,
         action: 'getconductor'
@@ -231,6 +234,26 @@ function getConductorDetailsForEdit(conductorId) {
                 details.fullname != "" ? document.getElementById("e-name").value = details.fullname : document.getElementById("e-name").value = "";
                 details.mail != "" ? document.getElementById("e-mail").value = details.mail : document.getElementById("e-mail").value = "";
                 details.mobile != "" ? document.getElementById("e-mobile").value = details.mobile : document.getElementById("e-mobile").value = "";
+
+
+                //Language
+                let select = $('#e-language');
+                select.empty();  // Clear existing options
+            
+                // Add default "Select Bus" option
+                select.append('<option value="" disabled>Select Language</option>');
+                console.log("------");
+                console.log(languages);
+                languages.forEach((language) => {
+                    if (details.language == language.code) {
+                        select.append('<option value="' + language.code + '" selected>' + language.name + '</option>');
+                    } else {
+                        select.append('<option value="' + language.code + '">' + language.name + '</option>');
+                    }
+                    
+                });
+
+
                 details.aadhar_no != "" ? document.getElementById("e-aadhar-no").value = details.aadhar_no : document.getElementById("e-aadhar-no").value = "";
                 details.pan_no != "" ? document.getElementById("e-pan-no").value = details.pan_no : document.getElementById("e-pan-no").value = "";
                 details.aadhar_path != "" ? document.getElementById("e-aadhar-path").href = "../../Assets/User/" + details.aadhar_path : document.getElementById("e-aadhar-path").href = "";
@@ -389,4 +412,55 @@ function deleteDriver(conductorId, conductorName) {
             });
         }
     });
+}
+
+let languages;
+
+async function getLanguageField() {
+    if(!languages) {
+        await languageAjax();
+    }
+
+    //Bus
+    let select = $('#language');
+    select.empty();  // Clear existing options
+
+    // Add default "Select Bus" option
+    select.append('<option value="" disabled selected>Select Language</option>');
+
+    languages.forEach((language) => {
+        select.append('<option value="' + language.code + '">' + language.name + '</option>');
+    });
+}
+
+function languageAjax() {
+    return new Promise((resolve, reject) => {
+        let formData = {
+            action: 'getLanguage'
+        }
+        $.ajax({
+            type: 'POST',
+            url: '../Controllers/DailyReportController.php',
+            data: formData,
+            dataType: 'json',
+            success: function (response) {
+                console.log(response);
+                if (response.status === 'success') {
+                    languages = response.data;
+                    resolve();
+                } else {
+                    reject();
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+                reject();
+                // Swal.fire({
+                //     title: "Error",
+                //     text: "Something went wrong! Please try again.",
+                //     icon: "error"
+                // });
+            }
+        });
+    })  
 }

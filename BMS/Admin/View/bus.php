@@ -9,7 +9,7 @@ require_once './navbar.php';
 <link rel="stylesheet" href="./Style/driver.css">
 
 <div class="register-driver">
-    <div class="container box-container box-head w3-animate-top">
+    <div class="box-container box-head w3-animate-top">
         <div class="row row-head">
             <div class="row-head-div-1">
                 <h4 class="heading">Bus Details</h4>
@@ -21,7 +21,7 @@ require_once './navbar.php';
             </div>
         </div>
     </div>
-    <div class="container box-container w3-animate-top">
+    <div class="box-container w3-animate-top">
         <div class="row row-head c-5">
             <div class="content">
                 <div class="container-fluid">
@@ -35,8 +35,10 @@ require_once './navbar.php';
                                                 <p class="mb-0 text-secondary">Total Bus</p>
                                                 <h4 class="my-1 text-info t-c-4" id="total-bus">-</h4>
                                             </div>
-                                            <div class="widgets-icons-2 rounded-circle bg-g-4 text-white ms-auto">
+                                            <div class="text-white ms-auto">
+                                            <div class="card-bg bg-g-4">
                                                 <i class="fa-solid fa-bus"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -52,8 +54,10 @@ require_once './navbar.php';
                                                 <p class="mb-0 text-secondary">Total KM</p>
                                                 <h4 class="my-1 text-info t-c-5" id="total-km">-</h4>
                                             </div>
-                                            <div class="widgets-icons-2 rounded-circle bg-g-5 text-white ms-auto">
+                                            <div class="text-white ms-auto">
+                                            <div class="card-bg bg-g-5">
                                                 <i class="fa-solid fa-gauge-max"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -69,8 +73,10 @@ require_once './navbar.php';
                                                 <p class="mb-0 text-secondary">Avg Mileage</p>
                                                 <h4 class="my-1 text-info t-c-6" id="avg-mileage">-</h4>
                                             </div>
-                                            <div class="widgets-icons-2 rounded-circle bg-g-6 text-white ms-auto">
+                                            <div class="text-white ms-auto">
+                                            <div class="card-bg bg-g-6">
                                                 <i class="fa-solid fa-gas-pump"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -86,8 +92,10 @@ require_once './navbar.php';
                                                 <p class="mb-0 text-secondary">Cost per KM</p>
                                                 <h4 class="my-1 text-info t-c-7" id="cost-per-km">-</h4>
                                             </div>
-                                            <div class="widgets-icons-2 rounded-circle  bg-g-7 text-white ms-auto">
+                                            <div class="text-white ms-auto">
+                                            <div class="card-bg bg-g-7">
                                                 <i class="fa-solid fa-receipt"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -104,8 +112,10 @@ require_once './navbar.php';
                                                 <h4 class="my-1 text-info t-c-3" id="expitations">-</h4>
                                             </div>
                                             <div
-                                                class="widgets-icons-2 rounded-circle  bg-gradient-blooker text-white ms-auto">
+                                                class="text-white ms-auto">
+                                                <div class="card-bg bg-gradient-blooker">
                                                 <i class="fa-solid fa-file-xmark"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -120,11 +130,11 @@ require_once './navbar.php';
         </div>
     </div>
 
-    <div class="container box-container w3-animate-bottom" onload="getDrivers()">
+    <div class="box-container w3-animate-bottom" onload="getDrivers()">
         <div class="row">
             <div class="container">
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-xs-12 table-responsive">
                         <table
                             summary="This table shows how to create responsive tables using Datatables' extended functionality"
                             class="table table-bordered table-hover dt-responsive" id="bus-table">

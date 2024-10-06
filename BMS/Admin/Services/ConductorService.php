@@ -25,7 +25,7 @@ class ConductorService
         $this->mail = new Mail2();
     }
 
-    public function createConductor($conductorImage, $name, $mobile, $mail, $password, $address, $state, $district, $pincode, $aadharCard, $aadharNo, $panCard, $panNo)
+    public function createConductor($conductorImage, $name, $mobile, $mail, $password, $address, $state, $district, $pincode, $language, $aadharCard, $aadharNo, $panCard, $panNo)
     {
 
         //Check mail ID is already exit
@@ -96,7 +96,7 @@ class ConductorService
 
         //Insert Conductor details in conductors table in bms DB
 
-        $response3 = $this->modelBMS->setConductor($userId, $_SESSION['companyId'], $name, $mobile, $mail, $address, $state, $district, $pincode, $conductorImage_path, $aadharNo, $aadharCard_path, $panNo, $panCard_path);
+        $response3 = $this->modelBMS->setConductor($userId, $_SESSION['companyId'], $name, $mobile, $mail, $address, $state, $district, $pincode, $language, $conductorImage_path, $aadharNo, $aadharCard_path, $panNo, $panCard_path);
 
         if (!$response3) {
             //Delete the user from users table
@@ -131,11 +131,12 @@ class ConductorService
 
     }
 
-    public function updateConductor($conductorId, $conductorImage, $name, $mobile, $password, $address, $state, $district, $pincode, $aadharCard, $aadharNo, $panCard, $panNo)
+    public function updateConductor($conductorId, $conductorImage, $name, $mobile, $language, $password, $address, $state, $district, $pincode, $aadharCard, $aadharNo, $panCard, $panNo)
     {
         $conductorInfo = [
             "fullname" => $name,
             "mobile" => $mobile,
+            "language" => $language,
             "address" => $address,
             "state" => $state,
             "district" => $district,
@@ -156,7 +157,7 @@ class ConductorService
 
         //Check for changes
         $changes = [];
-        $fields = ['fullname', 'mobile', 'address', 'state', 'district', 'pincode', 'aadhar_no', 'pan_no'];
+        $fields = ['fullname', 'mobile', 'language', 'address', 'state', 'district', 'pincode', 'aadhar_no', 'pan_no'];
 
         //check & upload file changes
         $fileChanges = false;
@@ -218,6 +219,26 @@ class ConductorService
             }
         }
 
+        //Change password
+        $passwordChange = false;
+        if (isset($password) && !empty($password)) {
+            //Password Hasing
+
+            $hashPassword = password_hash($password, PASSWORD_DEFAULT);
+
+            $pass_response = $this->modelA->updatePassword($currentData['user_id'], $hashPassword);
+
+            if(!$pass_response) {
+                return [
+                    'status' => 'error',
+                    'message' => 'Something went wrong while updating the password',
+                    'error' => 'Error while update password in user table.'
+                ];
+            }
+
+            $passwordChange = true;
+        }
+
         foreach ($fields as $field) {
             if ($conductorInfo[$field] != $currentData[$field]) {
                 $changes[$field] = $conductorInfo[$field];
@@ -240,7 +261,7 @@ class ConductorService
             if ($final_response) {
                 return [
                     'status' => 'success',
-                    'message' => 'conductor details updated successfully'
+                    'message' => 'Conductor details updated successfully'
                 ];
             } else {
                 return [
@@ -251,11 +272,19 @@ class ConductorService
             }
 
         } else {
-            return [
-                'status' => 'error',
-                'message' => 'There are no changes in conductor details.',
-                'error' => 'All values as in conductor table'
-            ];
+            if ($passwordChange) {
+                return [
+                    'status' => 'success',
+                    'message' => 'Conductor details updated successfully'
+                ];
+            } else {
+                return [
+                    'status' => 'error',
+                    'message' => 'There are no changes in conductor details.',
+                    'error' => 'All values as in conductor table'
+                ];
+            }
+            
         }
     }
 

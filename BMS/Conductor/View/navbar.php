@@ -17,6 +17,29 @@ if ($navbarResponse && !empty($navbarResponse)) {
                 <div class='nav'>
                     <div class='nav-bar'>
                         <div class='logo'>AstronuX</div>
+                        <div class="dropdown-l">
+                            <button class="dropdown-toggle" onclick="toggleDropdown()">
+                                <i class="fa-duotone fa-solid fa-globe"></i>
+                            </button>
+                            <ul class="dropdown-menu-l">
+                                <li class="menu-item" onclick="changeLanguage('en')">
+                                    <span class="item-icon">
+                                        <i class="fa-duotone fa-solid fa-language"></i>
+                                    </span>
+                                    <span class="item-txt">
+                                        English
+                                    </span>
+                                </li>
+                                <li class="menu-item" onclick="changeLanguage('ta')">
+                                    <span class="item-icon">
+                                        <i class="fa-duotone fa-solid fa-language"></i>
+                                    </span>
+                                    <span class="item-txt">
+                                        Tamil
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
                         <div class='nav-btn'>
                             <div class='btn-bar menu'></div>
                             <div class='btn-bar menu'></div>

@@ -400,7 +400,7 @@ function endDuty() {
                                 <div class="route-card-right">
                                     <div class="route-card-passanger">
                                         <span class="r-c-h">${parseInt(item.km).toLocaleString('en-US')}</span>
-                                        <span class="r-c-p">KM</span>
+                                        <span class="r-c-p">${tlabels[19]['translation']}</span>
                                     </div>
                                     
                                 </div>

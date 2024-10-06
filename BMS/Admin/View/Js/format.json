@@ -1227,3 +1227,371 @@
     "deletedItems": "[{\"id\":\"103\",\"type\":\"trip\"}]",
     "action": "updateDailyReport"
 }
+
+"status": "success",
+"data": {
+    "reportId": 61,
+    "busId": 1,
+    "date": "2024-10-05",
+    "shift": {
+        "1": {
+            "shiftId": 90,
+            "shiftEndDate": "0000-00-00",
+            "shiftStartTime": "10:41:25",
+            "shiftEndTime": "00:00:00",
+            "fuelUsage": "10.00",
+            "otherExpence": "0.00",
+            "trip": {
+                "1": {
+                    "tripId": 136,
+                    "startRoute": 1,
+                    "endRoute": 2,
+                    "driver": {
+                        "1": {
+                            "tripDriverId": 124,
+                            "driverId": 1,
+                            "startTime": null,
+                            "endTime": null,
+                            "startKm": 100,
+                            "endKm": 150
+                        }
+                    }
+                },
+                "2": {
+                    "tripId": 137,
+                    "startRoute": 2,
+                    "endRoute": 1,
+                    "driver": {
+                        "1": {
+                            "tripDriverId": 125,
+                            "driverId": 1,
+                            "startTime": null,
+                            "endTime": null,
+                            "startKm": 150,
+                            "endKm": 200
+                        }
+                    }
+                },
+                "3": {
+                    "tripId": 138,
+                    "startRoute": 1,
+                    "endRoute": 2,
+                    "driver": {
+                        "1": {
+                            "tripDriverId": 126,
+                            "driverId": 1,
+                            "startTime": null,
+                            "endTime": null,
+                            "startKm": 200,
+                            "endKm": 250
+                        }
+                    }
+                }
+            }
+        },
+        "2": {
+            "shiftId": 91,
+            "shiftEndDate": "0000-00-00",
+            "shiftStartTime": "10:53:24",
+            "shiftEndTime": "00:00:00",
+            "fuelUsage": "0.00",
+            "otherExpence": "0.00",
+            "trip": []
+        }
+    }
+}
+
+{
+    "status": "success",
+    "data": {
+        "reportId": 52,
+        "busId": 3,
+        "date": "2024-09-29",
+        "shift": {
+            "1": {
+                "shiftId": 74,
+                "shiftEndDate": "2024-09-29",
+                "shiftStartTime": "23:18:00",
+                "shiftEndTime": "04:18:00",
+                "fuelUsage": "10.00",
+                "otherExpence": "50.00",
+                "trip": {
+                    "1": {
+                        "tripId": 105,
+                        "startRoute": 1,
+                        "endRoute": 2,
+                        "driver": {
+                            "1": {
+                                "tripDriverId": 99,
+                                "driverId": 1,
+                                "startTime": "23:18:00",
+                                "endTime": "02:18:00",
+                                "startKm": 100,
+                                "endKm": 200
+                            }
+                        },
+                        "conductor": {
+                            "1": {
+                                "tripConductorId": 74,
+                                "conductorId": 2,
+                                "passangers": 100,
+                                "collection": "3000.00"
+                            }
+                        }
+                    },
+                    "2": {
+                        "tripId": 106,
+                        "startRoute": 2,
+                        "endRoute": 1,
+                        "driver": {
+                            "1": {
+                                "tripDriverId": 100,
+                                "driverId": 1,
+                                "startTime": "01:19:00",
+                                "endTime": "03:19:00",
+                                "startKm": 200,
+                                "endKm": 300
+                            }
+                        },
+                        "conductor": {
+                            "1": {
+                                "tripConductorId": 75,
+                                "conductorId": 2,
+                                "passangers": 100,
+                                "collection": "3000.00"
+                            }
+                        }
+                    }
+                }
+            },
+            "2": {
+                "shiftId": 79,
+                "shiftEndDate": "0000-00-00",
+                "shiftStartTime": "07:23:54",
+                "shiftEndTime": "00:00:00",
+                "fuelUsage": "0.00",
+                "otherExpence": "0.00",
+                "trip": []
+            }
+        }
+    }
+}
+
+{
+    "status": "success",
+    "data": {
+        "reportId": 52,
+        "busId": 3,
+        "date": "2024-09-29",
+        "shift": {
+            "1": {
+                "shiftId": 74,
+                "shiftEndDate": "2024-09-29",
+                "shiftStartTime": "23:18:00",
+                "shiftEndTime": "04:18:00",
+                "fuelUsage": "10.00",
+                "otherExpence": "50.00",
+                "trip": {
+                    "1": {
+                        "tripId": 105,
+                        "startRoute": 1,
+                        "endRoute": 2,
+                        "driver": {
+                            "1": {
+                                "tripDriverId": 99,
+                                "driverId": 1,
+                                "startTime": "23:18:00",
+                                "endTime": "02:18:00",
+                                "startKm": 100,
+                                "endKm": 200
+                            }
+                        },
+                        "conductor": {
+                            "1": {
+                                "tripConductorId": 74,
+                                "conductorId": 2,
+                                "passangers": 100,
+                                "collection": "3000.00"
+                            }
+                        }
+                    },
+                    "2": {
+                        "tripId": 106,
+                        "startRoute": 2,
+                        "endRoute": 1,
+                        "driver": {
+                            "1": {
+                                "tripDriverId": 100,
+                                "driverId": 1,
+                                "startTime": "01:19:00",
+                                "endTime": "03:19:00",
+                                "startKm": 200,
+                                "endKm": 300
+                            }
+                        },
+                        "conductor": {
+                            "1": {
+                                "tripConductorId": 75,
+                                "conductorId": 2,
+                                "passangers": 100,
+                                "collection": "3000.00"
+                            }
+                        }
+                    }
+                }
+            },
+            "2": {
+                "shiftId": 79,
+                "shiftEndDate": "0000-00-00",
+                "shiftStartTime": "07:23:54",
+                "shiftEndTime": "00:00:00",
+                "fuelUsage": "0.00",
+                "otherExpence": "0.00",
+                "trip": {
+                    "1": {
+                        "tripId": 105,
+                        "startRoute": 1,
+                        "endRoute": 2,
+                        "driver": {
+                            "1": {
+                                "tripDriverId": 99,
+                                "driverId": 1,
+                                "startTime": "23:18:00",
+                                "endTime": "02:18:00",
+                                "startKm": 100,
+                                "endKm": 200
+                            }
+                        },
+                        "conductor": {
+                            "1": {
+                                "tripConductorId": 74,
+                                "conductorId": 2,
+                                "passangers": 100,
+                                "collection": "3000.00"
+                            }
+                        }
+                    },
+                    "2": {
+                        "tripId": 106,
+                        "startRoute": 2,
+                        "endRoute": 1,
+                        "driver": {
+                            "1": {
+                                "tripDriverId": 100,
+                                "driverId": 1,
+                                "startTime": "01:19:00",
+                                "endTime": "03:19:00",
+                                "startKm": 200,
+                                "endKm": 300
+                            }
+                        },
+                        "conductor": {
+                            "1": {
+                                "tripConductorId": 75,
+                                "conductorId": 2,
+                                "passangers": 100,
+                                "collection": "3000.00"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+{
+    "report_id": "52",
+    "bus-number": "3",
+    "date": "2024-09-29",
+    "shift": {
+        "1": {
+            "shiftId": "74",
+            "shiftEndDate": "2024-09-29",
+            "shiftStartTime": "23:18:00",
+            "shiftEndTime": "04:18:00",
+            "trip": {
+                "1": {
+                    "tripId": "105",
+                    "startRoute": "1",
+                    "endRoute": "2",
+                    "driver": {
+                        "1": {
+                            "trip_driver_id": "99",
+                            "driver_id": "1",
+                            "start_time": "23:18:00",
+                            "end_time": "02:18:00",
+                            "start_km": "100",
+                            "end_km": "200"
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "trip_conductor_id": "74",
+                            "conductor_id": "2",
+                            "passangers": "100",
+                            "collection": "3000.00"
+                        }
+                    }
+                },
+                "2": {
+                    "tripId": "106",
+                    "startRoute": "2",
+                    "endRoute": "1",
+                    "driver": {
+                        "1": {
+                            "trip_driver_id": "100",
+                            "driver_id": "1",
+                            "start_time": "01:19:00",
+                            "end_time": "03:19:00",
+                            "start_km": "200",
+                            "end_km": "300"
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "trip_conductor_id": "75",
+                            "conductor_id": "2",
+                            "passangers": "100",
+                            "collection": "3000.00"
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "10.00",
+            "otherExpence": "50.00"
+        },
+        "2": {
+            "shiftId": "79",
+            "shiftEndDate": "2024-10-07",
+            "shiftStartTime": "07:23:54",
+            "shiftEndTime": "00:00:00",
+            "trip": {
+                "1": {
+                    "startRoute": "1",
+                    "endRoute": "2",
+                    "driver": {
+                        "1": {
+                            "driver_id": "1",
+                            "start_time": "10:41",
+                            "end_time": "12:41",
+                            "start_km": "100",
+                            "end_km": "200"
+                        }
+                    },
+                    "conductor": {
+                        "1": {
+                            "conductor_id": "2",
+                            "passangers": "100",
+                            "collection": "400"
+                        }
+                    }
+                }
+            },
+            "fuelUsage": "0.00",
+            "otherExpence": "0.00"
+        }
+    },
+    "deletedItems": "[]",
+    "action": "updateDailyReport"
+}

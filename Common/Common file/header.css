@@ -261,6 +261,16 @@
     margin-left: auto !important;
 }
 
+.card-bg {
+    width: 55px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 1.6rem;
+}
+
 .bg-gradient-bloody {
     background: #f54ea2;
     background: -webkit-linear-gradient(45deg, #f54ea2, #ff7676) !important;

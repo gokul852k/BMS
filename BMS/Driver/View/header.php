@@ -14,6 +14,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <?php
+    if (!isset($_SESSION['languageCode'])) {
+        $_SESSION['languageCode'] = 'en';
+    }
+    
     if ($_SESSION['languageCode'] == 'en') {
         ?>
         <style>

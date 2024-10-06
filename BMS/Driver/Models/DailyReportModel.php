@@ -254,7 +254,7 @@ class DailyReportModel {
         $workStatus = true;
         $isActive = true;
         // $stmt = $this->db->prepare("SELECT shift_id AS 'shiftId' FROM `bms_shift_driver` WHERE `driver_id` = :driverId AND `work_status` = :workStatus AND `is_active` = :isActive");
-        $stmt = $this->db->prepare("SELECT sd.shift_id AS 'shiftId', s.start_date, dr.bus_id FROM bms_shift_driver sd
+        $stmt = $this->db->prepare("SELECT sd.shift_id AS 'shiftId', s.start_date, dr.bus_id, s.total_km FROM bms_shift_driver sd
                                     INNER JOIN bms_shifts s ON sd.shift_id = s.shift_id
                                     INNER JOIN bms_daily_reports dr ON s.report_id = dr.report_id
                                     WHERE   sd.driver_id = :driverId AND sd.work_status = :workStatus AND sd.is_active = :isActive");
@@ -267,13 +267,14 @@ class DailyReportModel {
         return $result ? $result : null;
     }
 
-    public function createTrip($companyId, $shiftId, $startRoute, $endRoute, $startKm) {
-        $stmt = $this->db->prepare("INSERT INTO `bms_trips`(`company_id`, `shift_id`, `start_route_id`, `end_route_id`, `start_km`) VALUES (:companyId, :shiftId, :startRoute, :endRoute, :startKm)");
+    public function createTrip($companyId, $shiftId, $startRoute, $endRoute, $currentTime, $startKm) {
+        $stmt = $this->db->prepare("INSERT INTO `bms_trips`(`company_id`, `shift_id`, `start_route_id`, `end_route_id`, `start_time`, `start_km`) VALUES (:companyId, :shiftId, :startRoute, :endRoute, :currentTime, :startKm)");
 
         $stmt->bindParam("companyId", $companyId);
         $stmt->bindParam("shiftId", $shiftId);
         $stmt->bindParam("startRoute", $startRoute);
         $stmt->bindParam("endRoute", $endRoute);
+        $stmt->bindParam("currentTime", $currentTime);
         $stmt->bindParam("startKm", $startKm);
 
         if ($stmt->execute()) {
@@ -329,16 +330,18 @@ class DailyReportModel {
         }
     }
 
-    public function updateTripStartKm($tripId, $startKm) {
-        $stmt = $this->db->prepare("UPDATE `bms_trips` SET `start_km`=:startKm WHERE `trip_id` = :tripId");
+    public function updateTripStartKm($tripId, $currentTime, $startKm) {
+        $stmt = $this->db->prepare("UPDATE `bms_trips` SET `start_time`=:currentTime, `start_km`=:startKm WHERE `trip_id` = :tripId");
         $stmt->bindParam(":tripId", $tripId);
+        $stmt->bindParam(":currentTime", $currentTime);
         $stmt->bindParam(":startKm", $startKm);
 
         return $stmt->execute() ? true : false;
     }
-    public function updateEndTrip($tripId, $endKm) {
-        $stmt = $this->db->prepare("UPDATE `bms_trips` SET `end_km`=:endKm WHERE `trip_id` = :tripId");
+    public function updateEndTrip($tripId, $currentTime, $endKm) {
+        $stmt = $this->db->prepare("UPDATE `bms_trips` SET `end_time`=:currentTime, `end_km`=:endKm WHERE `trip_id` = :tripId");
         $stmt->bindParam(":tripId", $tripId);
+        $stmt->bindParam(":currentTime", $currentTime);
         $stmt->bindParam(":endKm", $endKm);
 
         return $stmt->execute() ? true : false;
@@ -389,9 +392,11 @@ class DailyReportModel {
         return $result ? $result : null;
     }
 
-    public function updateDriverWorkDetails($shiftId, $salary, $commission, $fuelUsage) {
+    public function updateDriverWorkDetails($shiftId, $salary, $commission, $fuelUsage, $currentDate, $currentTime) {
         $status = false;
-        $stmt = $this->db->prepare("UPDATE `bms_shift_driver` SET `salary`= :salary, `commission`= :commission, `fuel_usage` = :fuelUsage, `work_status` = :status WHERE `shift_id` = :shiftId");
+        $stmt = $this->db->prepare("UPDATE `bms_shift_driver` SET `end_date` = :currentDate, `end_time` = :currentTime, `salary`= :salary, `commission`= :commission, `fuel_usage` = :fuelUsage, `work_status` = :status WHERE `shift_id` = :shiftId");
+        $stmt->bindParam(":currentDate", $currentDate);
+        $stmt->bindParam(":currentTime", $currentTime);
         $stmt->bindParam(":salary", $salary);
         $stmt->bindParam(":commission", $commission);
         $stmt->bindParam(":fuelUsage", $fuelUsage);
@@ -401,8 +406,9 @@ class DailyReportModel {
         return $stmt->execute() ? true : false;
     }
 
-    public function updateShiftDetails($shiftId, $salary, $fuelUsage, $fuelAmount) {
-        $stmt = $this->db->prepare("UPDATE `bms_shifts` SET `salary` = `salary` + :salary, `fuel_usage` = `fuel_usage` + :fuelUsage, `fuel_amount` = `fuel_amount` + :fuelAmount WHERE `shift_id` = :shiftId");
+    public function updateShiftDetails($shiftId, $salary, $fuelUsage, $fuelAmount, $avgMilage) {
+        $stmt = $this->db->prepare("UPDATE `bms_shifts` SET `avg_milage` = :avgMilage, `salary` = `salary` + :salary, `fuel_usage` = `fuel_usage` + :fuelUsage, `fuel_amount` = `fuel_amount` + :fuelAmount WHERE `shift_id` = :shiftId");
+        $stmt->bindParam(":avgMilage", $avgMilage);
         $stmt->bindParam(":salary", $salary);
         $stmt->bindParam(":fuelUsage", $fuelUsage);
         $stmt->bindParam(":fuelAmount", $fuelAmount);
@@ -411,10 +417,12 @@ class DailyReportModel {
         return $stmt->execute() ? true : false;
     }
 
-    public function updateShiftStatus($shiftId) {
+    public function updateShiftStatus($shiftId, $currentDate, $currentTime) {
         $status = false;
-        $stmt = $this->db->prepare("UPDATE `bms_shifts` SET `shift_status` = :status WHERE `shift_id` = :shiftId");
+        $stmt = $this->db->prepare("UPDATE `bms_shifts` SET `end_date` = :currentDate, `end_time` = :currentTime, `shift_status` = :status WHERE `shift_id` = :shiftId");
         $stmt->bindParam(":shiftId", $shiftId);
+        $stmt->bindParam(":currentDate", $currentDate);
+        $stmt->bindParam(":currentTime", $currentTime);
         $stmt->bindParam(":status", $status);
 
         return $stmt->execute() ? true : false;

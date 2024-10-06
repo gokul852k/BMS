@@ -14,7 +14,7 @@ require_once '../Services/FuelReportService.php';
 
 
 <div class="register-driver">
-    <div class="container box-container box-head w3-animate-top">
+    <div class="box-container box-head w3-animate-top">
         <div class="row row-head">
             <div class="col-sm-2 row-head-div-1">
                 <h4 class="heading">Fuel Report</h4>
@@ -29,7 +29,7 @@ require_once '../Services/FuelReportService.php';
     </div>
 
 
-    <div class="container d-chart">
+    <div class="box-container d-chart">
         <div class="row">
             <div class="col-4 w3-animate-left d-chart-left">
                 <div class="box-container tms-card">
@@ -53,8 +53,10 @@ require_once '../Services/FuelReportService.php';
                                                                 </h4>
                                                             </div>
                                                             <div
-                                                                class="widgets-icons-2 rounded-circle bg-gradient-bloody text-white ms-auto">
+                                                                class="text-white ms-auto">
+                                                                <div class="card-bg bg-gradient-bloody">
                                                                 <i class="fa-solid fa-indian-rupee-sign"></i>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -72,8 +74,10 @@ require_once '../Services/FuelReportService.php';
                                                                 </h4>
                                                             </div>
                                                             <div
-                                                                class="widgets-icons-2 rounded-circle  bg-gradient-blooker text-white ms-auto">
+                                                                class="text-white ms-auto">
+                                                                <div class="card-bg bg-gradient-blooker">
                                                                 <i class="fa-solid fa-chart-simple"></i>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -90,8 +94,10 @@ require_once '../Services/FuelReportService.php';
                                                                 <h4 class="my-1 text-info t-c-2" id="re-fueled">-</h4>
                                                             </div>
                                                             <div
-                                                                class="widgets-icons-2 rounded-circle bg-gradient-ohhappiness text-white ms-auto">
+                                                                class="text-white ms-auto">
+                                                                <div class="card-bg bg-gradient-ohhappiness">
                                                                 <i class="fa-solid fa-gas-pump"></i>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -202,7 +208,7 @@ require_once '../Services/FuelReportService.php';
         </div>
     </div>
 
-    <div class="container box-container w3-animate-bottom">
+    <div class="box-container w3-animate-bottom">
         <div class="row">
             <div class="container">
                 <div class="row">

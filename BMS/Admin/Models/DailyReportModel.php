@@ -449,8 +449,10 @@ class DailyReportModel {
 
     public function getShift($reportId) {
         $isActive = true;
+        // $shiftStatus = false;
         $stmt = $this->db->prepare("SELECT `shift_id`, `company_id`, `report_id`, `shift_name_id`, `start_date`, `start_time`, `end_date`, `end_time`, `total_km`, `avg_milage`, `total_passenger`, `total_collection`, `salary`, `commission`, `expence`, `fuel_usage`, `fuel_amount` FROM `bms_shifts` WHERE `report_id` = :reportId AND `is_active` = :isActive");
         $stmt->bindParam("reportId", $reportId);
+        // $stmt->bindParam("shiftStatus", $shiftStatus);
         $stmt->bindParam("isActive", $isActive);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -466,7 +468,7 @@ class DailyReportModel {
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        return $result ? $result : null;
+        return $result;
     }
 
     public function getTripDrivers($tripId) {
@@ -609,7 +611,7 @@ class DailyReportModel {
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        return $result ? $result : null;
+        return $result;
     }
 
     public function getTripDrivers2($tripId) {
@@ -643,13 +645,19 @@ class DailyReportModel {
         $sql = "SELECT 
                 FORMAT(SUM(dr.total_km), 0) AS 'totalKm',
                 FORMAT(SUM(dr.fuel_usage), 1) AS 'fuelUsage',
-                FORMAT(AVG(dr.avg_milage), 1) AS 'avgMilage',
                 FORMAT(SUM(dr.total_passenger), 0) AS 'passengers',
                 FORMAT(SUM(dr.total_collection), 0) AS 'collection',
                 FORMAT(SUM(dr.expenses), 0) AS 'expenses',
                 FORMAT(SUM(dr.fuel_amount), 0) AS 'fuelAmount',
                 FORMAT(SUM(dr.salary), 0) AS 'salary',
                 FORMAT(SUM(dr.commission), 0) AS 'commission',
+                FORMAT(SUM(
+                    CASE 
+                        WHEN (dr.total_collection - dr.fuel_amount - dr.expenses - dr.salary - dr.commission) < 0 
+                        THEN ABS(dr.total_collection - dr.fuel_amount - dr.expenses - dr.salary - dr.commission) 
+                        ELSE 0 
+                    END
+                ), 0) AS 'loss',
                 FORMAT(SUM(dr.total_collection - dr.fuel_amount - dr.expenses - dr.salary - dr.commission), 0) AS 'profit'
                 FROM `bms_daily_reports` dr
                 INNER JOIN bms_bus b ON dr.bus_id = b.id

@@ -33,12 +33,13 @@ class ConductorController {
         $state = $_POST['state'];
         $district = $_POST['district'];
         $pincode = $_POST['pincode'];
+        $language = $_POST['language'];
         $aadharCard = $_FILES['aadhar-card'];
         $aadharNo = $_POST['aadhar-no'];
         $panCard = $_FILES['pan-card'];
         $panNo = $_POST['pan-no'];
 
-        echo json_encode($this->service->createConductor($conductorImage, $name, $mobile, $mail, $password, $address, $state, $district, $pincode, $aadharCard, $aadharNo, $panCard, $panNo));
+        echo json_encode($this->service->createConductor($conductorImage, $name, $mobile, $mail, $password, $address, $state, $district, $pincode, $language, $aadharCard, $aadharNo, $panCard, $panNo));
     }
 
     private function getConductor() {
@@ -57,6 +58,7 @@ class ConductorController {
         $conductorId = $_POST['conductor_id'];
         $name = $_POST['fullname'];
         $mobile = $_POST['mobile'];
+        $language = $_POST['language'];
         // $mail = $_POST['mail'];
         $password = $_POST['password'];
         $address = $_POST['address'];
@@ -70,7 +72,7 @@ class ConductorController {
         $aadharCard = $_FILES['aadhar_path'];
         $panCard = $_FILES['pan_path'];
 
-        echo json_encode($this->service->updateConductor($conductorId, $conductorImage, $name, $mobile, $password, $address, $state, $district, $pincode, $aadharCard, $aadharNo, $panCard, $panNo));
+        echo json_encode($this->service->updateConductor($conductorId, $conductorImage, $name, $mobile, $language, $password, $address, $state, $district, $pincode, $aadharCard, $aadharNo, $panCard, $panNo));
     
     }
 

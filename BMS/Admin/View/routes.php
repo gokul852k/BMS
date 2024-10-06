@@ -9,7 +9,7 @@ require_once './navbar.php';
 <link rel="stylesheet" href="./Style/driver.css">
 
 <div class="register-driver">
-    <div class="container box-container box-head w3-animate-top">
+    <div class="box-container box-head w3-animate-top">
         <div class="row row-head">
             <div class="row-head-div-1">
                 <h4 class="heading">Routes Details</h4>
@@ -21,7 +21,7 @@ require_once './navbar.php';
             </div>
         </div>
     </div>
-    <div class="container box-container w3-animate-top">
+    <div class="box-container w3-animate-top">
         <div class="row row-head">
             <div class="content">
                 <div class="container-fluid">
@@ -36,8 +36,10 @@ require_once './navbar.php';
                                                 <h4 class="my-1 text-info" id="total_bus">-</h4>
                                             </div>
                                             <div
-                                                class="widgets-icons-2 rounded-circle bg-gradient-scooter text-white ms-auto">
+                                                class="text-white ms-auto">
+                                                <div class="card-bg bg-gradient-scooter">
                                                 <i class="fa-solid fa-bus"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -54,8 +56,10 @@ require_once './navbar.php';
                                                 <h4 class="my-1 text-info t-c-2" id="total_routes">-</h4>
                                             </div>
                                             <div
-                                                class="widgets-icons-2 rounded-circle bg-gradient-ohhappiness text-white ms-auto">
+                                                class="text-white ms-auto">
+                                                <div class="card-bg bg-gradient-ohhappiness">
                                                 <i class="fa-solid fa-road"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -72,8 +76,10 @@ require_once './navbar.php';
                                                 <h4 class="my-1 text-info t-c-4" id="language_support">-</h4>
                                             </div>
                                             <div
-                                                class="widgets-icons-2 rounded-circle bg-gradient-bloody text-white ms-auto">
+                                                class="text-white ms-auto">
+                                                <div class="card-bg bg-gradient-bloody">
                                                 <i class="fa-solid fa-book"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -90,8 +96,10 @@ require_once './navbar.php';
                                                 <h4 class="my-1 text-info t-c-3" id="active_bus">-</h4>
                                             </div>
                                             <div
-                                                class="widgets-icons-2 rounded-circle  bg-gradient-blooker text-white ms-auto">
+                                                class="text-white ms-auto">
+                                                <div class="card-bg bg-gradient-blooker">
                                                 <i class="fa-solid fa-shield-check"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -106,7 +114,7 @@ require_once './navbar.php';
         </div>
     </div>
 
-    <div class="container box-container w3-animate-bottom">
+    <div class="box-container w3-animate-bottom">
         <div class="row">
             <div class="container" style="width: 60%">
                 <div class="row">

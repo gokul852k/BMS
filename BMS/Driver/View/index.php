@@ -39,7 +39,8 @@ if (!$tlabels && empty($tlabels)) {
         ["translation" => "Salary"],
         ["translation" => "Commission"],
         ["translation" => "Total"],
-        ["translation" => "Amount"]
+        ["translation" => "Amount"],
+        ["translation" => "Othere Expence"]
     ];
 }
 

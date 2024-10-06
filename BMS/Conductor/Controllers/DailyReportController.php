@@ -58,6 +58,10 @@ class DailyReportController {
     private function endDuty() {
         echo json_encode($this->serviceDR->endDuty($_POST['tripId']));
     }
+
+    private function getTranslations() {
+        echo json_encode($this->serviceDR->getTranslationsLabels2($_POST['pageId']));
+    }
 }
 
 new DailyReportController();

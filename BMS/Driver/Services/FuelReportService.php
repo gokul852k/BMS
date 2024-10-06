@@ -25,7 +25,6 @@ class FuelReportService {
     public function createFuelReport($busNumber, $date, $fuelLiters, $fuelAmount, $fuelBill)
     {
 
-
         $uploadService = new FileUpload();
 
         //Upload Fuel Bill

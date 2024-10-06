@@ -2,6 +2,8 @@
 
 require_once '../../config.php';
 require_once '../Models/DailyReportModel.php';
+require_once '../../../Common/Common function/dateTime.php';
+
 class DailyReportService {
     private $modelBMS;
 
@@ -20,6 +22,20 @@ class DailyReportService {
             return $response;
         } else {
             return null;
+        }
+    }
+
+    public function getTranslationsLabels2($pageId) {
+        $response = $this->modelBMS->getTranslationsLabels($pageId, $_SESSION['languageCode']);
+        if ($response) {
+            return [
+                'status' => 'success',
+                'data' => $response
+            ];
+        } else {
+            return [
+                'status' => 'error'
+            ];
         }
     }
 
@@ -118,8 +134,8 @@ class DailyReportService {
     public function createDailyReport($busId) {
         //1) -> Check if a daily report for the current date already exists for the given bus ID; if not, create a new daily report.
         //2) -> heck if the shift is open; if not, create a new shift.
-        $currentDate = date('Y-m-d');
-        $currentTime = date('H:i:s');
+        $currentDate = getCurrentDate();
+        $currentTime = getCurrentTime();
         $dailyReport = $this->modelBMS->checkDateAndBusId($busId, $currentDate);
 
         if (!$dailyReport) {
@@ -246,10 +262,11 @@ class DailyReportService {
     }
 
     public function getCurrentShift() {
-        $currentHour = date('H');
+        $currentHour = getCurrentHour();
 
         if ($currentHour >= 1 && $currentHour <= 8) {
             return 1; //First Shift
+
         } elseif ($currentHour > 8 && $currentHour <= 16) {
             return 2; //Second Shift
         } else {
@@ -436,6 +453,10 @@ class DailyReportService {
     }
 
     public function endDuty2($othereExpence, $salary, $commission, $totalCommission) {
+
+        $currentDate = getCurrentDate();
+        $currentTime = getCurrentTime();
+
         $conductorShift = $this->modelBMS->getShiftIdByConductorId($_SESSION['conductorId']);
 
         if (!$conductorShift) {
@@ -450,7 +471,7 @@ class DailyReportService {
 
         //Update shift conductor salary, commission, and work status
 
-        $updateConductorWorkDetails = $this->modelBMS->updateConductorWorkDetails($shiftId, $salary, $commission);
+        $updateConductorWorkDetails = $this->modelBMS->updateConductorWorkDetails($shiftId, $salary, $commission, $currentDate, $currentTime);
 
         if (!$updateConductorWorkDetails) {
             return [
@@ -477,7 +498,7 @@ class DailyReportService {
         //if everyone end the duty than we need to update shift status & update salary, commision, and expance in daily report as per shift
         if (!$conductors && !$drivers) {
             
-            $updateShiftDetails2 = $this->modelBMS->updateShiftDetails2($shiftId, $totalCommission);
+            $updateShiftDetails2 = $this->modelBMS->updateShiftDetails2($shiftId, $totalCommission, $currentDate, $currentTime);
 
 
             //Loop and insert trip_driver and trip_conductor commission

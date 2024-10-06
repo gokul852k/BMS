@@ -9,7 +9,7 @@ require_once './navbar.php';
 <link rel="stylesheet" href="./Style/driver.css">
 
 <div class="register-driver">
-    <div class="container box-container box-head w3-animate-top">
+    <div class="box-container box-head w3-animate-top">
         <div class="row row-head">
             <div class="row-head-div-1">
                 <h4 class="heading">Commission Details</h4>
@@ -20,7 +20,7 @@ require_once './navbar.php';
         </div>
     </div>
 
-    <div class="container box-container w3-animate-bottom" onload="getDrivers()">
+    <div class="box-container w3-animate-bottom" onload="getDrivers()">
         <div class="row">
             <div class="container">
                 <div class="row">

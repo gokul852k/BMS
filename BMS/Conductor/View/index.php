@@ -15,7 +15,31 @@ if (!$tlabels && empty($tlabels)) {
         ["translation" => "Hello"],
         ["translation" => "Please select bus"],
         ["translation" => "Start Work"],
-        ["translation" => "Select bus"]
+        ["translation" => "Select bus"].
+        ["translation" => "Select the trip"],
+        ["translation" => "Start Location"],
+        ["translation" => "End Location"],
+        ["translation" => "Starting KM"],
+        ["translation" => "Start Trip"],
+        ["translation" => "Trip Details"],
+        ["translation" => "End Trip"],
+        ["translation" => "End KM"],
+        ["translation" => "Passengers"],
+        ["translation" => "Collection"],
+        ["translation" => "Submit Collection"],
+        ["translation" => "Start Duty"],
+        ["translation" => "End Duty"],
+        ["translation" => "Total Trips"],
+        ["translation" => "Passengers"],
+        ["translation" => "Collection"],
+        ["translation" => "Total KM"],
+        ["translation" => "Fuel Usage Litre"],
+        ["translation" => "Description"],
+        ["translation" => "Salary"],
+        ["translation" => "Commission"],
+        ["translation" => "Total"],
+        ["translation" => "Amount"],
+        ["translation" => "Othere Expence"]
     ];
 }
 
@@ -25,7 +49,7 @@ if (!$tlabels && empty($tlabels)) {
     <div class="duty-row">
         <div class="duty-button active-duty-button" onclick="endDuty()">
             <div>
-                <span>END DUTY</span>
+                <span><?= $tlabels[17]['translation'] ?></span>
             </div>
             <div>
                 <div class="radius-btn active-radius-btn">
@@ -51,7 +75,7 @@ if ($display['display'] == "SELECT BUS") {
         <div class="duty-row">
             <div class="duty-button" onclick="startDuty()">
                 <div>
-                    <span class="duty-text">START DUTY</span>
+                    <span class="duty-text"><?= $tlabels[16]['translation'] ?></span>
                 </div>
                 <div>
                     <div class="radius-btn">
@@ -108,7 +132,7 @@ if ($display['display'] == "SELECT BUS") {
             <div class="wrapper center-div">
                 <form id="trip-collection" class="car centered p-10">
                     <div class="container box-container w3-animate-bottom">
-                        <h5 class="heading center"><?= $tlabels[10]['translation'] ?> - 1</h5>
+                        <h5 class="heading center"><?= $tlabels[10]['translation'] ?></h5>
 
                         <div class="row selectpicker-row">
                             <div class="col-sm-12">
@@ -182,7 +206,7 @@ if ($display['display'] == "SELECT BUS") {
                     <div class="wrapper center-div">
                         <form id="trip-collection-2" class="car centered p-10">
                             <div class="container box-container w3-animate-bottom">
-                                <h5 class="heading center"><?= $tlabels[10]['translation'] ?> - 2</h5>
+                                <h5 class="heading center"><?= $tlabels[10]['translation'] ?></h5>
                                 <input type="hidden" name="trip-id" value="<?= $displayTrip['tripId'] ?>" />
                                 <input type="hidden" name="trip-driver-id" value="<?= $displayTrip['tripConductorId'] ?>" />
                                 <div class="row selectpicker-row">
@@ -265,7 +289,7 @@ if ($display['display'] == "SELECT BUS") {
                         <div class="counter-card">
                             <div class="counter-card-top c-c-c-1">
                                 <i class="fa-solid fa-location-dot"></i>
-                                <span>Total Trip</span>
+                                <span><?= $tlabels[18]['translation'] ?></span>
                             </div>
                             <div class="counter-card-bottom c-c-bc-1">
                                 <span id="ed-trip">-</span>
@@ -274,7 +298,7 @@ if ($display['display'] == "SELECT BUS") {
                         <div class="counter-card">
                             <div class="counter-card-top c-c-c-2">
                                 <i class="fa-solid fa-user-group-simple"></i>
-                                <span>Passengers</span>
+                                <span><?= $tlabels[19]['translation'] ?></span>
                             </div>
                             <div class="counter-card-bottom c-c-bc-2">
                                 <span id="ed-passengers">-</span>
@@ -283,7 +307,7 @@ if ($display['display'] == "SELECT BUS") {
                         <div class="counter-card">
                             <div class="counter-card-top c-c-c-3">
                                 <i class="fa-solid fa-coins"></i>
-                                <span>Collection</span>
+                                <span><?= $tlabels[20]['translation'] ?></span>
                             </div>
                             <div class="counter-card-bottom c-c-bc-3">
                                 <span id="ed-collection">-</span>
@@ -292,7 +316,7 @@ if ($display['display'] == "SELECT BUS") {
                         <div class="counter-card">
                             <div class="counter-card-top c-c-c-4">
                                 <i class="fa-solid fa-bus"></i>
-                                <span>Total KM</span>
+                                <span><?= $tlabels[21]['translation'] ?></span>
                             </div>
                             <div class="counter-card-bottom c-c-bc-4">
                                 <span id="ed-km">-</span>
@@ -331,7 +355,7 @@ if ($display['display'] == "SELECT BUS") {
 
                     <div class="user-model-input">
                         <div class="">
-                        <label for="" class="input-label">Othere Expence</label>
+                        <label for="" class="input-label"><?= $tlabels[28]['translation'] ?></label>
                             <input type="number" class="input-field" name="othere-expence" id="othere-expence"
                                 placeholder="" required>
                             <span class="error-message p-r-l-15" id="othere-expence-error"></span>
@@ -343,13 +367,13 @@ if ($display['display'] == "SELECT BUS") {
 
                     <div class="salary-card">
                         <div class="salary-card-left">
-                            <div class="salary-card-row"><span>Description</span></div>
-                            <div class="salary-card-row"><span>Salary</span></div>
-                            <div class="salary-card-row"><span>Commission</span></div>
-                            <div class="salary-card-row"><span>Total</span></div>
+                            <div class="salary-card-row"><span><?= $tlabels[23]['translation'] ?></span></div>
+                            <div class="salary-card-row"><span><?= $tlabels[24]['translation'] ?></span></div>
+                            <div class="salary-card-row"><span><?= $tlabels[25]['translation'] ?></span></div>
+                            <div class="salary-card-row"><span><?= $tlabels[26]['translation'] ?></span></div>
                         </div>
                         <div class="salary-card-right">
-                            <div class="salary-card-row"><span>Amount</span></div>
+                            <div class="salary-card-row"><span><?= $tlabels[27]['translation'] ?></span></div>
                             <div class="salary-card-row"><span id="ed-salary">-</span></div>
                             <div class="salary-card-row"><span id="ed-commission">-</span></div>
                             <div class="salary-card-row"><span id="ed-total">-</span></div>
@@ -357,8 +381,8 @@ if ($display['display'] == "SELECT BUS") {
                     </div>
                 </div>
                 <div class="user-modal-footer">
-                    <button type="submit" class="button-3">End Duty</button>
-                    <button type="reset" class="button-2" onclick="popupClose('user-model-1')">Close</button>
+                    <button type="submit" class="button-3"><?= $tlabels[17]['translation'] ?></button>
+                    <!-- <button type="reset" class="button-2" onclick="popupClose('user-model-1')">Close</button> -->
                 </div>
             </form>
         </div>

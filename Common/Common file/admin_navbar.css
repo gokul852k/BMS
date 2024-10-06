@@ -301,6 +301,29 @@ body.dark .home .text {
 }
 
 
+nav.close .nav-link:hover span {
+    margin-left: 80px;
+    opacity: 1;
+}
+
+nav.close .nav-link span {
+    position: absolute;
+    border-radius: 3px 6px 3px 6px;
+    background-color: var(--primary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    color: white;
+    padding: 10px 20px;
+    margin-left: 70px;
+    font-size: 16px;
+    opacity: 0;
+    transition: 0.3s;
+    pointer-events: none;
+}
+
+
 /* Mobile Navber Style */
 
 /* .mobile-nav {

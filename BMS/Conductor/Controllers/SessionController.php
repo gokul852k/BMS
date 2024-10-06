@@ -50,6 +50,11 @@ class SessionController {
     private function logout() {
         echo json_encode($this->service->logout());
     }
+
+    private function changeLanguage() {
+        $code = $_POST['code'];
+        echo json_encode($this->service->changeLanguage($code));
+    }
 }
 
 new SessionController();

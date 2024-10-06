@@ -1,3 +1,38 @@
+// Get translations labels
+let tlabels;
+getTranslations();
+function getTranslations () {
+    var formData2 = {
+        action: 'getTranslations',
+        pageId: 4
+    }
+    $.ajax({
+        type: 'POST',
+        url: '../Controllers/DailyReportController.php',
+        data: formData2,
+        dataType: 'json',
+        success: function (response) {
+            
+            if (response.status == "success") {
+                tlabels = response.data;
+                console.log(tlabels);
+            }else {
+                alert("yes");
+                tlabels = [
+                    {"translation": "Select Bus"},
+                    {"translation": "Adding fuel report. Please wait.."},
+                    {"translation": "Wait a moment.."},
+                    {"translation": "Oops!"},
+                    {"translation": "Something went wrong! Please try again."},
+                    {"translation": "Success"},
+                    {"translation": "The Fuel report added successfully."}
+                ]
+            }
+            
+        }
+    });
+}
+
 // Create Fuel Report
 
 $(document).ready(function () {
@@ -6,7 +41,7 @@ $(document).ready(function () {
         if ($("#bus-id").val() == "") {
             
             $('#bus-id').addClass('input-error');
-            $('#bus-id-error').html('Please select bus.');
+            $('#bus-id-error').html(tlabels[0]['translation']);
             return;
         }
 
@@ -16,7 +51,7 @@ $(document).ready(function () {
         }
         //Calling progress bar
         popupOpen("progress-loader");
-        let array = [["Adding fuel report. Please waite..", 4000], ["Uploading fuel bill..", 4000], ["wait a moment...", 4000]];
+        let array = [[tlabels[1]['translation'], 4000], [tlabels[2]['translation'], 4000]];
         progressLoader(array);
         var formData = new FormData(this);
         formData.append('action', 'createFuelReport');
@@ -33,8 +68,8 @@ $(document).ready(function () {
                 let data = JSON.parse(response);
                 if (data.status === 'success') {
                     Swal.fire({
-                        title: "Success",
-                        text: data.message,
+                        title: tlabels[5]['translation'],
+                        text: tlabels[6]['translation'],
                         icon: "success"
                     }).then((result) => {
                         if (result.isConfirmed) {
@@ -44,14 +79,14 @@ $(document).ready(function () {
                 }
                 else if (data.status === 'error') {
                     Swal.fire({
-                        title: "Oops!",
-                        text: data.message,
+                        title: tlabels[3]['translation'],
+                        text: tlabels[4]['translation'],
                         icon: "error"
                     });
                 } else {
                     Swal.fire({
-                        title: "Oops!",
-                        text: data.message,
+                        title: tlabels[3]['translation'],
+                        text: tlabels[4]['translation'],
                         icon: "error"
                     });
                 }
@@ -59,8 +94,8 @@ $(document).ready(function () {
             error: function (xhr, status, error) {
                 console.error(xhr.responseText);
                 Swal.fire({
-                    title: "Oops!",
-                    text: "Something went wrong! Please try again.",
+                    title: tlabels[3]['translation'],
+                    text: tlabels[4]['translation'],
                     icon: "error"
                 });
             }

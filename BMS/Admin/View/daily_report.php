@@ -10,20 +10,21 @@ require_once './navbar.php';
 <link rel="stylesheet" href="./Style/daily_report.css">
 
 <div class="register-driver">
-    <div class="container box-container box-head w3-animate-top">
+    <div class="box-container box-head w3-animate-top">
         <div class="row row-head">
             <div class="row-head-div-1">
                 <h4 class="heading">Daily Report</h4>
             </div>
             <div class="row-head-div-2">
-                <button class="button-1 head-button2" onclick="popupOpen('filter'), getFilterField()"><i class="fa-solid fa-filter"></i>Filter</button>
+                <button class="button-1 head-button2" onclick="popupOpen('filter'), getFilterField()"><i
+                        class="fa-solid fa-filter"></i>Filter</button>
                 <button class="button-1 head-button3" onclick="popupOpen('add'); getDetails()"><i
                         class="fa-solid fa-chart-simple"></i>Add Report</button>
                 <button class="button-1 head-button2">Download<i class="fa-solid fa-download"></i></button>
             </div>
         </div>
     </div>
-    <div class="container box-container w3-animate-top">
+    <div class="box-container w3-animate-top">
         <div class="row row-head c-5 m m-b-20">
             <div class="content">
                 <div class="container-fluid">
@@ -37,8 +38,10 @@ require_once './navbar.php';
                                                 <p class="mb-0 text-secondary">Total Km</p>
                                                 <h4 class="my-1 text-info t-c-4" id="c-total-km">-</h4>
                                             </div>
-                                            <div class="widgets-icons-2 rounded-circle bg-g-4 text-white ms-auto">
-                                                <i class="fa-duotone fa-solid fa-bus"></i>
+                                            <div class="text-white ms-auto">
+                                                <div class="card-bg bg-g-4">
+                                                    <i class="fa-duotone fa-solid fa-bus"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -54,25 +57,10 @@ require_once './navbar.php';
                                                 <p class="mb-0 text-secondary">Fuel Usage</p>
                                                 <h4 class="my-1 text-info t-c-5" id="c-fuel-usage">-</h4>
                                             </div>
-                                            <div class="widgets-icons-2 rounded-circle bg-g-5 text-white ms-auto">
-                                                <i class="fa-solid fa-gas-pump"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col card-col-d-r">
-                            <div class="card radius-10 border-start border-0 border-3 border-info">
-                                <a href="#" class="no-underline">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center">
-                                            <div>
-                                                <p class="mb-0 text-secondary">Avg Mileage</p>
-                                                <h4 class="my-1 text-info t-c-8" id="c-avg-mileage">-</h4>
-                                            </div>
-                                            <div class="widgets-icons-2 rounded-circle bg-g-8 text-white ms-auto">
-                                                <i class="fa-solid fa-gauge-simple"></i>
+                                            <div class="text-white ms-auto">
+                                                <div class="card-bg bg-g-5">
+                                                    <i class="fa-solid fa-gas-pump"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -88,8 +76,10 @@ require_once './navbar.php';
                                                 <p class="mb-0 text-secondary">Passangers</p>
                                                 <h4 class="my-1 text-info t-c-7" id="c-passangers">-</h4>
                                             </div>
-                                            <div class="widgets-icons-2 rounded-circle  bg-g-7 text-white ms-auto">
-                                                <i class="fa-solid fa-people-group"></i>
+                                            <div class="text-white ms-auto">
+                                                <div class="card-bg bg-g-7">
+                                                    <i class="fa-solid fa-people-group"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -105,16 +95,35 @@ require_once './navbar.php';
                                                 <p class="mb-0 text-secondary">Collection</p>
                                                 <h4 class="my-1 text-info t-c-3" id="c-collection">-</h4>
                                             </div>
-                                            <div
-                                                class="widgets-icons-2 rounded-circle  bg-gradient-blooker text-white ms-auto">
-                                                <i class="fa-solid fa-sack"></i>
+                                            <div class="text-white ms-auto">
+                                                <div class="card-bg bg-gradient-blooker">
+                                                    <i class="fa-solid fa-sack"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </a>
                             </div>
                         </div>
-                        
+                        <div class="col card-col-d-r">
+                            <div class="card radius-10 border-start border-0 border-3 border-info">
+                                <a href="#" class="no-underline">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <p class="mb-0 text-secondary">Expense</p>
+                                                <h4 class="my-1 text-info t-c-9" id="c-expense">-</h4>
+                                            </div>
+                                            <div class="text-white ms-auto">
+                                                <div class="card-bg bg-g-9">
+                                                    <i class="fa-solid fa-chart-simple-horizontal"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
@@ -130,28 +139,13 @@ require_once './navbar.php';
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
                                             <div>
-                                                <p class="mb-0 text-secondary">Expense</p>
-                                                <h4 class="my-1 text-info t-c-9" id="c-expense">-</h4>
-                                            </div>
-                                            <div class="widgets-icons-2 rounded-circle bg-g-9 text-white ms-auto">
-                                                <i class="fa-solid fa-chart-simple-horizontal"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col card-col-d-r">
-                            <div class="card radius-10 border-start border-0 border-3 border-info">
-                                <a href="#" class="no-underline">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center">
-                                            <div>
                                                 <p class="mb-0 text-secondary">Fuel Amount</p>
                                                 <h4 class="my-1 text-info t-c-10" id="c-fuel-amount">-</h4>
                                             </div>
-                                            <div class="widgets-icons-2 rounded-circle bg-g-10 text-white ms-auto">
-                                                <i class="fa-sharp fa-solid fa-gas-pump"></i>
+                                            <div class="text-white ms-auto">
+                                                <div class="card-bg bg-g-10">
+                                                    <i class="fa-sharp fa-solid fa-gas-pump"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -167,8 +161,10 @@ require_once './navbar.php';
                                                 <p class="mb-0 text-secondary">Salary</p>
                                                 <h4 class="my-1 text-info t-c-11" id="c-salary">-</h4>
                                             </div>
-                                            <div class="widgets-icons-2 rounded-circle bg-g-11 text-white ms-auto">
-                                                <i class="fa-solid fa-user-group-simple"></i>
+                                            <div class="text-white ms-auto">
+                                                <div class="card-bg bg-g-11">
+                                                    <i class="fa-solid fa-user-group-simple"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -184,8 +180,29 @@ require_once './navbar.php';
                                                 <p class="mb-0 text-secondary">Commission</p>
                                                 <h4 class="my-1 text-info t-c-12" id="c-commission">-</h4>
                                             </div>
-                                            <div class="widgets-icons-2 rounded-circle  bg-g-12 text-white ms-auto">
-                                                <i class="fa-solid fa-badge-percent"></i>
+                                            <div class="text-white ms-auto">
+                                                <div class="card-bg bg-g-12">
+                                                    <i class="fa-solid fa-badge-percent"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col card-col-d-r">
+                            <div class="card radius-10 border-start border-0 border-3 border-info">
+                                <a href="#" class="no-underline">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <p class="mb-0 text-secondary">Loss</p>
+                                                <h4 class="my-1 text-info t-c-8" id="c-loss">-</h4>
+                                            </div>
+                                            <div class="text-white ms-auto">
+                                                <div class="card-bg bg-g-8">
+                                                    <i class="fa-solid fa-chart-line-down"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -201,16 +218,17 @@ require_once './navbar.php';
                                                 <p class="mb-0 text-secondary">Profit</p>
                                                 <h4 class="my-1 text-info t-c-6" id="c-profit">-</h4>
                                             </div>
-                                            <div
-                                                class="widgets-icons-2 rounded-circle  bg-g-6 text-white ms-auto">
-                                                <i class="fa-solid fa-chart-simple"></i>
+                                            <div class="text-white ms-auto">
+                                                <div class="card-bg bg-g-6">
+                                                    <i class="fa-solid fa-chart-simple"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </a>
                             </div>
                         </div>
-                        
+
 
                     </div>
                 </div>
@@ -218,7 +236,7 @@ require_once './navbar.php';
         </div>
     </div>
 
-    <div class="container box-container w3-animate-bottom" onload="getDrivers()">
+    <div class="box-container w3-animate-bottom" onload="getDrivers()">
         <div class="row">
             <div class="container">
                 <div class="row">
@@ -296,15 +314,18 @@ require_once './navbar.php';
                                         <div class="row">
                                             <div class="col-sm-3">
                                                 <label for="" class="input-label">Shift End date</label>
-                                                <input type="date" class="input-field" name="shift[1][shiftEndDate]" placeholder="" required />
+                                                <input type="date" class="input-field" name="shift[1][shiftEndDate]"
+                                                    placeholder="" required />
                                             </div>
                                             <div class="col-sm-3">
                                                 <label for="" class="input-label">Shift Start Time</label>
-                                                <input type="time" class="input-field" name="shift[1][shiftStartTime]" placeholder="" required />
+                                                <input type="time" class="input-field" name="shift[1][shiftStartTime]"
+                                                    placeholder="" required />
                                             </div>
                                             <div class="col-sm-3">
                                                 <label for="" class="input-label">Shift End Time</label>
-                                                <input type="time" class="input-field" name="shift[1][shiftEndTime]" placeholder="" required />
+                                                <input type="time" class="input-field" name="shift[1][shiftEndTime]"
+                                                    placeholder="" required />
                                             </div>
                                         </div>
                                     </div>
@@ -320,14 +341,19 @@ require_once './navbar.php';
                                                         <div class="bms-trip-route">
                                                             <div class="row">
                                                                 <div class="col-sm-4">
-                                                                    <label for="" class="input-label">Start Route</label>
-                                                                    <select class="input-field" name="shift[1][trip][1][startRoute]" id="start-route" required>
+                                                                    <label for="" class="input-label">Start
+                                                                        Route</label>
+                                                                    <select class="input-field"
+                                                                        name="shift[1][trip][1][startRoute]"
+                                                                        id="start-route" required>
 
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-sm-4">
                                                                     <label for="" class="input-label">End Route</label>
-                                                                    <select class="input-field" name="shift[1][trip][1][endRoute]" id="end-route" required>
+                                                                    <select class="input-field"
+                                                                        name="shift[1][trip][1][endRoute]"
+                                                                        id="end-route" required>
 
                                                                     </select>
                                                                 </div>
@@ -338,36 +364,57 @@ require_once './navbar.php';
                                                                 <div class="bms-trip-driver" id="bms-trip-driver-1-1-1">
                                                                     <div class="bms-trip-driver-header">
                                                                         <p class="bms-trip-driver-title">Driver</p>
-                                                                        <button type="button" class="add-button" onclick="addDriver(1,1)"><i class="fa-solid fa-circle-plus"></i></button>
+                                                                        <button type="button" class="add-button"
+                                                                            onclick="addDriver(1,1)"><i
+                                                                                class="fa-solid fa-circle-plus"></i></button>
                                                                     </div>
                                                                     <div class="bms-trip-driver-body">
                                                                         <div class="bms-trip-driver-content">
                                                                             <div class="row">
                                                                                 <div class="col-sm-4">
-                                                                                    <label for="" class="input-label">Driver</label>
-                                                                                    <select class="input-field" name="shift[1][trip][1][driver][1][driver_id]" id="driver-1-1-1" required>
+                                                                                    <label for=""
+                                                                                        class="input-label">Driver</label>
+                                                                                    <select class="input-field"
+                                                                                        name="shift[1][trip][1][driver][1][driver_id]"
+                                                                                        id="driver-1-1-1" required>
 
                                                                                     </select>
                                                                                 </div>
                                                                                 <div class="col-sm-2">
-                                                                                    <label for="" class="input-label">Start Time</label>
-                                                                                    <input type="time" class="input-field"
-                                                                                        name="shift[1][trip][1][driver][1][start_time]" placeholder="" required />
+                                                                                    <label for=""
+                                                                                        class="input-label">Start
+                                                                                        Time</label>
+                                                                                    <input type="time"
+                                                                                        class="input-field"
+                                                                                        name="shift[1][trip][1][driver][1][start_time]"
+                                                                                        placeholder="" required />
                                                                                 </div>
                                                                                 <div class="col-sm-2">
-                                                                                    <label for="" class="input-label">End Time</label>
-                                                                                    <input type="time" class="input-field"
-                                                                                        name="shift[1][trip][1][driver][1][end_time]" placeholder="" required />
+                                                                                    <label for=""
+                                                                                        class="input-label">End
+                                                                                        Time</label>
+                                                                                    <input type="time"
+                                                                                        class="input-field"
+                                                                                        name="shift[1][trip][1][driver][1][end_time]"
+                                                                                        placeholder="" required />
                                                                                 </div>
                                                                                 <div class="col-sm-2">
-                                                                                    <label for="" class="input-label">Start KM</label>
-                                                                                    <input type="text" class="input-field"
-                                                                                        name="shift[1][trip][1][driver][1][start_km]" placeholder="" required />
+                                                                                    <label for=""
+                                                                                        class="input-label">Start
+                                                                                        KM</label>
+                                                                                    <input type="text"
+                                                                                        class="input-field"
+                                                                                        name="shift[1][trip][1][driver][1][start_km]"
+                                                                                        placeholder="" required />
                                                                                 </div>
                                                                                 <div class="col-sm-2">
-                                                                                    <label for="" class="input-label">End KM</label>
-                                                                                    <input type="text" class="input-field"
-                                                                                        name="shift[1][trip][1][driver][1][end_km]" placeholder="" required />
+                                                                                    <label for=""
+                                                                                        class="input-label">End
+                                                                                        KM</label>
+                                                                                    <input type="text"
+                                                                                        class="input-field"
+                                                                                        name="shift[1][trip][1][driver][1][end_km]"
+                                                                                        placeholder="" required />
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -376,18 +423,26 @@ require_once './navbar.php';
                                                             </div>
                                                         </div>
                                                         <div class="bms-trip-conductor-container">
-                                                            <div class="bms-trip-conductors" id="bms-trip-conductors-1-1">
-                                                                <div class="bms-trip-conductor" id="bms-trip-conductor-1-1-1">
+                                                            <div class="bms-trip-conductors"
+                                                                id="bms-trip-conductors-1-1">
+                                                                <div class="bms-trip-conductor"
+                                                                    id="bms-trip-conductor-1-1-1">
                                                                     <div class="bms-trip-conductor-header">
-                                                                        <p class="bms-trip-conductor-title">Conductor</p>
-                                                                        <button type="button" class="add-button" onclick="addConductor(1,1)"><i class="fa-solid fa-circle-plus"></i></button>
+                                                                        <p class="bms-trip-conductor-title">Conductor
+                                                                        </p>
+                                                                        <button type="button" class="add-button"
+                                                                            onclick="addConductor(1,1)"><i
+                                                                                class="fa-solid fa-circle-plus"></i></button>
                                                                     </div>
                                                                     <div class="bms-trip-conductor-body">
                                                                         <div class="bms-trip-conductor-content">
                                                                             <div class="row">
                                                                                 <div class="col-sm-4">
-                                                                                    <label for="" class="input-label">Conductor</label>
-                                                                                    <select class="input-field" name="shift[1][trip][1][conductor][1][conductor_id]" id="conductor-1-1-1" required>
+                                                                                    <label for=""
+                                                                                        class="input-label">Conductor</label>
+                                                                                    <select class="input-field"
+                                                                                        name="shift[1][trip][1][conductor][1][conductor_id]"
+                                                                                        id="conductor-1-1-1" required>
 
                                                                                     </select>
                                                                                 </div>
@@ -402,14 +457,20 @@ require_once './navbar.php';
                                                                                         name="shift[1][trip][1][conductor][1][conductor_id]" placeholder="" required />
                                                                                 </div> -->
                                                                                 <div class="col-sm-3">
-                                                                                    <label for="" class="input-label">Passangers</label>
-                                                                                    <input type="text" class="input-field"
-                                                                                        name="shift[1][trip][1][conductor][1][passangers]" placeholder="" required />
+                                                                                    <label for=""
+                                                                                        class="input-label">Passangers</label>
+                                                                                    <input type="text"
+                                                                                        class="input-field"
+                                                                                        name="shift[1][trip][1][conductor][1][passangers]"
+                                                                                        placeholder="" required />
                                                                                 </div>
                                                                                 <div class="col-sm-3">
-                                                                                    <label for="" class="input-label">Collection</label>
-                                                                                    <input type="text" class="input-field"
-                                                                                        name="shift[1][trip][1][conductor][1][collection]" placeholder="" required />
+                                                                                    <label for=""
+                                                                                        class="input-label">Collection</label>
+                                                                                    <input type="text"
+                                                                                        class="input-field"
+                                                                                        name="shift[1][trip][1][conductor][1][collection]"
+                                                                                        placeholder="" required />
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -424,14 +485,17 @@ require_once './navbar.php';
                                                 <div class="row">
                                                     <div class="col-sm-3">
                                                         <label for="" class="input-label">Fuel Usage</label>
-                                                        <input type="number" class="input-field" name="shift[1][fuelUsage]" placeholder="" required />
+                                                        <input type="number" class="input-field"
+                                                            name="shift[1][fuelUsage]" placeholder="" required />
                                                     </div>
                                                     <div class="col-sm-3">
                                                         <label for="" class="input-label">Othere Expence</label>
-                                                        <input type="text" class="input-field" name="shift[1][otherExpence]" placeholder="" required />
+                                                        <input type="text" class="input-field"
+                                                            name="shift[1][otherExpence]" placeholder="" required />
                                                     </div>
                                                 </div>
-                                                <button type="button" class="button-2" onclick="addTrip(1)">Add Trip<i class="fa-solid fa-location-plus"></i></button>
+                                                <button type="button" class="button-2" onclick="addTrip(1)">Add Trip<i
+                                                        class="fa-solid fa-location-plus"></i></button>
                                             </div>
                                         </div>
                                     </div>
@@ -439,7 +503,8 @@ require_once './navbar.php';
                             </div>
                         </div>
                         <div class="bms-shift-footer">
-                            <button type="button" class="button-2" id="add-shift">Add Shift<i class="fa-solid fa-circle-plus"></i></button>
+                            <button type="button" class="button-2" id="add-shift">Add Shift<i
+                                    class="fa-solid fa-circle-plus"></i></button>
                         </div>
                     </div>
                 </div>
@@ -477,16 +542,18 @@ require_once './navbar.php';
 
                             <div class="col-sm-3">
                                 <label for="" class="input-label">Date</label>
-                                <input type="date" class="input-field" name="date" id="edit-date" placeholder="" required />
+                                <input type="date" class="input-field" name="date" id="edit-date" placeholder=""
+                                    required />
                             </div>
                         </div>
                     </div>
                     <div class="bms-shift-container">
                         <div class="bms-shifts" id="bms-edit-shifts">
-                        
+
                         </div>
                         <div class="bms-shift-footer">
-                            <button type="button" class="button-2" onclick="addEditShift()">Add Shift<i class="fa-solid fa-circle-plus"></i></button>
+                            <button type="button" class="button-2" onclick="addEditShift()">Add Shift<i
+                                    class="fa-solid fa-circle-plus"></i></button>
                         </div>
                     </div>
                 </div>
@@ -512,7 +579,7 @@ require_once './navbar.php';
                     </button>
                 </div>
                 <div class="admin-modal-body admin-view-body" id="daily-report-view-content">
-                    
+
                 </div>
             </form>
         </div>
@@ -630,7 +697,6 @@ require_once './navbar.php';
 <script src="../../../Common/Common file/main.js"></script>
 <script src="./Js/daily_report_ajax.js"></script>
 <script src="./Js/daily_report.js"></script>
-<script src="./Js/bus_ajax.js"></script>
 <?php
 require_once './footer.php';
 ?>

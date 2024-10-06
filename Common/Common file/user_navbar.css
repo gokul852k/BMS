@@ -356,7 +356,7 @@
     align-items: center;
     background-color: white;
     border: none;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     padding: 5px 10px;
     gap: 10px;
     min-width: 130px;
@@ -366,6 +366,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+    top: -1px;
 }
 .item-txt{
     font-weight: 500;

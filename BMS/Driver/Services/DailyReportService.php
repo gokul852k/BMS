@@ -2,6 +2,8 @@
 
 require_once '../../config.php';
 require_once '../Models/DailyReportModel.php';
+require_once '../../../Common/Common function/dateTime.php';
+
 class DailyReportService {
     private $modelBMS;
 
@@ -22,6 +24,7 @@ class DailyReportService {
             return null;
         }
     }
+    
 
     public function getTranslationsLabels2($pageId) {
         $response = $this->modelBMS->getTranslationsLabels($pageId, $_SESSION['languageCode']);
@@ -39,7 +42,6 @@ class DailyReportService {
 
     public function getDisplay() {
 
-        $currentDate = date('Y-m-d');
 
         $driverShift = $this->modelBMS->checkDriverShiftByDriverId($_SESSION['driverId']);
 
@@ -134,8 +136,9 @@ class DailyReportService {
     public function createDailyReport($busId) {
         //1) -> Check if a daily report for the current date already exists for the given bus ID; if not, create a new daily report.
         //2) -> heck if the shift is open; if not, create a new shift.
-        $currentDate = date('Y-m-d');
-        $currentTime = date('H:i:s');
+        $currentDate = getCurrentDate();
+        $currentTime = getCurrentTime();
+        // return $currentDate;
         $dailyReport = $this->modelBMS->checkDateAndBusId($busId, $currentDate);
 
         if (!$dailyReport) {
@@ -263,7 +266,7 @@ class DailyReportService {
     }
 
     public function getCurrentShift() {
-        $currentHour = date('H');
+        $currentHour = getCurrentHour();
 
         if ($currentHour >= 1 && $currentHour <= 8) {
             return 1; //First Shift
@@ -279,6 +282,9 @@ class DailyReportService {
     }
 
     public function startTrip($startRoute, $endRoute, $startKm) {
+
+        $currentTime = getCurrentTime();
+
         $response1 = $this->modelBMS->getShiftIdByDriverId($_SESSION['driverId']);
         if (!$response1) {
             return [
@@ -298,7 +304,7 @@ class DailyReportService {
             ];
         }
         
-        $trip = $this->modelBMS->createTrip($_SESSION['companyId'], $response1['shiftId'], $startRoute, $endRoute, $startKm);
+        $trip = $this->modelBMS->createTrip($_SESSION['companyId'], $response1['shiftId'], $startRoute, $endRoute, $currentTime, $startKm);
 
         if ($trip['status'] != 'success') {
             return [
@@ -344,7 +350,8 @@ class DailyReportService {
     }
 
     public function startTrip2($tripId, $startKm) {
-        $response = $this->modelBMS->updateTripStartKm($tripId, $startKm);
+        $currentTime = getCurrentTime();
+        $response = $this->modelBMS->updateTripStartKm($tripId, $currentTime, $startKm);
         if ($response) {
             return [
                 "status" => "success",
@@ -361,6 +368,7 @@ class DailyReportService {
     }
 
     public function endTrip($tripId, $tripDriverId, $endKm) {
+        $currentTime = getCurrentTime();
         $tripStartKm = $this->modelBMS->getEndKm($tripId);
         if ($tripStartKm) {
             if ($tripStartKm['start_km'] > $endKm) {
@@ -371,7 +379,7 @@ class DailyReportService {
             }
         }
 
-        $updateTrip = $this->modelBMS->updateEndTrip($tripId, $endKm);
+        $updateTrip = $this->modelBMS->updateEndTrip($tripId, $currentTime, $endKm);
         $updateTripDriver = $this->modelBMS->updateTripDriverStatus($tripDriverId);
 
         //Check for change trip status
@@ -485,6 +493,10 @@ class DailyReportService {
     }
 
     public function endDuty2($fuelUsage, $salary, $commission, $totalCommission) {
+
+        $currentDate = getCurrentDate();
+        $currentTime = getCurrentTime();
+
         $driverShift = $this->modelBMS->getShiftIdByDriverId($_SESSION['driverId']);
 
         if (!$driverShift) {
@@ -499,7 +511,7 @@ class DailyReportService {
 
         //Update shift driver salary, commission, and work status
 
-        $updateDriverWorkDetails = $this->modelBMS->updateDriverWorkDetails($shiftId, $salary, $commission, $fuelUsage);
+        $updateDriverWorkDetails = $this->modelBMS->updateDriverWorkDetails($shiftId, $salary, $commission, $fuelUsage, $currentDate, $currentTime);
 
         if (!$updateDriverWorkDetails) {
             return [
@@ -521,7 +533,12 @@ class DailyReportService {
         //Calculate Fuel Amount
         $fuelAmount = (float)$fuelUsage * $fuelPerLiterAmount;
 
-        $updateShiftDetails = $this->modelBMS->updateShiftDetails($shiftId, $salary, $fuelUsage, $fuelAmount);
+        $avgMilage = 0;
+        if ($fuelUsage != 0) {
+            $avgMilage = $driverShift['total_km'] / (float)$fuelUsage;
+        }
+
+        $updateShiftDetails = $this->modelBMS->updateShiftDetails($shiftId, $salary, $fuelUsage, $fuelAmount, $avgMilage);
 
         //check workers work status is true
 
@@ -530,7 +547,7 @@ class DailyReportService {
         $drivers = $this->modelBMS->checkDriversStatus($shiftId);
 
         if (!$conductors && !$drivers) {
-            $updateShiftStatus = $this->modelBMS->updateShiftStatus($shiftId);
+            $updateShiftStatus = $this->modelBMS->updateShiftStatus($shiftId, $currentDate, $currentTime);
 
             //Update salary, commision, and expance in daily report as per shift
             //Get shift details

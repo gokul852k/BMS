@@ -473,9 +473,11 @@ class DailyReportModel {
         return $result ? $result : null;
     }
 
-    public function updateConductorWorkDetails($shiftId, $salary, $commission) {
+    public function updateConductorWorkDetails($shiftId, $salary, $commission, $currentDate, $currentTime) {
         $status = false;
-        $stmt = $this->db->prepare("UPDATE `bms_shift_conductor` SET `salary`= :salary, `commission`= :commission, `work_status` = :status WHERE `shift_id` = :shiftId");
+        $stmt = $this->db->prepare("UPDATE `bms_shift_conductor` SET `end_date` = :currentDate,`end_time` = :currentTime, `salary`= :salary, `commission`= :commission, `work_status` = :status WHERE `shift_id` = :shiftId");
+        $stmt->bindParam(":currentDate", $currentDate);
+        $stmt->bindParam(":currentTime", $currentTime);
         $stmt->bindParam(":salary", $salary);
         $stmt->bindParam(":commission", $commission);
         $stmt->bindParam(":shiftId", $shiftId);
@@ -493,10 +495,12 @@ class DailyReportModel {
         return $stmt->execute() ? true : false;
     }
 
-    public function updateShiftDetails2($shiftId, $totalCommission) {
+    public function updateShiftDetails2($shiftId, $totalCommission, $currentDate, $currentTime) {
         $status = false;
-        $stmt = $this->db->prepare("UPDATE `bms_shifts` SET `commission` = `commission` + :totalCommission, `shift_status` = :status WHERE `shift_id` = :shiftId");
+        $stmt = $this->db->prepare("UPDATE `bms_shifts` SET `end_date` = :currentDate, `end_time` = :currentTime, `commission` = `commission` + :totalCommission, `shift_status` = :status WHERE `shift_id` = :shiftId");
         $stmt->bindParam(":shiftId", $shiftId);
+        $stmt->bindParam(":currentDate", $currentDate);
+        $stmt->bindParam(":currentTime", $currentTime);
         $stmt->bindParam(":totalCommission", $totalCommission);
         $stmt->bindParam(":status", $status);
 

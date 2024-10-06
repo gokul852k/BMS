@@ -116,13 +116,13 @@ function getDailyReports() {
                 let cardDetails = data.cardCount;
                 document.getElementById("c-total-km").innerHTML = cardDetails.totalKm;
                 document.getElementById("c-fuel-usage").innerHTML = cardDetails.fuelUsage;
-                document.getElementById("c-avg-mileage").innerHTML = cardDetails.avgMilage;
                 document.getElementById("c-passangers").innerHTML = cardDetails.passengers;
                 document.getElementById("c-collection").innerHTML = cardDetails.collection;
                 document.getElementById("c-expense").innerHTML = cardDetails.expenses;
                 document.getElementById("c-fuel-amount").innerHTML = cardDetails.fuelAmount;
                 document.getElementById("c-salary").innerHTML = cardDetails.salary;
                 document.getElementById("c-commission").innerHTML = cardDetails.commission;
+                document.getElementById("c-loss").innerHTML = cardDetails.loss;
                 document.getElementById("c-profit").innerHTML = cardDetails.profit;
 
 
@@ -520,13 +520,13 @@ $(document).ready(function () {
                     let cardDetails = data.cardCount;
                     document.getElementById("c-total-km").innerHTML = cardDetails.totalKm;
                     document.getElementById("c-fuel-usage").innerHTML = cardDetails.fuelUsage;
-                    document.getElementById("c-avg-mileage").innerHTML = cardDetails.avgMilage;
                     document.getElementById("c-passangers").innerHTML = cardDetails.passengers;
                     document.getElementById("c-collection").innerHTML = cardDetails.collection;
                     document.getElementById("c-expense").innerHTML = cardDetails.expenses;
                     document.getElementById("c-fuel-amount").innerHTML = cardDetails.fuelAmount;
                     document.getElementById("c-salary").innerHTML = cardDetails.salary;
                     document.getElementById("c-commission").innerHTML = cardDetails.commission;
+                    document.getElementById("c-loss").innerHTML = cardDetails.loss;
                     document.getElementById("c-profit").innerHTML = cardDetails.profit;
 
 

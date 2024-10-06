@@ -242,7 +242,7 @@ async function getDriverDetailsForEdit(driverId) {
                 driverDetails.mail != "" ? document.getElementById("d-e-mail").value = driverDetails.mail : document.getElementById("d-e-mail").value = "";
                 driverDetails.mobile != "" ? document.getElementById("d-e-mobile").value = driverDetails.mobile : document.getElementById("d-e-mobile").value = "";
             
-                //Bus
+                //Language
                 let select = $('#d-e-language');
                 select.empty();  // Clear existing options
             

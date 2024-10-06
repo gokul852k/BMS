@@ -685,6 +685,7 @@ div.dt-container .dt-paging {
 }
 
 .progress-text {
+  text-align: center;
   font-weight: 500;
   color: gray;
   animation: progress-text 4s infinite ease-in-out;

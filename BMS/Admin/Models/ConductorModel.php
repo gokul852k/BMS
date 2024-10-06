@@ -114,8 +114,8 @@ class ConductorModel {
         }
     }
 
-    public function setConductor($userId, $companyId, $name, $mobile, $mail, $address, $state, $district, $pincode, $conductorImage_path, $aadharNo, $aadharCard_path, $panNo, $panCard_path) {
-        $stmt = $this->db->prepare("INSERT INTO `bms_conductors` (`user_id`, `company_id`, `fullname`, `mail`, `mobile`, `address`, `state`, `district`, `pincode`, `conductor_image_path`, `aadhar_no`, `aadhar_path`, `pan_no`, `pan_path`) VALUES (:userId, :companyId, :name, :mail, :mobile, :address, :state, :district, :pincode, :conductorImage_path, :aadharNo, :aadharCard_path, :panNo, :panCard_path)");
+    public function setConductor($userId, $companyId, $name, $mobile, $mail, $address, $state, $district, $pincode, $language, $conductorImage_path, $aadharNo, $aadharCard_path, $panNo, $panCard_path) {
+        $stmt = $this->db->prepare("INSERT INTO `bms_conductors` (`user_id`, `company_id`, `fullname`, `mail`, `mobile`, `address`, `state`, `district`, `pincode`, `language`, `conductor_image_path`, `aadhar_no`, `aadhar_path`, `pan_no`, `pan_path`) VALUES (:userId, :companyId, :name, :mail, :mobile, :address, :state, :district, :pincode, :language, :conductorImage_path, :aadharNo, :aadharCard_path, :panNo, :panCard_path)");
         
         $stmt->bindParam("userId", $userId);
         $stmt->bindParam("companyId", $companyId);
@@ -126,6 +126,7 @@ class ConductorModel {
         $stmt->bindParam("state", $state);
         $stmt->bindParam("district", $district);
         $stmt->bindParam("pincode", $pincode);
+        $stmt->bindParam("language", $language);
         $stmt->bindParam("conductorImage_path", $conductorImage_path);
         $stmt->bindParam("aadharNo", $aadharNo);
         $stmt->bindParam("aadharCard_path", $aadharCard_path);
@@ -186,6 +187,14 @@ class ConductorModel {
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $result ? $result : null;
+    }
+
+    public function updatePassword($userId, $hashPassword) {
+        $stmt = $this->db->prepare("UPDATE `users` SET `password` = :hashPassword WHERE `id` = :userId");
+        $stmt->bindParam(":hashPassword", $hashPassword);
+        $stmt->bindParam(":userId", $userId);
+
+        return $stmt->execute() ? true : false;
     }
 }
 

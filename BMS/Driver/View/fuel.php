@@ -9,14 +9,15 @@ require_once '../Services/DailyReportService.php';
 //Get translations labels
 $serviceDR = new DailyReportService();
 
-$tlabels = $serviceDR->getTranslationsLabels(1);
+$tlabels = $serviceDR->getTranslationsLabels(3);
 if (!$tlabels && empty($tlabels)) {
     $tlabels = [
-        ["translation" => "Bus Duty"],
-        ["translation" => "Hello"],
-        ["translation" => "Please select bus"],
-        ["translation" => "Start Work"],
-        ["translation" => "Select bus"]
+        ["translation" => "Fuel Report"],
+        ["translation" => "Select Bus"],
+        ["translation" => "Date"],
+        ["translation" => "Total Liters"],
+        ["translation" => "Upload Fuel Bill"],
+        ["translation" => "Submit"]
     ];
 }
 
@@ -34,10 +35,10 @@ if (!$tlabels && empty($tlabels)) {
 
                 <div class="row selectpicker-row">
                     <div class="col-sm-12">
-                        <label for="" class="input-label"><?= $tlabels[4]['translation'] ?></label>
+                        <label for="" class="input-label"><?= $tlabels[1]['translation'] ?></label>
                         <select class="selectpicker input-field" data-show-subtext="true" data-live-search="true"
-                            name="bus-id" id="bus-id" required>
-                            <option value=""><?= $tlabels[4]['translation'] ?></option>
+                            name="bus-id" id="bus-id">
+                            <option value=""> </option>
                             <?php
                             foreach ($buses as $bus) {
                                 ?>
@@ -49,20 +50,20 @@ if (!$tlabels && empty($tlabels)) {
                         <span class="error-message p-r-l-15" id="bus-id-error"></span>
                     </div>
                     <div class="col-sm-12">
-                        <label for="" class="input-label">Date</label>
+                        <label for="" class="input-label"><?= $tlabels[2]['translation'] ?></label>
                         <input type="date" class="input-field" name="date" placeholder="" required />
                     </div>
                     <div class="col-sm-12">
-                        <label for="" class="input-label">Total Liters</label>
+                        <label for="" class="input-label"><?= $tlabels[3]['translation'] ?></label>
                         <input type="text" class="input-field" name="fuel-liters" placeholder="" required />
                     </div>
                     <div class="col-sm-12">
-                        <label for="" class="input-label">Amount</label>    
+                        <label for="" class="input-label"><?= $tlabels[4]['translation'] ?></label>    
                         <input type="text" class="input-field" name="fuel-amount" placeholder="" required />
                     </div>
                     <div class="col-sm-12 m-b-20">
                         <label for="exampleFormControlFile1" class="drop-container input-label" id="dropcontainer">
-                            <span class="drop-title">Upload Fuel Bill</span>
+                            <span class="drop-title"><?= $tlabels[5]['translation'] ?></span>
                             <br>
                             <input type="file" class="form-control-file" name="fuel-bill" accept="image/*,.pdf" />
                         </label>
@@ -73,7 +74,7 @@ if (!$tlabels && empty($tlabels)) {
 
                     <div class="col-sm-12">
                         <div class="input-group button-center">
-                            <button class="button-2" id="submit" name="btn">Submit</button>
+                            <button class="button-2" id="submit" name="btn"><?= $tlabels[6]['translation'] ?></button>
                         </div>
                     </div>
                 </div>

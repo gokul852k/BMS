@@ -199,8 +199,10 @@ class DailyReportService {
                 if ($shiftTempFuelAmount != 0) {
                     $shiftFuelAmount = $shiftTempFuelAmount * $shiftFuelUsage;
                 }
-
-                $shiftAvgMilage = $shiftKM / $shiftFuelUsage;
+                $shiftAvgMilage = 0;
+                if ($shiftFuelUsage != 0) {
+                    $shiftAvgMilage = $shiftKM / $shiftFuelUsage;
+                }
 
                 //UpdateShift
                 $updateShift = $this->modelBMS->updateShift($shiftId, $shiftKM, $shiftAvgMilage, $shiftPassengers, $shiftCollection, $shiftSalary, $shiftCommission, $shiftExpence, $shiftFuelUsage, $shiftFuelAmount);
@@ -238,8 +240,13 @@ class DailyReportService {
         if ($tempFuelAmount != 0) {
             $dailyFuelAmount = $tempFuelAmount * $dailyFuelUsage;
         }
+        
+        $dailyAvgMilage = 0;
 
-        $dailyAvgMilage = $dailyKM / $dailyFuelUsage;
+        if ($dailyAvgMilage != 0) {
+            $dailyAvgMilage = $dailyKM / $dailyFuelUsage;
+        }
+        
         //Update Daily Report
         $updateDailyReport = $this->modelBMS->updateDailyReport($reportId, $dailyKM, $dailypassengers, $dailyAvgMilage, $dailyCollection, $dailyFuelAmount, $dailyFuelUsage, $dailyExpense, $dailySalary, $dailyCommission);
 
@@ -260,7 +267,7 @@ class DailyReportService {
     public function updateDailyReport($postData) {
 
         //Delete the User deleted records
-        $deletes = json_decode($postData['deletedItems']);
+        $deletes = json_decode($postData['deletedItems'], true);
 
         foreach ($deletes as $delete) {
             if ($delete['type'] == 'shift') {
@@ -563,7 +570,10 @@ class DailyReportService {
                     $shiftFuelAmount = $shiftTempFuelAmount * $shiftFuelUsage;
                 }
 
-                $shiftAvgMilage = $shiftKM / $shiftFuelUsage;
+                $shiftAvgMilage = 0;
+                if ($shiftFuelUsage != 0) {
+                    $shiftAvgMilage = $shiftKM / $shiftFuelUsage;
+                }
 
                 //UpdateShift
                 $updateShift = $this->modelBMS->updateShift($shiftId, $shiftKM, $shiftAvgMilage, $shiftPassengers, $shiftCollection, $shiftSalary, $shiftCommission, $shiftExpence, $shiftFuelUsage, $shiftFuelAmount);
@@ -610,7 +620,11 @@ class DailyReportService {
             $dailyFuelAmount = $tempFuelAmount * $dailyFuelUsage;
         }
 
-        $dailyAvgMilage = $dailyKM / $dailyFuelUsage;
+        $dailyAvgMilage = 0;
+        if ($dailyAvgMilage != 0) {
+            $dailyAvgMilage = $dailyKM / $dailyFuelUsage;
+        }
+        
         //Update Daily Report
         $updateDailyReport = $this->modelBMS->updateDailyReport($reportId, $dailyKM, $dailypassengers, $dailyAvgMilage, $dailyCollection, $dailyFuelAmount, $dailyFuelUsage, $dailyExpense, $dailySalary, $dailyCommission);
 
@@ -674,75 +688,70 @@ class DailyReportService {
 
             $trips = $this->modelBMS->getTrips($shiftId);
 
-            if (!$shifts) {
-                return [
-                    'status' => 'error',
-                    'message' => 'Something went wrong while get the daily report',
-                    'error' => 'Error while get trips in trips table.'
-                ];
-            }
+            if (count($trips) !== 0) {
+                $tripCount = 1;
+                $tripMainArray = array();
+                foreach ($trips as $trip) {
+                    $tripId = $trip['trip_id'];
 
-            $tripCount = 1;
-            $tripMainArray = array();
-            foreach ($trips as $trip) {
-                $tripId = $trip['trip_id'];
+                    $tripArray = [
+                        "tripId" => $trip['trip_id'],
+                        "startRoute" => $trip['start_route_id'],
+                        "endRoute" => $trip['end_route_id']
+                    ];
 
-                $tripArray = [
-                    "tripId" => $trip['trip_id'],
-                    "startRoute" => $trip['start_route_id'],
-                    "endRoute" => $trip['end_route_id']
-                ];
+                    //4:-> Get Driver
 
-                //4:-> Get Driver
+                    $drivers = $this->modelBMS->getTripDrivers($tripId);
 
-                $drivers = $this->modelBMS->getTripDrivers($tripId);
+                    if ($drivers) {
+                        $driverCount = 1;
+                        $driverMainArray = array();
+                        foreach ($drivers as $driver) {
+                            $driverArray = [
+                                "tripDriverId" => $driver['trip_driver_id'],
+                                "driverId" => $driver['driver_id'],
+                                "startTime" => $trip['start_time'],
+                                "endTime" => $trip['end_time'],
+                                "startKm" => $trip['start_km'],
+                                "endKm" => $trip['end_km']
+                            ];
+                            $driverMainArray[$driverCount] = $driverArray;
+                            $driverCount++;
+                        }
 
-                if ($drivers) {
-                    $driverCount = 1;
-                    $driverMainArray = array();
-                    foreach ($drivers as $driver) {
-                        $driverArray = [
-                            "tripDriverId" => $driver['trip_driver_id'],
-                            "driverId" => $driver['driver_id'],
-                            "startTime" => $trip['start_time'],
-                            "endTime" => $trip['end_time'],
-                            "startKm" => $trip['start_km'],
-                            "endKm" => $trip['end_km']
-                        ];
-                        $driverMainArray[$driverCount] = $driverArray;
-                        $driverCount++;
+                        $tripArray["driver"] = $driverMainArray;
                     }
 
-                    $tripArray["driver"] = $driverMainArray;
-                }
+                    //5:-> Get Conductor
 
-                //5:-> Get Conductor
+                    $conductors = $this->modelBMS->getTripConductors($tripId);
 
-                $conductors = $this->modelBMS->getTripConductors($tripId);
+                    if ($conductors) {
+                        $conductorCount = 1;
+                        $conductorMainArray = array();
+                        foreach ($conductors as $conductor) {
+                            $conductorArray = [
+                                "tripConductorId" => $conductor['trip_conductor_id'],
+                                "conductorId" => $conductor['conductor_id'],
+                                "passangers" => $trip['passenger'],
+                                "collection" => $trip['collection_amount']
+                            ];
+                            $conductorMainArray[$conductorCount] = $conductorArray;
+                            $conductorCount++;
+                        }
 
-                if ($conductors) {
-                    $conductorCount = 1;
-                    $conductorMainArray = array();
-                    foreach ($conductors as $conductor) {
-                        $conductorArray = [
-                            "tripConductorId" => $conductor['trip_conductor_id'],
-                            "conductorId" => $conductor['conductor_id'],
-                            "passangers" => $trip['passenger'],
-                            "collection" => $trip['collection_amount']
-                        ];
-                        $conductorMainArray[$conductorCount] = $conductorArray;
-                        $conductorCount++;
+                        $tripArray["conductor"] = $conductorMainArray;
                     }
 
-                    $tripArray["conductor"] = $conductorMainArray;
+                    $tripMainArray[$tripCount] = $tripArray;
+                    $tripCount++;
+
                 }
-
-                $tripMainArray[$tripCount] = $tripArray;
-                $tripCount++;
-
+                $shiftArray['trip'] = $tripMainArray;
+            } else {
+                $shiftArray['trip'] = array();
             }
-
-            $shiftArray['trip'] = $tripMainArray;
 
             $shiftMainArray[$shiftCount] = $shiftArray;
             $shiftCount++;
@@ -834,94 +843,90 @@ class DailyReportService {
 
             $trips = $this->modelBMS->getTrips2($shiftId);
 
-            if (!$shifts) {
-                return [
-                    'status' => 'error',
-                    'message' => 'Something went wrong while get the daily report',
-                    'error' => 'Error while get trips in trips table.'
-                ];
-            }
+            if (count($trips) !== 0) {
+                $tripCount = 1;
+                $tripMainArray = array();
+                foreach ($trips as $trip) {
+                    $tripId = $trip['trip_id'];
 
-            $tripCount = 1;
-            $tripMainArray = array();
-            foreach ($trips as $trip) {
-                $tripId = $trip['trip_id'];
+                    $tripKm = 0;
+                    $tripStratTime = 0;
+                    $tripEndTime = 0;
+                    $tripPassangers = 0;
+                    $tripCollection = 0;
 
-                $tripKm = 0;
-                $tripStratTime = 0;
-                $tripEndTime = 0;
-                $tripPassangers = 0;
-                $tripCollection = 0;
+                    //4:-> Get Driver
 
-                //4:-> Get Driver
+                    $drivers = $this->modelBMS->getTripDrivers2($tripId);
 
-                $drivers = $this->modelBMS->getTripDrivers2($tripId);
-
-                $driverMainArray = array();
-                if ($drivers) {
-                    $driverCount = 1;
-                    foreach ($drivers as $driver) {
-                        $driverArray = [
-                            "tripDriverId" => $driver['trip_driver_id'],
-                            "driver" => $driver['fullname'],
-                            "startTime" => $this->timeFormat($trip['start_time']),
-                            "endTime" => $this->timeFormat($trip['end_time']),
-                            "startKm" => $trip['start_km'],
-                            "endKm" => $trip['end_km'],
-                            "totalKm" => $trip['end_km'] - $trip['start_km']
-                        ];
-                        $tripKm += $trip['end_km'] - $trip['start_km'];
-                        $tripStratTime = $this->timeFormat($trip['start_time']);
-                        $tripEndTime = $this->timeFormat($trip['end_time']);
-                        $tripTimeTaken = $this->timeDifference($trip['start_time'], $trip['end_time']);
-                        $driverMainArray[$driverCount] = $driverArray;
-                        $driverCount++;
+                    $driverMainArray = array();
+                    if ($drivers) {
+                        $driverCount = 1;
+                        foreach ($drivers as $driver) {
+                            $driverArray = [
+                                "tripDriverId" => $driver['trip_driver_id'],
+                                "driver" => $driver['fullname'],
+                                "startTime" => $this->timeFormat($trip['start_time']),
+                                "endTime" => $this->timeFormat($trip['end_time']),
+                                "startKm" => $trip['start_km'],
+                                "endKm" => $trip['end_km'],
+                                "totalKm" => $trip['end_km'] - $trip['start_km']
+                            ];
+                            $tripKm += $trip['end_km'] - $trip['start_km'];
+                            $tripStratTime = $this->timeFormat($trip['start_time']);
+                            $tripEndTime = $this->timeFormat($trip['end_time']);
+                            $tripTimeTaken = $this->timeDifference($trip['start_time'], $trip['end_time']);
+                            $driverMainArray[$driverCount] = $driverArray;
+                            $driverCount++;
+                        }
                     }
+
+                    //5:-> Get Conductor
+
+                    $conductors = $this->modelBMS->getTripConductors2($tripId);
+
+                    $conductorMainArray = array();
+                    if ($conductors) {
+                        $conductorCount = 1;
+                        foreach ($conductors as $conductor) {
+                            $conductorArray = [
+                                "tripConductorId" => $conductor['trip_conductor_id'],
+                                "conductor" => $conductor['fullname'],
+                                "passangers" => $trip['passenger'],
+                                "collection" => $trip['collection_amount']
+                            ];
+                            $tripPassangers += $trip['passenger'];
+                            $tripCollection += $trip['collection_amount'];
+                            $conductorMainArray[$conductorCount] = $conductorArray;
+                            $conductorCount++;
+                        }
+                    }
+
+                    $tripArray = [
+                        "tripId" => $trip['trip_id'],
+                        "tripKm" => $tripKm,
+                        "tripStratTime" => $tripStratTime,
+                        "tripEndTime" => $tripEndTime,
+                        "tripTimeTaken" => $tripTimeTaken,
+                        "tripPassangers" => $tripPassangers,
+                        "tripCollection" => $tripCollection,
+                        "startRoute" => $trip['start_route_name'],
+                        "endRoute" => $trip['end_route_name'],
+                        "driver" => $driverMainArray,
+                        "conductor" => $conductorMainArray
+                    ];
+                    // $tripArray["driver"] = $driverMainArray;
+                    // $tripArray["conductor"] = $conductorMainArray;
+
+                    $tripMainArray[$tripCount] = $tripArray;
+                    $tripCount++;
+
                 }
 
-                //5:-> Get Conductor
-
-                $conductors = $this->modelBMS->getTripConductors2($tripId);
-
-                $conductorMainArray = array();
-                if ($conductors) {
-                    $conductorCount = 1;
-                    foreach ($conductors as $conductor) {
-                        $conductorArray = [
-                            "tripConductorId" => $conductor['trip_conductor_id'],
-                            "conductor" => $conductor['fullname'],
-                            "passangers" => $trip['passenger'],
-                            "collection" => $trip['collection_amount']
-                        ];
-                        $tripPassangers += $trip['passenger'];
-                        $tripCollection += $trip['collection_amount'];
-                        $conductorMainArray[$conductorCount] = $conductorArray;
-                        $conductorCount++;
-                    }
-                }
-
-                $tripArray = [
-                    "tripId" => $trip['trip_id'],
-                    "tripKm" => $tripKm,
-                    "tripStratTime" => $tripStratTime,
-                    "tripEndTime" => $tripEndTime,
-                    "tripTimeTaken" => $tripTimeTaken,
-                    "tripPassangers" => $tripPassangers,
-                    "tripCollection" => $tripCollection,
-                    "startRoute" => $trip['start_route_name'],
-                    "endRoute" => $trip['end_route_name'],
-                    "driver" => $driverMainArray,
-                    "conductor" => $conductorMainArray
-                ];
-                // $tripArray["driver"] = $driverMainArray;
-                // $tripArray["conductor"] = $conductorMainArray;
-
-                $tripMainArray[$tripCount] = $tripArray;
-                $tripCount++;
-
+                $shiftArray['trip'] = $tripMainArray;
+            } else {
+                $shiftArray['trip'] = array();
             }
-
-            $shiftArray['trip'] = $tripMainArray;
 
             $shiftMainArray[$shiftCount] = $shiftArray;
             $shiftCount++;

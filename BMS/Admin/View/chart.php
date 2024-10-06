@@ -4,6 +4,15 @@ require_once './navbar.php';
 // require_once '../../../Common/Common file/search_select_cdn.php';
 require_once '../Services/FuelReportService.php';
 
+date_default_timezone_set("Asia/Kolkata"); // Set timezone to India
+
+// Get current date and time
+$date = date("d-m-Y");  // Format: day-month-year
+$time = date("h:i:s"); // Format: hours:minutes:seconds am/pm
+
+echo "Current date: " . $date;
+echo "Current time: " . $time;
+
 ?>
 
 <link rel="stylesheet" href="../../../Common/Common file/card.css">
